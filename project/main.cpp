@@ -23,7 +23,7 @@
 #include <dinput.h>
 
 #include "DebugCamera.h"
-#include "Math.h"
+#include "Calc.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -1177,10 +1177,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shader‚ðƒRƒ“ƒpƒCƒ‹‚·‚é
-	IDxcBlob* vertexShaderBlob = CompileShader(L"Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler, logStream);
+	IDxcBlob* vertexShaderBlob = CompileShader(L"Resource/shaders/Object3D.VS.hlsl", L"vs_6_0", dxcUtils, dxcCompiler, includeHandler, logStream);
 	assert(vertexShaderBlob != nullptr);
 
-	IDxcBlob* pixelShaderBlob = CompileShader(L"Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler, logStream);
+	IDxcBlob* pixelShaderBlob = CompileShader(L"Resource/shaders/Object3D.PS.hlsl", L"ps_6_0", dxcUtils, dxcCompiler, includeHandler, logStream);
 	assert(pixelShaderBlob != nullptr);
 
 	//PSO
