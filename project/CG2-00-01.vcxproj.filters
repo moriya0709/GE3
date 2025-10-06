@@ -67,6 +67,9 @@
     <Filter Include="ヘッダー ファイル\engine\scene">
       <UniqueIdentifier>{c6c42d96-dd1c-4b37-ba37-77c4e3c8922f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shaders">
+      <UniqueIdentifier>{b1525c88-bca6-4b5d-84cd-3f0dd8ceff67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,8 +104,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Object3d.VS.hlsl" />
-    <FxCompile Include="Object3d.PS.hlsl" />
+    <FxCompile Include="Object3d.PS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Object3d.VS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -142,6 +149,8 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Object3d.hlsli" />
+    <None Include="Object3d.hlsli">
+      <Filter>リソース ファイル\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
