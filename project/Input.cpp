@@ -54,3 +54,35 @@ bool Input::TriggerKey(BYTE keyNumber) {
 
 	return false;
 }
+
+// マウスボタンが押されたかどうか
+bool Input::IsMouseButtonPressed(int button) {
+	// 指定ボタン押していればtrueを返す
+	if (mouseState.rgbButtons[button]) {
+		return true;
+	}
+
+	// 押していなければfalseを返す
+	return false;
+}
+
+// ゲームパッドのボタンが押されたかどうか
+bool Input::IsPadButtonPressed(int padIndex, int button) {
+	if (padIndex >= padStates.size()) return false;
+	
+	if (padStates[padIndex].rgbButtons[button]) {
+		return true;
+	}
+
+	return false;
+}
+
+// ゲームパッドの軸の値を取得
+LONG Input::GetPadAxisX(int padIndex) {
+	return padStates[padIndex].lX; // 左スティックX
+}
+
+LONG Input::GetPadAxisY(int padIndex) {
+	return padStates[padIndex].lY; // 左スティックY
+}
+
