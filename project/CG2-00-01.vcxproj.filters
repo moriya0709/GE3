@@ -102,6 +102,9 @@
     <ClCompile Include="engine\scene\DebugCamera.cpp">
       <Filter>ソース ファイル\engine\scene</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\engine\io</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -141,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="engine\scene\DebugCamera.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ソース ファイル\engine\io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

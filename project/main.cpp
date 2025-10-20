@@ -24,6 +24,7 @@
 
 #include "DebugCamera.h"
 #include "Calc.h"
+#include "Input.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -41,6 +42,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #pragma comment(lib,"xaudio2.lib")
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
+
 
 //文字列を格納する
 std::string str0{ "STRING" };
@@ -775,6 +777,11 @@ void SoundPlayWave(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, const SoundData& so
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+	// ポインタ
+	Input* input = nullptr;
+
+
+
 	// リソースリークチェック
 	struct D3DResourceLeakChecker
 	{
@@ -970,27 +977,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// DirectXの初期化
 
-	// DirectInputの初期化
-	IDirectInput8* directInput = nullptr;
-	result = DirectInput8Create(
-		wc.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
-		(void**)&directInput, nullptr);
-	assert(SUCCEEDED(result));
-
-	// キーボードデバイスの生成
-	IDirectInputDevice8* keyboard = nullptr;
-	result = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-	assert(SUCCEEDED(result));
-
-	// 入力データ形式のセット
-	result = keyboard->SetDataFormat(&c_dfDIKeyboard); // 標準形式
-	assert(SUCCEEDED(result));
-
-	// 排他制御レベルのセット
-	result = keyboard->SetCooperativeLevel(
-		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	assert(SUCCEEDED(result));
-
+	// Input初期化
+	input = new Input();
+	input->Initialize(wc.hInstance,hwnd);
 
 
 	// コマンドキューを生成する
@@ -1711,9 +1700,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 解放
 	CloseHandle(fenceEvent);
+
 	// 音声データ解放
-//	SoundUnload(&soundData1);
 	xAudio2.Reset();
+	// 入力の初期化
+	delete input;
 
 	CloseWindow(hwnd);
 
