@@ -25,6 +25,7 @@
 #include "DebugCamera.h"
 #include "Calc.h"
 #include "Input.h"
+#include "WindowAPI.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -778,7 +779,8 @@ void SoundPlayWave(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, const SoundData& so
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	// ポインタ
-	Input* input = nullptr;
+	Input* input = nullptr; // input
+	WindowAPI* windowAPI = nullptr; // windowAPI
 
 
 
@@ -815,46 +817,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 #endif
 
-	WNDCLASS wc = {};
-	// ウィンドウプロシージャ
-	wc.lpfnWndProc = WindowProc;
-	//ウィンドウクラス名（なんでも良い）
-	wc.lpszClassName = L"CG2WindowClass";
-	// インスタンスハンドル
-	wc.hInstance = GetModuleHandle(nullptr);
-	// カーソル
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-
-	// ウィンドウクラスを登録
-	RegisterClass(&wc);
-
-	//クライアント領域のサイズ
-	const int32_t kClientWidth = 1280;
-	const int32_t kClientHeight = 720;
-
-	// ウィンドウサイズを表す構造体にクライアント領域を入れる
-	RECT wrc = { 0,0,kClientWidth,kClientHeight };
-
-	// クライアント領域をに実際のサイズにwrcを変更してもらう
-	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-
-	// ウインドウの生成
-	HWND hwnd = CreateWindow(
-		wc.lpszClassName,		// 利用するクラス名
-		L"CG2",					// タイトルバーの文字（何でも良い）
-		WS_OVERLAPPEDWINDOW,	// 良く見るウィンドウスタイル
-		CW_USEDEFAULT,			// 表示X座標（Windowsに任せる）
-		CW_USEDEFAULT,			// 表示Y座標（Windowsに任せる)
-		wrc.right - wrc.left,	// ウィンドウ横幅
-		wrc.bottom - wrc.top,	// ウィンドウ縦幅
-		nullptr,				// 親ウィンドウハンドル
-		nullptr,				// メニューハンドル
-		wc.hInstance,			// インスタンスハンドル
-		nullptr					// オプション
-	);
-
-	// ウィンドウを表示
-	ShowWindow(hwnd, SW_SHOW);
+	// WindowAPIの初期化
+	windowAPI = new WindowAPI();
+	windowAPI->Initialize();
 
 	// 現在時刻を取得
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
@@ -1700,8 +1665,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// 音声データ解放
 	xAudio2.Reset();
+
 	// 入力の初期化
 	delete input;
+	// WindowAPIの解放
+	delete windowAPI;
 
 	CloseWindow(hwnd);
 

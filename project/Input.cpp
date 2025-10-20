@@ -81,7 +81,6 @@ bool Input::IsPadButtonPressed(int padIndex, int button) {
 LONG Input::GetPadAxisX(int padIndex) {
 	return padStates[padIndex].lX; // 左スティックX
 }
-
 LONG Input::GetPadAxisY(int padIndex) {
 	return padStates[padIndex].lY; // 左スティックY
 }
