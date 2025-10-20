@@ -1497,20 +1497,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ImGui::NewFrame();
 			// ゲームの処理
 
-			// キーボード情報の取得開始
-			keyboard->Acquire();
-			// 全キーの入力状態を取得する
-			BYTE key[256] = {};
-			keyboard->GetDeviceState(sizeof(key), key);
+			// 入力の更新
+			input->Update();
 
 			// デバックカメラ
 			debugCamera->Update(hwnd);
 
 			// 数字の０キーが押されていたら
-			if (key[DIK_0])
-			{
-				OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
-			}
+			//if (key[DIK_0])
+			//{
+			//	OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
+			//}
 
 			// y軸回転処理
 			transform.rotate.y = 3.00f;
