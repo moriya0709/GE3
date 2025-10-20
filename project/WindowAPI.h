@@ -1,0 +1,24 @@
+#pragma once
+#include <Windows.h>
+#include <cstdint>
+#include <wrl.h>
+#include <dxgi1_6.h>
+
+#include "externals/imgui\imgui.h"
+#include "externals/DirectXTex/d3dx12.h"
+
+class WindowAPI {
+public:
+	// ウィンドウプロシージャ
+	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	//クライアント領域のサイズ
+	const int32_t kClientWidth = 1280;
+	const int32_t kClientHeight = 720;
+
+	// 初期化
+	void Initialize();
+	// 更新
+	void Update();
+};
+
