@@ -1504,10 +1504,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			debugCamera->Update(hwnd);
 
 			// 数字の０キーが押されていたら
-			//if (key[DIK_0])
-			//{
-			//	OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
-			//}
+			if (input->TriggerKey(DIK_0))
+			{
+				OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
+			}
 
 			// y軸回転処理
 			transform.rotate.y = 3.00f;
