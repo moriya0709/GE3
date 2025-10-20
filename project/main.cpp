@@ -821,6 +821,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	windowAPI = new WindowAPI();
 	windowAPI->Initialize();
 
+	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+
 	// 現在時刻を取得
 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 	// ログファイルの名前にコンマ何秒はいらないので、削って秒にする
@@ -944,7 +946,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// Input初期化
 	input = new Input();
-	input->Initialize(wc.hInstance,hwnd);
+	input->Initialize(windowAPI->GetHInstance(), windowAPI->GetHwnd());
 
 
 	// コマンドキューを生成する
@@ -969,8 +971,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// スワップチェインを生成する
 	Microsoft::WRL::ComPtr <IDXGISwapChain4> swapChain = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	swapChainDesc.Width = kClientWidth; // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
-	swapChainDesc.Height = kClientHeight; // 画面の高さ。ウィンドウのクライアント小域を同じものにしておく
+	swapChainDesc.Width = WindowAPI::kClientWidth; // 画面の幅。ウィンドウのクライアント領域を同じものにしておく
+	swapChainDesc.Height = WindowAPI::kClientHeight; // 画面の高さ。ウィンドウのクライアント小域を同じものにしておく
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 色の形式
 	swapChainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //描画のターゲットとして利用する
@@ -980,7 +982,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// スワップチェインを作成
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
 	hr = dxgiFactory->CreateSwapChainForHwnd(
-		commandQueue.Get(), hwnd, &swapChainDesc,
+		commandQueue.Get(), windowAPI->GetHwnd(), &swapChainDesc,
 		nullptr, nullptr, swapChain1.GetAddressOf());
 	assert(SUCCEEDED(hr));
 
