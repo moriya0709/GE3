@@ -105,6 +105,9 @@
     <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル\engine\io</Filter>
     </ClCompile>
+    <ClCompile Include="WindowAPI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>ソース ファイル\engine\io</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowAPI.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
