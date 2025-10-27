@@ -1,14 +1,9 @@
 #pragma once
-#define DIRECTINPUT_VERSION 0x0800
-
 #include <Windows.h>
 #include <cassert>
 #include <vector>
 #include <dinput.h>
 #include <wrl.h>
-
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
 
 class Input {
 public:
