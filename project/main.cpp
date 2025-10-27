@@ -1,5 +1,4 @@
 #define _USE_MATH_DEFINES
-#define DIRECTINPUT_VERSION 0x0800
 
 #include <Windows.h>
 #include <cstdint>
@@ -41,8 +40,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
 #pragma comment(lib,"xaudio2.lib")
-#pragma comment(lib,"dinput8.lib")
-#pragma comment(lib,"dxguid.lib")
 
 
 //•¶Žš—ñ‚ðŠi”[‚·‚é
