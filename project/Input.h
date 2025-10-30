@@ -7,6 +7,8 @@
 #include <dinput.h>
 #include <wrl.h>
 
+#include "WindowAPI.h"
+
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
@@ -16,7 +18,7 @@ public:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	//èâä˙âª
-	void Initialize(HINSTANCE hInstance,HWND hwnd);
+	void Initialize(WindowAPI* windowAPI);
 	// çXêV
 	void  Update();
 
@@ -51,6 +53,8 @@ private:
 	std::vector<IDirectInputDevice8> gamepads;
 	std::vector<DIJOYSTATE> padStates;
 
+	// WindowAPI
+	WindowAPI* windowAPI_ = nullptr;
 
 };
 

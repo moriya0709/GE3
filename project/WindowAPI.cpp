@@ -63,3 +63,8 @@ void WindowAPI::Initialize() {
 
 void WindowAPI::Update() {
 }
+
+void WindowAPI::Finalize() {
+	CloseWindow(hwnd);
+	CoUninitialize();
+}
