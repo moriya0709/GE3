@@ -28,6 +28,9 @@ public:
 	// 終了処理
 	void Finalize();
 
+	// メッセージの処理
+	bool ProcessMessage();
+
 private:
 	// ウィンドウハンドル
 	HWND hwnd = nullptr;
