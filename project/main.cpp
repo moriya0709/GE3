@@ -1670,10 +1670,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// “ü—Í‚Ì‰Šú‰»
 	delete input;
-	// WindowAPI‚Ì‰ð•ú
-	delete windowAPI;
 	// WindowAPI‚ÌI—¹ˆ—
 	windowAPI->Finalize();
+	// WindowAPI‚Ì‰ð•ú
+	delete windowAPI;
 
 
 	CoUninitialize();
