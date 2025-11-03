@@ -1266,42 +1266,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//materialDataSprite->uvTransform = uvTransformMatrix;
 
 
-		//Draw
-		//UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-
-		// TransitionBarrierの設定
-		//D3D12_RESOURCE_BARRIER barrier{};
-		// 今回のバリアはTransition
-		//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		// Noneにしておく
-		//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		// バリアを張る対象のリソース。現在のバッファに対して行う
-		//barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();
-		// 遷移前（現在）のResourceState
-		//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		// 遷移後のResourceStare
-		//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		// TransitionBarrierを張る
-		//commandList->ResourceBarrier(1, &barrier);
-
-		// 描画先のRTVとDSVを設定する
-		//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		//commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-
-		// 指定した色で画面全体をクリアする
-		//float clearColor[] = { 0.1f,0.25f,0.5f,1.0f }; // 青っぽい色。RGBAの順
-		//commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
-		// 指定した深度で画面全体をクリアする
-		//commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-		// 描画用のDescriptorHeapの設定
-		//ID3D12DescriptorHeap* heaps[] = { srvDescriptorHeap.Get() };
-		//commandList->SetDescriptorHeaps(1, heaps);
+		// 描画前処理
+		dxCommon->PreDraw();
 
 
 		// 球を描画
-		//commandList->RSSetViewports(1, &viewport); // Viewportを設定
-		//commandList->RSSetScissorRects(1, &scissorRect); // Scirssorを設定
 		// RootSignatureを設定。PSOに設定しているけど別途設定が必要
 		//commandList->SetGraphicsRootSignature(rootSignature.Get());
 		//commandList->SetPipelineState(graphicsPipelineState.Get()); // PSOを設定
@@ -1344,45 +1313,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	ImGui_ImplDX12_RenderDrawData(draw_data, commandList.Get());
 		//}
 
-		// 画面に書く処理は全て終わり、画面に映すので、状態を遷移
-		// 今回はRenderTragetからPresentにする
-		//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		// TranstionBarrierを張る
-		//commandList->ResourceBarrier(1, &barrier);
-
-		// コマンドリストの内容を確定させる。すべてのコマンドを詰んでからCloseすること
-		//hr = commandList->Close();
-		//assert(SUCCEEDED(hr));
-
-		// GPUにコマンドリストの実行を行わせる
-		//ID3D12CommandList* commandLists[] = { commandList.Get() };
-		//commandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
-
-		// GPUとOSに画面の交換を行うよう通知する
-		//swapChain->Present(1, 0);
-
-		// Fenceの値を更新
-		//fenceValue++;
-		// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入うするようにSignalを送る
-		//commandQueue->Signal(fence.Get(), fenceValue);
-
-		// Fenceの値が指定したSIgnal値にたどり着いているかかくにんする
-		// GetCompletedValueの初期値はFence作成時に渡した初期値
-		//if (fence->GetCompletedValue() < fenceValue) {
-		//	// 指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-		//	fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		//	// イベント待つ
-		//	WaitForSingleObject(fenceEvent, INFINITE);
-		//}
-
-		//hr = commandAllocator->Reset();
-		//assert(SUCCEEDED(hr));
-
-		// 次のフレーム用のコマンドリストを準備
-		//hr = commandList->Reset(commandAllocator.Get(), nullptr);
-		//assert(SUCCEEDED(hr));
-
+	
+		// 描画後処理
+		dxCommon->PostDraw();
 
 	}
 
