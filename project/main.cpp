@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <cstdint>
-#include <string>1
+#include <string>
 #include <fstream>
 #include <chrono>
 #include <filesystem>
@@ -785,7 +785,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//	}
 	//}
 	// デバイスの生成が上手くいかなかったので起動できない
-	assert(device != nullptr);
+	//assert(device != nullptr);
 	//Log("Complete create D3D12Device!!!\n");
 
 //#ifdef _DEBUG
@@ -1192,6 +1192,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// ゲームループを抜ける
 			break;
 		}
+
 		ImGui_ImplDX12_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
@@ -1339,7 +1340,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
-		//ImGui::Render();
+		ImGui::Render();
 		//if (ImDrawData* draw_data = ImGui::GetDrawData()) {
 		//	ImGui_ImplDX12_RenderDrawData(draw_data, commandList.Get());
 		//}
