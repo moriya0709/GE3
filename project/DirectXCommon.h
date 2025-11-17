@@ -11,15 +11,24 @@
 
 #include "WindowAPI.h"
 #include "Logger.h"
+#include "StringUtility.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
+#include "externals/DirectXTex/DirectXTex.h"
+#include "externals/DirectXTex/d3dx12.h"
 
 using namespace Logger;
+using namespace StringUtility;
 
 class DirectXCommon {
 public:
+	HANDLE fenceEvent;
+	// デスクリプタステンシル
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> srvDescriptorHeap; // SRV
+
 	void Initialize(WindowAPI* windowAPI); // 初期化
 
 	void CreateDevice(); // デバイス関連
@@ -41,6 +50,10 @@ public:
 	// 描画後処理
 	void PostDraw();
 
+	// getter
+	ID3D12Device* GetDevice() const { return device.Get(); }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
+
 	// デスクリプタヒープ生成
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device>& device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 	// 深度バッファ用リソース生成
@@ -50,7 +63,20 @@ public:
 	// SRVの指定番号のGPUデスクリプタハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUDescriptorHandle(uint32_t index);
 
-	std::string ConvertString(const std::wstring& str);
+	// シェーダーのコンパイル
+	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile);
+	// バッファリソースの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+	// テクスチャリソースの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
+	// テクスチャデータの転送
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(const Microsoft::WRL::ComPtr<ID3D12Resource>& texture, const DirectX::ScratchImage& mipImages);
+	// テクスチャファイルの読み込み
+	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+
 
 private:
 	// DirectX12デバイス
@@ -71,7 +97,7 @@ private:
 	// ディスクリプタサイズ
 	uint32_t descriptorSizeSRV;
 	// デスクリプタヒープ
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> srvDescriptorHeap; // SRV
+
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtvDescriptorHeap; // RTV
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap; // DSV
 
@@ -88,12 +114,16 @@ private:
 	// フェンス
 	Microsoft::WRL::ComPtr <ID3D12Fence> fence = nullptr;
 	uint64_t fenceValue = 0;
-	HANDLE fenceEvent;
 
 	// ビューポート
 	D3D12_VIEWPORT viewport{};
 	// シザー矩形
 	D3D12_RECT scissorRect{};
+
+	// DXCコンパイラ
+	IDxcUtils* dxcUtils = nullptr;
+	IDxcCompiler3* dxcCompiler = nullptr;
+	IDxcIncludeHandler* includeHandler = nullptr;
 
 	// バリア
 	D3D12_RESOURCE_BARRIER barrier{};
