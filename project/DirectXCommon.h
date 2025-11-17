@@ -36,6 +36,11 @@ public:
 	void InitializeScissorRect(); // シザリング矩形の初期化
 	void InitializeImGui(); // ImGuiの初期化
 
+	// 描画前処理
+	void PreDraw();
+	// 描画後処理
+	void PostDraw();
+
 	// デスクリプタヒープ生成
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WRL::ComPtr<ID3D12Device>& device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 	// 深度バッファ用リソース生成
@@ -52,12 +57,17 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Device> device;
 	// DXGIファクトリー
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
-	// コマンドキュー
+
+	// コマンド
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;
+	Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> commandList = nullptr;
 
 	// depthStencilリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource;
 
+	// ディスクリプタハンドル
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
 	// ディスクリプタサイズ
 	uint32_t descriptorSizeSRV;
 	// デスクリプタヒープ
@@ -68,18 +78,25 @@ private:
 	// デスクリプタヒープ
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{}; // RTV設定
 
+
 	// スワップチェイン
 	Microsoft::WRL::ComPtr <IDXGISwapChain4> swapChain = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{}; // スワップチェイン設定
 	// スワップチェーンリソース
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChinResources;
+	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
 
-
+	// フェンス
+	Microsoft::WRL::ComPtr <ID3D12Fence> fence = nullptr;
+	uint64_t fenceValue = 0;
+	HANDLE fenceEvent;
 
 	// ビューポート
 	D3D12_VIEWPORT viewport{};
 	// シザー矩形
 	D3D12_RECT scissorRect{};
+
+	// バリア
+	D3D12_RESOURCE_BARRIER barrier{};
 
 	// WindowAPI
 	WindowAPI* windowAPI_ = nullptr;
