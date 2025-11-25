@@ -1,7 +1,5 @@
 #include "DirectXCommon.h"
 
-#include <cassert>
-
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 
@@ -20,6 +18,7 @@ void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	CreateDescriptor(); // デスクリプタヒープ関連
 	CreateDxcCompiler(); // DXCコンパイラの生成
 
+	InitializeFixFPS(); // FPS固定初期化
 	InitializeRTV(); // レンダーターゲットビューの初期化
 	InitializeDSV(); // 深度ステンシルビューの初期化
 	InitializeFence(); // フェンスの初期化
@@ -274,7 +273,7 @@ void DirectXCommon::InitializeRTV() {
 	// ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	// RTVを２つ作るのでディスクリプタを２つ用意
-	
+
 	// ディスクリプタハンドルを得る
 	rtvHandles[0] = rtvStartHandle;
 	rtvHandles[1].ptr = rtvHandles[0].ptr + device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -391,6 +390,9 @@ void DirectXCommon::PostDraw() {
 	// TranstionBarrierを張る
 	commandList->ResourceBarrier(1, &barrier);
 
+	// FPS固定
+	UpdateFixFPS();
+
 	// コマンドリストの内容を確定させる。すべてのコマンドを詰んでからCloseすること
 	HRESULT hr = commandList->Close();
 	assert(SUCCEEDED(hr));
@@ -410,10 +412,10 @@ void DirectXCommon::PostDraw() {
 	// Fenceの値が指定したSIgnal値にたどり着いているかかくにんする
 	// GetCompletedValueの初期値はFence作成時に渡した初期値
 	if (fence->GetCompletedValue() < fenceValue) {
-	//	// 指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-	fence->SetEventOnCompletion(fenceValue, fenceEvent);
-	//	// イベント待つ
-	WaitForSingleObject(fenceEvent, INFINITE);
+		//	// 指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
+		fence->SetEventOnCompletion(fenceValue, fenceEvent);
+		//	// イベント待つ
+		WaitForSingleObject(fenceEvent, INFINITE);
 	}
 
 	hr = commandAllocator->Reset();
@@ -615,5 +617,35 @@ D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetGPUDescriptorHandle(const Microsof
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
+}
+
+// FPS固定初期化
+void DirectXCommon::InitializeFixFPS() {
+	// 現在時刻を記録する
+	reference_ = std::chrono::steady_clock::now();
+}
+
+// FPS固定更新
+void DirectXCommon::UpdateFixFPS() {
+	// 1/60秒ピッタリの時間
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	// 1/60秒よりわずかに短い時間
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+
+	// 現在時間を取得する
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+	// 前回記録からの経過時間を取得する
+	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	// 1/60秒(よりわずかに短い時間)立っていない場合
+	if (elapsed < kMinCheckTime) {
+		// 1/60秒経過するまで微小なスリープを繰り返す
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+			// 1マイクロ秒スリープ
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+	// 現在の時間を記録する
+	reference_ = std::chrono::steady_clock::now();
 }
 

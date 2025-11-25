@@ -8,6 +8,9 @@
 #include <dxcapi.h>
 #include <debugapi.h>
 #include <format>
+#include <chrono>
+#include <thread>
+#include <cassert>
 
 #include "WindowAPI.h"
 #include "Logger.h"
@@ -135,6 +138,14 @@ private:
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
 	// 指定番号のGPUデスクリプタハンドルを取得
 	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
+
+	// FPS固定初期化
+	void InitializeFixFPS();
+	// FPS固定更新
+	void UpdateFixFPS();
+	// 記録時間(FPS固定用)
+	std::chrono::steady_clock::time_point reference_;
+
 
 };
 
