@@ -27,6 +27,8 @@
 #include "Input.h"
 #include "WindowAPI.h"
 #include "DirectXCommon.h"
+#include "SpriteCommon.h"
+#include "Sprite.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -801,6 +803,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//*Sprite*//
 
+#pragma region 基盤システム
+
+	// ポインタ
+	SpriteCommon* spriteCommon = nullptr;
+	// スプライト共通部の初期化
+	spriteCommon = new SpriteCommon();
+	spriteCommon->Initialize();
+
+#pragma endregion
+
+#pragma region 最初のシーン
+
+	// ポインタ
+	Sprite* sprite = nullptr;
+	sprite = new Sprite();
+
+#pragma endregion
+
+
 	// Sprite用の頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceSprite = dxCommon->CreateBufferResource(sizeof(VertexData) * 6);
 
@@ -1063,7 +1084,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// WindowAPIの解放
 	delete windowAPI;
 	// DirectX解放
-
+	delete dxCommon;
+	// スプライト解放
+	delete sprite;
+	delete spriteCommon;
 
 	CoUninitialize();
 
