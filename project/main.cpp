@@ -830,8 +830,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		transData->World = worldMatrix; // World行列を設定
 
 
+		// 現在の座標を変数で受ける
+		Vector2 position = sprite->GetPosition();
+		// 座標を変更する
+		position += Vector2{ 0.1f,0.1f };
+		// 変更を反映する
+		sprite->SetPosition(position);
+
 		// sprite更新
-		sprite->Update(tranaformSprite);
+		sprite->Update();
 		
 
 		// これから書き込むバックバッファのインデックスを取得

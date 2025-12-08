@@ -92,7 +92,10 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI, DirectX
 }
 
 // XV
-void Sprite::Update(Transform transform) {
+void Sprite::Update() {
+	// À•W
+	transform.translate = { position.x,position.y,0.0f };
+
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
 	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(windowAPI_->kClientWidth), float(windowAPI_->kClientHeight), 0.0f, 100.0f);

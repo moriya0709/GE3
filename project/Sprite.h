@@ -32,9 +32,14 @@ public:
 	// 初期化
 	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon);
 	// 更新
-	void Update(Transform tranaform);
+	void Update();
 	// 描画
 	void Draw();
+
+	// getter
+	const Vector2& GetPosition() const { return position; }
+	// setter
+	void SetPosition(const Vector2& position) { this->position = position; }
 
 private:
 	// 共通クラス
@@ -86,5 +91,14 @@ private:
 	// テクスチャ
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
+
+	// 座標
+	Vector2 position = { 0.0f,0.0f };
+	Transform transform = {
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f}
+	};
+
 };
 
