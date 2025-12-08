@@ -830,12 +830,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		transData->World = worldMatrix; // World行列を設定
 
 
-		// 現在の座標を変数で受ける
+		// *スプライト* //
+
+		// 座標
 		Vector2 position = sprite->GetPosition();
-		// 座標を変更する
 		position += Vector2{ 0.1f,0.1f };
-		// 変更を反映する
 		sprite->SetPosition(position);
+		// 回転
+		float rotation = sprite->GetRotation();
+		rotation += 0.01f;
+		sprite->SetRotation(rotation);
 
 		// sprite更新
 		sprite->Update();

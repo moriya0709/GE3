@@ -38,8 +38,11 @@ public:
 
 	// getter
 	const Vector2& GetPosition() const { return position; }
+	const float GetRotation() const { return rotation; }
 	// setter
 	void SetPosition(const Vector2& position) { this->position = position; }
+	void SetRotation(float rotation) { this->rotation = rotation; }
+
 
 private:
 	// ‹¤’ÊƒNƒ‰ƒX
@@ -94,6 +97,9 @@ private:
 
 	// À•W
 	Vector2 position = { 0.0f,0.0f };
+	// ‰ñ“]
+	float rotation = 0.0f;
+
 	Transform transform = {
 		{1.0f,1.0f,1.0f},
 		{0.0f,0.0f,0.0f},

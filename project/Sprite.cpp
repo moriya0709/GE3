@@ -95,6 +95,8 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI, DirectX
 void Sprite::Update() {
 	// ç¿ïW
 	transform.translate = { position.x,position.y,0.0f };
+	// âÒì]
+	transform.rotate = { 0.0f,0.0f,rotation };
 
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
