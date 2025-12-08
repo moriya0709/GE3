@@ -35,6 +35,14 @@ struct AABB
     Vector3 max;
 };
 
+// Transform
+struct Transform {
+    Vector3 scale;
+    Vector3 rotate;
+    Vector3 translate;
+};
+
+
 // 02_14 29枚目 単項演算子オーバーロード
 Vector3 operator+(const Vector3& v);
 Vector3 operator-(const Vector3& v);
@@ -82,6 +90,8 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 // 逆行列
 Matrix4x4 Inverse(const Matrix4x4& m);
+
+Matrix4x4 MakeIdentity4x4();
 
 // 代入演算子オーバーロード
 Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm);

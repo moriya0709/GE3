@@ -59,15 +59,6 @@ struct Matrix3x3 {
 	float m[3][3] = { 0 };
 };
 
-
-// Transform
-struct Transform {
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
-};
-
-
 // transformの初期化
 Transform transform
 {
@@ -164,14 +155,6 @@ Transform uvTransformSprite{
 
 // SRV切り替え
 bool useMonsterBall = true;
-
-// 単位行列の作成
-Matrix4x4 MakeIdentity4x4() {
-	Matrix4x4 result = {}; // ゼロ初期化
-	for (int i = 0; i < 4; ++i)
-		result.m[i][i] = 1.0f;
-	return result;
-}
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	SYSTEMTIME time;
@@ -695,6 +678,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma endregion
 
+	sprite->Initialize(spriteCommon,windowAPI,dxCommon);
 
 	// Sprite用の頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceSprite = dxCommon->CreateBufferResource(sizeof(VertexData) * 6);
@@ -846,14 +830,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		transData->World = worldMatrix; // World行列を設定
 
 
-
-		// Sprite用のWorldViewProjectionMatrixを作る
-		Matrix4x4 worldMatrixSprite = MakeAffineMatrix(tranaformSprite.scale, tranaformSprite.rotate, tranaformSprite.translate);
-		Matrix4x4 viewMatrixSprite = MakeIdentity4x4();
-		Matrix4x4 projectionMatrixSprite = MakeOrthographicMatrix(0.0f, 0.0f, float(windowAPI->kClientWidth), float(windowAPI->kClientHeight), 0.0f, 100.0f);
-		Matrix4x4 worldViewProjectionMatrixSprite = Multiply(worldMatrixSprite, Multiply(viewMatrixSprite, projectionMatrixSprite));
-		*transformationMatrixDataSprite = worldViewProjectionMatrixSprite;
-
+		// sprite更新
+		sprite->Update(tranaformSprite);
+		
 
 		// これから書き込むバックバッファのインデックスを取得
 
@@ -891,6 +870,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画前処理
 		dxCommon->PreDraw();
 
+
+
 		// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 		spriteCommon->SetCommonPipelineState();
 
@@ -912,20 +893,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// インデックスを使って描画（球）
 		dxCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
-		// Spriteの描画。変更が必要なものだけ変更する
-		dxCommon->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferViewSprite);// VBVを設定
-		// TransformationMatrixCBufferの場所を設定
-		dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResourceSprite->GetGPUVirtualAddress());
-		// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
-		dxCommon->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
-		// マテリアルCBufferの場所を設定
-		dxCommon->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResourceSprite->GetGPUVirtualAddress());
-
-		// インデックスバッファビューを設定
-		dxCommon->GetCommandList()->IASetIndexBuffer(&indexBufferViewSprite);
-		// インデックスを使って描画（Sprite）
-		dxCommon->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
-
+		// スプライト描画
+		sprite->Draw();
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
 		ImGui::Render();

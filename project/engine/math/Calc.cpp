@@ -253,6 +253,15 @@ Matrix4x4 Inverse(const Matrix4x4& m)
 	return result;
 }
 
+// ’PˆÊs—ñ‚Ìì¬
+Matrix4x4 MakeIdentity4x4() {
+	Matrix4x4 result = {}; // ƒ[ƒ‰Šú‰»
+	for (int i = 0; i < 4; ++i)
+		result.m[i][i] = 1.0f;
+	return result;
+}
+
+
 Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm)
 {
 	Matrix4x4 result{};
