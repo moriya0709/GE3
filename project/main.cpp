@@ -840,6 +840,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		float rotation = sprite->GetRotation();
 		rotation += 0.01f;
 		sprite->SetRotation(rotation);
+		// F
+		Vector4 color = sprite->GetColor();
+		color.x += 0.01f;
+		if (color.x > 1.0f) {
+			color.x -= 1.0f;
+		}
+		sprite->SetColor(color);
 
 		// spriteXV
 		sprite->Update();

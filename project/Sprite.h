@@ -37,11 +37,14 @@ public:
 	void Draw();
 
 	// getter
-	const Vector2& GetPosition() const { return position; }
-	const float GetRotation() const { return rotation; }
+	const Vector2& GetPosition() const { return position; } // À•W
+	const float GetRotation() const { return rotation; } // ‰ñ“]
+	const Vector4& GetColor() const { return materialData->color; }
 	// setter
-	void SetPosition(const Vector2& position) { this->position = position; }
-	void SetRotation(float rotation) { this->rotation = rotation; }
+	void SetPosition(const Vector2& position) { this->position = position; } // À•W
+	void SetRotation(float rotation) { this->rotation = rotation; } // ‰ñ“]
+	void SetColor(const Vector4& color) { materialData->color = color; }
+
 
 
 private:
