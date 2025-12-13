@@ -673,12 +673,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region 最初のシーン
 
 	// ポインタ
-	Sprite* sprite = nullptr;
-	sprite = new Sprite();
+	//Sprite* sprite = nullptr;
+	//sprite = new Sprite();
+	//sprite->Initialize(spriteCommon, windowAPI, dxCommon);
+
+	std::vector<Sprite*> sprites;
+	for (uint32_t i = 0; i < 5; ++i) {
+		Sprite* sprite = new Sprite();
+		sprite->Initialize(spriteCommon, windowAPI, dxCommon);
+		sprites.push_back(sprite);
+	}
 
 #pragma endregion
-
-	sprite->Initialize(spriteCommon,windowAPI,dxCommon);
 
 	// Sprite用の頂点リソースを作る
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResourceSprite = dxCommon->CreateBufferResource(sizeof(VertexData) * 6);
@@ -790,6 +796,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 音声再生
 	//SoundPlayWave(xAudio2, soundData1);
 
+	
+
+
 	MSG msg{};
 	// ウィンドウのｘボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
@@ -833,28 +842,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// *スプライト* //
 
 		// 座標
-		Vector2 position = sprite->GetPosition();
-		position += Vector2{ 0.1f,0.1f };
-		sprite->SetPosition(position);
-		// 回転
-		float rotation = sprite->GetRotation();
-		rotation += 0.01f;
-		sprite->SetRotation(rotation);
-		// 色
-		Vector4 color = sprite->GetColor();
-		color.x += 0.01f;
-		if (color.x > 1.0f) {
-			color.x -= 1.0f;
-		}
-		sprite->SetColor(color);
-		// サイズ
-		Vector2 size = sprite->GetSize();
-		size.x += 0.1f;
-		size.y += 0.1f;
-		sprite->SetSize(size);
+		for (uint32_t i = 0; i < 5; ++i) {
+			Vector2 position = sprites[i]->GetPosition();
+			position = Vector2{ float(i * 200),0.0f };
+			sprites[i]->SetPosition(position);
+			// 回転
+			//float rotation = sprites[i]->GetRotation();
+			//rotation += 0.01f;
+			//sprites[i]->SetRotation(rotation);
+			// 色
+			//Vector4 color = sprites[i]->GetColor();
+			//color.x += 0.01f;
+			//if (color.x > 1.0f) {
+			//	color.x -= 1.0f;
+			//}
+			//sprites[i]->SetColor(color);
+			// サイズ
+			Vector2 size = sprites[i]->GetSize();
+			size.x = 100.0f;
+			size.y = 100.0f;
+			sprites[i]->SetSize(size);
 
-		// sprite更新
-		sprite->Update();
+			// sprite更新
+			sprites[i]->Update();
+		}
 		
 
 		// これから書き込むバックバッファのインデックスを取得
@@ -917,7 +928,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 		// スプライト描画
-		sprite->Draw();
+		for (uint32_t i = 0; i < 5; ++i) {
+			sprites[i]->Draw();
+		}
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
 		ImGui::Render();
@@ -951,7 +964,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// DirectX解放
 	delete dxCommon;
 	// スプライト解放
-	delete sprite;
+	for (uint32_t i = 0; i < 5; ++i) {
+		delete sprites[i];
+	}
 	delete spriteCommon;
 
 	CoUninitialize();
