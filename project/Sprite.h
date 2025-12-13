@@ -40,11 +40,12 @@ public:
 	const Vector2& GetPosition() const { return position; } // ç¿ïW
 	const float GetRotation() const { return rotation; } // âÒì]
 	const Vector4& GetColor() const { return materialData->color; }
+	const Vector2& GetSize() const { return size; }
 	// setter
 	void SetPosition(const Vector2& position) { this->position = position; } // ç¿ïW
 	void SetRotation(float rotation) { this->rotation = rotation; } // âÒì]
 	void SetColor(const Vector4& color) { materialData->color = color; }
-
+	void SetSize(const Vector2& size) { this->size = size; }
 
 
 private:
@@ -102,6 +103,8 @@ private:
 	Vector2 position = { 0.0f,0.0f };
 	// âÒì]
 	float rotation = 0.0f;
+	// ÉTÉCÉY
+	Vector2 size = { 640.0f,360.0f };
 
 	Transform transform = {
 		{1.0f,1.0f,1.0f},

@@ -847,6 +847,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			color.x -= 1.0f;
 		}
 		sprite->SetColor(color);
+		// サイズ
+		Vector2 size = sprite->GetSize();
+		size.x += 0.1f;
+		size.y += 0.1f;
+		sprite->SetSize(size);
 
 		// sprite更新
 		sprite->Update();
