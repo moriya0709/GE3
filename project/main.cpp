@@ -677,7 +677,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ObjectCommon* objectCommon = nullptr;
 	// 3dスプライト共通部の初期化
 	objectCommon = new ObjectCommon();
-	objectCommon->Initialize();
+	objectCommon->Initialize(dxCommon);
 
 #pragma endregion
 
@@ -845,10 +845,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画前処理
 		dxCommon->PreDraw();
 
-
-
-		// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
+		// 3Dオブジェクトの描画準備
+		objectCommon->SetCommonPipelineState();
+		// スプライトの描画準備
 		spriteCommon->SetCommonPipelineState();
+
 
 		// モデル
 		// RootSignatureを設定。PSOに設定しているけど別途設定が必要
