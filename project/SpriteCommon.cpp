@@ -27,7 +27,7 @@ void SpriteCommon::CreateRootSignature() {
 	// DescriptorRangeì¬
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = 0; // 0‚©‚çn‚Ü‚é
-	descriptorRange[0].NumDescriptors = 1; // ”‚Í1‚Â
+	descriptorRange[0].NumDescriptors = 128; // ”‚Í1‚Â
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV‚ğg‚¤
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // offset‚ğ©“®ŒvZ
 

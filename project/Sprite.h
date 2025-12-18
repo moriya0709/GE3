@@ -30,7 +30,7 @@ class DirectXCommon;
 class Sprite {
 public:
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon);
+	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon,std::string textureFilePath);
 	// 更新
 	void Update();
 	// 描画
@@ -47,6 +47,8 @@ public:
 	void SetColor(const Vector4& color) { materialData->color = color; }
 	void SetSize(const Vector2& size) { this->size = size; }
 
+	// テクスチャ変更
+	void ChangeTexture(const std::string& textureFilePath);
 
 private:
 	// 共通クラス
@@ -98,6 +100,8 @@ private:
 	// テクスチャ
 	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
 	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
+	// テクスチャ番号
+	uint32_t textureIndex = 0;
 
 	// 座標
 	Vector2 position = { 0.0f,0.0f };
@@ -105,6 +109,7 @@ private:
 	float rotation = 0.0f;
 	// サイズ
 	Vector2 size = { 640.0f,360.0f };
+	
 
 	Transform transform = {
 		{1.0f,1.0f,1.0f},

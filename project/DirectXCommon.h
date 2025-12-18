@@ -32,6 +32,9 @@ public:
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> srvDescriptorHeap; // SRV
 
+	// 最大SRV数（最大テクスチャ枚数）
+	static const uint32_t kMaxSRVCount;
+
 	void Initialize(WindowAPI* windowAPI); // 初期化
 
 	void CreateDevice(); // デバイス関連
@@ -145,7 +148,6 @@ private:
 	void UpdateFixFPS();
 	// 記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
-
 
 };
 
