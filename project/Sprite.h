@@ -29,9 +29,6 @@ class DirectXCommon;
 
 class Sprite {
 public:
-	// アンカーポイント
-	Vector2 anchorPoint = { 0.0f,0.0f };
-
 	// 初期化
 	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon,std::string textureFilePath);
 	// 更新
@@ -45,12 +42,16 @@ public:
 	const Vector4& GetColor() const { return materialData->color; }
 	const Vector2& GetSize() const { return size; }
 	const Vector2& GetAnchorPoint() const { return anchorPoint; }
+	const bool IsFlipX() const { return isFlipX_; }
+	const bool IsFlipY() const { return isFlipY_; }
 	// setter
 	void SetPosition(const Vector2& position) { this->position = position; } // 座標
 	void SetRotation(float rotation) { this->rotation = rotation; } // 回転
 	void SetColor(const Vector4& color) { materialData->color = color; }
 	void SetSize(const Vector2& size) { this->size = size; }
 	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
+	void SetFlipX(bool isFlipX) { this->isFlipX_ = isFlipX; }
+	void SetFlipY(bool isFlipY) { this->isFlipY_ = isFlipY; }
 
 	// テクスチャ変更
 	void ChangeTexture(const std::string& textureFilePath);
@@ -108,6 +109,11 @@ private:
 	// テクスチャ番号
 	uint32_t textureIndex = 0;
 
+	Transform transform = {
+		{1.0f,1.0f,1.0f},
+		{0.0f,0.0f,0.0f},
+		{0.0f,0.0f,0.0f}
+	};
 	// 座標
 	Vector2 position = { 0.0f,0.0f };
 	// 回転
@@ -115,11 +121,12 @@ private:
 	// サイズ
 	Vector2 size = { 640.0f,360.0f };
 
-	Transform transform = {
-		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f}
-	};
+	// アンカーポイント
+	Vector2 anchorPoint = { 0.5f,0.5f };
+
+	// フリップ
+	bool isFlipX_ = false;
+	bool isFlipY_ = false;
 
 };
 

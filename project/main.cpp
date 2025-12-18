@@ -805,7 +805,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ç¿ïW
 		for (uint32_t i = 0; i < 5; ++i) {
 			Vector2 position = sprites[i]->GetPosition();
-			position = Vector2{ float(i * 200),0.0f };
+			position = Vector2{ float(i * 200),100.0f };
 			sprites[i]->SetPosition(position);
 			// âÒì]
 			//float rotation = sprites[i]->GetRotation();
