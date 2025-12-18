@@ -69,32 +69,12 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI,DirectXC
 	transformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
 
 	// *テクスチャ* //
-
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 
-	// TextureをtextureResource 読んで転送
-	//DirectX::ScratchImage mipImages = dxCommon_->LoadTexture("Resource/uvChecker.png");
-	//const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	//textureResource = dxCommon_->CreateTextureResource(metadata);
-	//intermediateResource = dxCommon_->UploadTextureData(textureResource, mipImages);
-	//
-	//// metaDataを基にSRVの設定
-	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	//srvDesc.Format = metadata.format;
-	//srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-	//srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-	//
-	//// SRVを作成するDescriptorHeapの場所を決める
-	//textureSrvHandleCPU = dxCommon_->srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	//textureSrvHandleGPU = dxCommon_->srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-	//// 先頭はImGuiを使っているのでその次を使う
-	//textureSrvHandleCPU.ptr += dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//textureSrvHandleGPU.ptr += dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	//// SRVの生成
-	//dxCommon_->GetDevice()->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
-
+	// テクスチャサイズ調整
+	AdjustTextureSize();
+	
 }
 
 // 更新
@@ -180,4 +160,16 @@ void Sprite::ChangeTexture(const std::string& textureFilePath) {
 	// indexを差し替える
 	textureIndex =
 		TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+}
+
+// テクスチャサイズ調整
+void Sprite::AdjustTextureSize() {
+	// テクスチャメタデータ取得
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+
+	textureSize.x = static_cast<float>(metadata.width);
+	textureSize.y = static_cast<float>(metadata.height);
+	// 画像サイズをテクスチャサイズに合わせる
+	size = textureSize;
+
 }

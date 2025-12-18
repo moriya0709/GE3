@@ -126,17 +126,18 @@ private:
 	Vector2 size = { 640.0f,360.0f };
 
 	// アンカーポイント
-	Vector2 anchorPoint = { 0.5f,0.5f };
+	Vector2 anchorPoint = { 0.0f,0.0f };
 
 	// フリップ
 	bool isFlipX_ = false;
 	bool isFlipY_ = false;
 
 	// テクスチャ範囲指定
-	// テクスチャ左上座標
-	Vector2 textureLeftTop = { 0.0f,0.0f };
-	// テクスチャ切り出しサイズ
-	Vector2 textureSize = { 100.0f,100.0f };
+	Vector2 textureLeftTop = { 0.0f,0.0f };		// テクスチャ左上座標
+	Vector2 textureSize = { 100.0f,100.0f };	// テクスチャ切り出しサイズ
+
+	// テクスチャサイズ調整
+	void AdjustTextureSize();
 
 };
 

@@ -676,21 +676,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma region 最初のシーン
 
 	// ポインタ
-	//Sprite* sprite = nullptr;
-	//sprite = new Sprite();
-	//sprite->Initialize(spriteCommon, windowAPI, dxCommon);
+	Sprite* sprite = nullptr;
+	sprite = new Sprite();
+	sprite->Initialize(spriteCommon, windowAPI, dxCommon, "Resource/uvChecker.png");
 
-	std::vector<Sprite*> sprites;
-	for (uint32_t i = 0; i < 5; ++i) {
-		Sprite* sprite = new Sprite();
-		if (i % 2 == 1) {
-			sprite->Initialize(spriteCommon, windowAPI,dxCommon, "Resource/uvChecker.png");
-		} else {
-			sprite->Initialize(spriteCommon, windowAPI, dxCommon, "Resource/monsterBall.png");
-		}
-		sprites.push_back(sprite);
-	}
-
+	
 #pragma endregion
 
 	
@@ -782,7 +772,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (input->TriggerKey(DIK_0)) {
 			OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
 			// テクスチャ変更
-			sprites[0]->ChangeTexture("Resource/uvChecker.png");
+			sprite->ChangeTexture("Resource/uvChecker.png");
 		}
 
 		// y軸回転処理
@@ -802,31 +792,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// *スプライト* //
 
-		// 座標
-		for (uint32_t i = 0; i < 5; ++i) {
-			Vector2 position = sprites[i]->GetPosition();
-			position = Vector2{ float(i * 200),100.0f };
-			sprites[i]->SetPosition(position);
-			// 回転
-			//float rotation = sprites[i]->GetRotation();
-			//rotation += 0.01f;
-			//sprites[i]->SetRotation(rotation);
-			// 色
-			//Vector4 color = sprites[i]->GetColor();
-			//color.x += 0.01f;
-			//if (color.x > 1.0f) {
-			//	color.x -= 1.0f;
-			//}
-			//sprites[i]->SetColor(color);
-			// サイズ
-			Vector2 size = sprites[i]->GetSize();
-			size.x = 100.0f;
-			size.y = 100.0f;
-			sprites[i]->SetSize(size);
-
-			// sprite更新
-			sprites[i]->Update();
-		}
+		// sprite更新
+		sprite->Update();
 		
 
 		// これから書き込むバックバッファのインデックスを取得
@@ -889,9 +856,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//dxCommon->GetCommandList()->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 		// スプライト描画
-		for (uint32_t i = 0; i < 5; ++i) {
-			sprites[i]->Draw();
-		}
+		sprite->Draw();
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
 		ImGui::Render();
@@ -925,9 +890,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// DirectX解放
 	delete dxCommon;
 	// スプライト解放
-	for (uint32_t i = 0; i < 5; ++i) {
-		delete sprites[i];
-	}
+	delete sprite;
 	delete spriteCommon;
 
 	CoUninitialize();
