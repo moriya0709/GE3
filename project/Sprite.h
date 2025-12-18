@@ -44,6 +44,8 @@ public:
 	const Vector2& GetAnchorPoint() const { return anchorPoint; }
 	const bool IsFlipX() const { return isFlipX_; }
 	const bool IsFlipY() const { return isFlipY_; }
+	const Vector2& GetTextureLeftTop() const { return textureLeftTop; }
+	const Vector2& GetTextureSize() const { return textureSize; }
 	// setter
 	void SetPosition(const Vector2& position) { this->position = position; } // 座標
 	void SetRotation(float rotation) { this->rotation = rotation; } // 回転
@@ -52,6 +54,8 @@ public:
 	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
 	void SetFlipX(bool isFlipX) { this->isFlipX_ = isFlipX; }
 	void SetFlipY(bool isFlipY) { this->isFlipY_ = isFlipY; }
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { this->textureLeftTop = textureLeftTop; }
+	void SetTextureSize(const Vector2& textureSize) { this->textureSize = textureSize; }
 
 	// テクスチャ変更
 	void ChangeTexture(const std::string& textureFilePath);
@@ -127,6 +131,12 @@ private:
 	// フリップ
 	bool isFlipX_ = false;
 	bool isFlipY_ = false;
+
+	// テクスチャ範囲指定
+	// テクスチャ左上座標
+	Vector2 textureLeftTop = { 0.0f,0.0f };
+	// テクスチャ切り出しサイズ
+	Vector2 textureSize = { 100.0f,100.0f };
 
 };
 
