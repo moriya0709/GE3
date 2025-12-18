@@ -30,6 +30,8 @@
 #include "SpriteCommon.h"
 #include "Sprite.h"
 #include "TextureManager.h"
+#include "ObjectCommon.h"
+#include "Object.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -665,20 +667,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 #pragma region 基盤システム
 
-	// ポインタ
+	// スプライト共通部
 	SpriteCommon* spriteCommon = nullptr;
 	// スプライト共通部の初期化
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon);
 
+	// 3dスプライト共通部
+	ObjectCommon* objectCommon = nullptr;
+	// 3dスプライト共通部の初期化
+	objectCommon = new ObjectCommon();
+	objectCommon->Initialize();
+
 #pragma endregion
 
 #pragma region 最初のシーン
 
-	// ポインタ
+	// スプライト
 	Sprite* sprite = nullptr;
 	sprite = new Sprite();
 	sprite->Initialize(spriteCommon, windowAPI, dxCommon, "Resource/uvChecker.png");
+
+	// 3Dオブジェクト
+	Object* object = nullptr;
+	object = new Object();
+	object->Initialize();
 
 	
 #pragma endregion
@@ -892,6 +905,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スプライト解放
 	delete sprite;
 	delete spriteCommon;
+	// 3Dオブジェクト解放
+	delete object;
+	delete objectCommon;
 
 	CoUninitialize();
 
