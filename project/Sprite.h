@@ -29,6 +29,9 @@ class DirectXCommon;
 
 class Sprite {
 public:
+	// アンカーポイント
+	Vector2 anchorPoint = { 0.0f,0.0f };
+
 	// 初期化
 	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon,std::string textureFilePath);
 	// 更新
@@ -41,11 +44,13 @@ public:
 	const float GetRotation() const { return rotation; } // 回転
 	const Vector4& GetColor() const { return materialData->color; }
 	const Vector2& GetSize() const { return size; }
+	const Vector2& GetAnchorPoint() const { return anchorPoint; }
 	// setter
 	void SetPosition(const Vector2& position) { this->position = position; } // 座標
 	void SetRotation(float rotation) { this->rotation = rotation; } // 回転
 	void SetColor(const Vector4& color) { materialData->color = color; }
 	void SetSize(const Vector2& size) { this->size = size; }
+	void SetAnchorPoint(const Vector2& anchorPoint) { this->anchorPoint = anchorPoint; }
 
 	// テクスチャ変更
 	void ChangeTexture(const std::string& textureFilePath);
@@ -109,7 +114,6 @@ private:
 	float rotation = 0.0f;
 	// サイズ
 	Vector2 size = { 640.0f,360.0f };
-	
 
 	Transform transform = {
 		{1.0f,1.0f,1.0f},

@@ -106,6 +106,16 @@ void Sprite::Update() {
 	// サイズ
 	transform.scale = { size.x,size.y,1.0f };
 
+	// アンカーポイント
+	float left = 0.0f - anchorPoint.x;
+	float right = 1.0f - anchorPoint.x;
+	float top = 0.0f - anchorPoint.y;
+	float bottom = 1.0f - anchorPoint.y;
+	vertexData[0].position = { left,bottom,0.0f,1.0f };// 左下
+	vertexData[1].position = { left,top,0.0f,1.0f };// 左上
+	vertexData[2].position = { right,bottom,0.0f,1.0f };// 右下
+	vertexData[3].position = { right,top,0.0f,1.0f };// 右上
+
 
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
