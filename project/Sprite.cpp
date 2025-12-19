@@ -9,32 +9,15 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI,DirectXC
 	windowAPI_ = windowAPI;
 	dxCommon_ = dxCommon;
 
-	// *リソース* //
+	// *頂点データ* //
 	
-	// 頂点データ
+	// リソース
 	vertexResource = dxCommon_->CreateBufferResource(sizeof(VertexData) * 6);
-	// インデックス
-	indexResource = dxCommon_->CreateBufferResource(sizeof(uint32_t) * 6);
-	// マテリアル
-	materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
-	// 座標変換行列
-	transformationMatrixResource = dxCommon_->CreateBufferResource(sizeof(TransformationMatrix));
-
-
-	// *バッファビュー* //
-	
-	// 頂点データ
+	// バッファリソース
 	vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 	vertexBufferView.SizeInBytes = sizeof(VertexData) * 6;
 	vertexBufferView.StrideInBytes = sizeof(VertexData);
-	// インデックス
-	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
-	indexBufferView.SizeInBytes = sizeof(uint32_t) * 6;
-	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
-
-	// *データを書き込む* //
-
-	// 頂点データ
+	// データを書き込む
 	vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 	// １枚目の三角形
 	vertexData[0].position = { 0.0f,1.0f,0.0f,1.0f };// 左下
@@ -52,6 +35,15 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI,DirectXC
 	vertexData[3].position = { 1.0f,0.0f,0.0f,1.0f };// 右上
 	vertexData[3].texcoord = { 1.0f,0.0f };
 	vertexData[3].normal = { 0.0f,0.0f,-1.0f };
+
+	// *インデックス* //
+	
+	// リソース
+	indexResource = dxCommon_->CreateBufferResource(sizeof(uint32_t) * 6);
+	// バッファリソース
+	indexBufferView.BufferLocation = indexResource->GetGPUVirtualAddress();
+	indexBufferView.SizeInBytes = sizeof(uint32_t) * 6;
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	// インデックス
 	indexResource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 	indexData[0] = 0;
@@ -60,18 +52,30 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI,DirectXC
 	indexData[3] = 1;
 	indexData[4] = 3;
 	indexData[5] = 2;
-	// マテリアル
+
+	// *マテリアル* //
+
+	// リソース
+	materialResource = dxCommon_->CreateBufferResource(sizeof(Material));
+	// 書き込む
 	materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData->enableLighting = false;
 	materialData->uvTransform = MakeIdentity4x4();
-	// 座標変換行列
+	
+	// *座標変換行列* //
+
+	// リソース
+	transformationMatrixResource = dxCommon_->CreateBufferResource(sizeof(TransformationMatrix));
+	// 書き込む
 	transformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
 
 	// *テクスチャ* //
-	TextureManager::GetInstance()->LoadTexture(textureFilePath);
-	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 
+	// 読み込み
+	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	// 番号取得
+	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
 	// テクスチャサイズ調整
 	AdjustTextureSize();
 	
