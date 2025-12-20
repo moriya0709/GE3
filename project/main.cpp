@@ -33,6 +33,7 @@
 #include "Object.h"
 #include "ModelCommon.h"
 #include "Model.h"
+#include "ModelManager.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -378,6 +379,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// テクスチャマネージャの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon);
 	
+	// 3Dモデルマネージャの初期化
+	ModelManager::GetInstance()->Initialize(dxCommon);
 	
 
 #pragma region 基盤システム
@@ -394,11 +397,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	objectCommon = new ObjectCommon();
 	objectCommon->Initialize(dxCommon);
 
-	// モデル共通部
-	ModelCommon* modelCommon = nullptr;
-	// モデル共通部の初期化
-	modelCommon = new ModelCommon();
-	modelCommon->Initialize(dxCommon);
 
 #pragma endregion
 
@@ -410,15 +408,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sprite->Initialize(spriteCommon, windowAPI, dxCommon, "Resource/uvChecker.png");
 
 	// 3Dオブジェクト
-	Object* object = nullptr;
-	object = new Object();
-	object->Initialize(objectCommon,windowAPI,dxCommon);
+	Object* object[2]{};
+	for (int i = 0; i < 2; i++) {
+		object[i] = new Object();
+		object[i]->Initialize(objectCommon, windowAPI, dxCommon);
+	}
 
-	// モデル
-	Model* model = nullptr;
-	model = new Model();
-	model->Initialize(modelCommon, dxCommon);
-	object->SetModel(model);
+
+	// .objファイルからモデル読み込み
+	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
+
+	// 初期化済みの3Dオブジェクトにモデルを紐づける
+	object[0]->SetModel("plane.obj");
+	object[1]->SetModel("axis.obj");
+
+	
 	
 #pragma endregion
 
@@ -466,7 +471,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		transform.rotate.y = 3.00f;
 
 		// * 3Dオブジェクト* //
-		object->Update();
+		for (int i = 0; i < 2; i++) {
+			object[i]->Update();
+		}
 
 		// *スプライト* //
 
@@ -509,7 +516,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		objectCommon->SetCommonPipelineState();
 
 		// 3Dオブジェクト描画
-		object->Draw();
+		for (int i = 0; i < 2; i++) {
+			object[i]->Draw();
+		}
 
 		// スプライトの描画準備
 		spriteCommon->SetCommonPipelineState();
@@ -540,6 +549,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//xAudio2.Reset();
 	// テクスチャマネージャの終了
 	TextureManager::GetInstance()->Finalize();
+	// 3Dモデルマネージャの終了
+	ModelManager::GetInstance()->Finalize();
 	// 入力の初期化
 	delete input;
 	// WindowAPIの終了処理
@@ -552,7 +563,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	delete sprite;
 	delete spriteCommon;
 	// 3Dオブジェクト解放
-	delete object;
+	for (int i = 0; i < 2; i++) {
+		delete object[i];
+	}
 	delete objectCommon;
 
 	CoUninitialize();

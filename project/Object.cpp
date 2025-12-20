@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "DebugCamera.h"
 #include "Model.h"
+#include "ModelManager.h"
 
 void Object::Initialize(ObjectCommon* objectCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
@@ -75,4 +76,9 @@ void Object::Draw() {
 		model_->Draw();
 	}
 
+}
+
+void Object::SetModel(const std::string& filePath) {
+	// モデルを検索してセットする
+	model_ = ModelManager::GetInstance()->FindModel(filePath);
 }

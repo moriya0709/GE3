@@ -2,13 +2,13 @@
 #include "DirectXCommon.h"
 #include "TextureManager.h"
 
-void Model::Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon) {
+void Model::Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon, const std::string& directoryPath, const std::string& filename) {
 	// 引数で受け取ってメンバ変数に記録する
 	modelCommon_ = modelCommon;
 	dxCommon_ = dxCommon;
 
 	// モデル読み込み
-	modelData = LoadObjFile("Resource", "plane.obj");
+	modelData = LoadObjFile(directoryPath, filename);
 
 	// *頂点データ* //
 

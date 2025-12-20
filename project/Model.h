@@ -40,7 +40,7 @@ struct Material {
 class Model {
 public:
 	// èâä˙âª
-	void Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon);
+	void Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon,const std::string& directoryPath,const std::string& filename);
 	// ï`âÊ
 	void Draw();
 
