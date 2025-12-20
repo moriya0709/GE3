@@ -11,30 +11,9 @@ class ObjectCommon;
 class DirectXCommon;
 class DebugCamera;
 class WindowAPI;
+class Model;
 
-// テクスチャ
-struct MaterialData {
-	std::string textureFilePath;
-	uint32_t textureIndex = 0;
-};
-// 頂点データ
-struct VertexData {
-	Vector4 position; // 頂点座標
-	Vector2 texcoord; // テクスチャ座標
-	Vector3 normal; // 正規化座標
-};
-// モデルデータ
-struct ModelData {
-	std::vector<VertexData> vertices;
-	MaterialData material;
-};
-// マテリアルデータ
-struct Material {
-	Vector4 color;
-	int32_t enableLighting;
-	float padding[3];
-	Matrix4x4 uvTransform;
-};
+
 // 座標変換行列データ
 struct TransformationMatrix {
 	Matrix4x4 WVP;
@@ -56,29 +35,26 @@ public:
 	// 描画
 	void Draw();
 
-	// .mtlファイルの読み込み
-	static MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	// .objファイルの読み込み
-	static ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+	// setter
+	void SetModel(Model* model) { model_ = model; }
+	void SetScale(const Vector3& scale) { transform.scale = scale; }
+	void SetRotate(const Vector3& rotate) { transform.rotate = rotate; }
+	void SetTranslate(const Vector3& translate) { transform.translate = translate; }
+
+	// getter
+	const Vector3& GetScale() const { return transform.scale; }
+	const Vector3& GetRotate() const { return transform.rotate; }
+	const Vector3& GetTranslate() const { return transform.translate; }
+
 
 private:
-	// Objファイルのデータ
-	ModelData modelData;
-
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
 
 	// バッファリソース内のデータを指すポインタ
-	VertexData* vertexData = nullptr;
-	Material* materialData = nullptr;
 	TransformationMatrix* transformationMatrixData = nullptr;
 	DirectionalLight* directionalLightData = nullptr;
-
-	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
 	// Transform
 	Transform transform;
@@ -91,6 +67,8 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 	// WindowAPI
 	WindowAPI* windowAPI_ = nullptr;
+	// モデル
+	Model* model_ = nullptr;
 	// デバックカメラ
 	DebugCamera* debugCamera = nullptr;
 
