@@ -6,6 +6,7 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,DirectXCommon* dxCommon, std:
 	// 引数で受け取ってメンバ変数に記録する
 	spriteCommon_ = spriteCommon;
 	dxCommon_ = dxCommon;
+	textureFilePath_ = textureFilePath;
 
 	// *頂点データ* //
 	
@@ -71,9 +72,9 @@ void Sprite::Initialize(SpriteCommon* spriteCommon,DirectXCommon* dxCommon, std:
 	// *テクスチャ* //
 
 	// 読み込み
-	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	TextureManager::GetInstance()->LoadTexture(textureFilePath_);
 	// 番号取得
-	textureIndex = TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+	textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath_);
 	// テクスチャサイズ調整
 	AdjustTextureSize();
 	
@@ -106,7 +107,7 @@ void Sprite::Update() {
 	}
 
 	// テクスチャ範囲指定
-	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 	float tex_left = textureLeftTop.x / metadata.width;
 	float tex_right = (textureLeftTop.x + textureSize.x) / metadata.width;
 	float tex_top = textureLeftTop.y / metadata.height;
@@ -149,7 +150,7 @@ void Sprite::Draw() {
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
 	
 	// SRVのDescriptorTableの先頭を設定
-	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
+	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFilePath_));
 	// インデックスを使って描画
 	dxCommon_->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
@@ -161,13 +162,13 @@ void Sprite::ChangeTexture(const std::string& textureFilePath) {
 
 	// indexを差し替える
 	textureIndex =
-		TextureManager::GetInstance()->GetTextureIndexByFilePath(textureFilePath);
+		TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
 }
 
 // テクスチャサイズ調整
 void Sprite::AdjustTextureSize() {
 	// テクスチャメタデータ取得
-	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex);
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath_);
 
 	textureSize.x = static_cast<float>(metadata.width);
 	textureSize.y = static_cast<float>(metadata.height);

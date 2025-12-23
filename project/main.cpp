@@ -36,6 +36,7 @@
 #include "ModelManager.h"
 #include "Camera.h"
 #include "CameraManager.h"
+#include "SrvManager.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -43,7 +44,7 @@
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #pragma comment(lib,"D3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -166,23 +167,23 @@ void Log(std::ostream& os, const std::string& message) {
 }
 
 // ウィンドウプロシージャ
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam)) {
-		return true;
-	}
-
-	// メッセージに応じてゲーム固有の処理を行う
-	switch (msg) {
-		// ウィンドウが破壊された
-	case WM_DESTROY:
-	// OSに対して、アプリの終了を伝える
-	PostQuitMessage(0);
-	return 0;
-	}
-	// 標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wParam, lParam);
-
-}
+//LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+//	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam)) {
+//		return true;
+//	}
+//
+//	// メッセージに応じてゲーム固有の処理を行う
+//	switch (msg) {
+//		// ウィンドウが破壊された
+//	case WM_DESTROY:
+//	// OSに対して、アプリの終了を伝える
+//	PostQuitMessage(0);
+//	return 0;
+//	}
+//	// 標準のメッセージ処理を行う
+//	return DefWindowProc(hwnd, msg, wParam, lParam);
+//
+//}
 
 
 
@@ -371,8 +372,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	input->Initialize(windowAPI);
 
 
-	// テクスチャマネージャの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon);
 	
 	// 3Dモデルマネージャの初期化
 	ModelManager::GetInstance()->Initialize(dxCommon);
@@ -405,6 +404,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// カメラを3Dオブジェクト共通部にセット
 	objectCommon->SetDefaultCamera(camera);
+
+	// SRVマネージャ
+	SrvManager* srvManager = nullptr;
+	srvManager = new SrvManager();
+	srvManager->Initialize(dxCommon);
+
+	// テクスチャマネージャの初期化
+	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
 
 #pragma endregion
 
@@ -458,9 +465,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		ImGui_ImplDX12_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+		//ImGui_ImplDX12_NewFrame();
+		//ImGui_ImplWin32_NewFrame();
+		//ImGui::NewFrame();
+		
 		// ゲームの処理
 
 		// 入力の更新
@@ -494,8 +502,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// スライダー
 		//UI
-		ImGui::SliderFloat("SpritePosX", &tranaformSprite.translate.x, 0.0f, 500.0f);
-		ImGui::SliderFloat("SpritePosY", &tranaformSprite.translate.y, 0.0f, 500.0f);
+		//ImGui::SliderFloat("SpritePosX", &tranaformSprite.translate.x, 0.0f, 500.0f);
+		//ImGui::SliderFloat("SpritePosY", &tranaformSprite.translate.y, 0.0f, 500.0f);
 
 		// ライトの向き
 		//ImGui::SliderFloat("directionX", &directionalLightData->direction.x, -10.0f, 10.0f);
@@ -503,24 +511,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::SliderFloat("directionZ", &directionalLightData->direction.z, -10.0f, 10.0f);
 
 		// SRVの切り替え
-		ImGui::Checkbox("UseMonsterBall", &useMonsterBall);
+		//ImGui::Checkbox("UseMonsterBall", &useMonsterBall);
 
 		// UV座標
-		ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-		ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-		ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
+		//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
+		//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
+		//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
 
 		// モデル
-		ImGui::DragFloat3("scale", &transform.scale.x, 0.01f, -10.0f, 10.0f);
-		ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
-		ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
+		//ImGui::DragFloat3("scale", &transform.scale.x, 0.01f, -10.0f, 10.0f);
+		//ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
+		//ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
 
 		// カメラ
-		ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
-		ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
+		//ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
+		//ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
 		// 描画前処理
 		dxCommon->PreDraw();
+		srvManager->PreDraw();
 
 		// 3Dオブジェクトの描画準備
 		objectCommon->SetCommonPipelineState();
@@ -537,10 +546,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sprite->Draw();
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
-		ImGui::Render();
-		if (ImDrawData* draw_data = ImGui::GetDrawData()) {
-			ImGui_ImplDX12_RenderDrawData(draw_data, dxCommon->GetCommandList());
-		}
+		//ImGui::Render();
+		//if (ImDrawData* draw_data = ImGui::GetDrawData()) {
+		//	ImGui_ImplDX12_RenderDrawData(draw_data, dxCommon->GetCommandList());
+		//}
 
 		dxCommon->PostDraw();
 
@@ -548,9 +557,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ImGuiの終了処理。詳細はさして重要ではないので解説は省略する。
 	//　こういうもんである。初期化と逆順に行う
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	//ImGui_ImplDX12_Shutdown();
+	//ImGui_ImplWin32_Shutdown();
+	//ImGui::DestroyContext();
 
 	// 解放
 	CloseHandle(dxCommon->fenceEvent);
@@ -577,6 +586,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		delete object[i];
 	}
 	delete objectCommon;
+	// カメラ解放
+	delete camera;
+	// SRVマネージャ解放
+	delete srvManager;
 
 	CoUninitialize();
 
