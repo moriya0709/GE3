@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "Camera.h"
+#include "CameraManager.h"
 
 void Object::Initialize(ObjectCommon* objectCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
@@ -51,17 +52,16 @@ void Object::Initialize(ObjectCommon* objectCommon, WindowAPI* windowAPI, Direct
 
 void Object::Update() {
 	// Transformの更新
-	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-	Matrix4x4 worldViewProjectionMatrix;
-	if (camera_) {
-		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
-		worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
-	} else {
-		worldViewProjectionMatrix = worldMatrix;
-	}
-	
-	transformationMatrixData->WVP = worldViewProjectionMatrix;   // WVP行列を設定
-	transformationMatrixData->World = worldMatrix; // World行列を設定
+	camera_ = CameraManager::GetInstance()->GetActiveCamera();
+
+	Matrix4x4 world =
+		MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+
+	Matrix4x4 wvp =
+		Multiply(world, camera_->GetViewProjectionMatrix());
+
+	transformationMatrixData->WVP = wvp;
+	transformationMatrixData->World = world;
 }
 
 void Object::Draw() {

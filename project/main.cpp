@@ -35,6 +35,7 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "Camera.h"
+#include "CameraManager.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -395,6 +396,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera();
 	camera->SetRotate({cameraTransform.rotate});
 	camera->SetTranslate({cameraTransform.translate});
+
+
+	// カメラマネージャ登録
+	auto* cameraManager = CameraManager::GetInstance();
+	cameraManager->AddCamera("main", camera);
+	cameraManager->SetActiveCamera("main");
+
 	// カメラを3Dオブジェクト共通部にセット
 	objectCommon->SetDefaultCamera(camera);
 
@@ -458,9 +466,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 入力の更新
 		input->Update();
 		// カメラ更新
-		camera->SetTranslate(cameraTransform.translate);
-		camera->SetRotate(cameraTransform.rotate);
-		camera->Update();
+		CameraManager::GetInstance()->Update();
 
 
 		// 数字の０キーが押されていたら
