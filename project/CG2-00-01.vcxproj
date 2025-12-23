@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectXCommon.cpp" />
     <ClCompile Include="engine\scene\DebugCamera.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -61,6 +62,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectXCommon.h" />
     <ClInclude Include="engine\scene\DebugCamera.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />

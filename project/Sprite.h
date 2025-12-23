@@ -1,36 +1,22 @@
 #pragma once
 #include <Windows.h>
-#include <cstdint>
 #include <string>
-#include <fstream>
-#include <chrono>
-#include <filesystem>
-#include <D3d12.h>
-#include <dxgi1_6.h>
-#include <cassert>
-#include <dbghelp.h>
-#include <strsafe.h>
-#include <dxgidebug.h>
-#include <dxcapi.h>
-#include <stdlib.h>
 #include <vector>
-#include <math.h>
-#include <sstream>
+#include <fstream>
+#include <D3d12.h>
+#include <cassert>
 #include <wrl.h>
-#include <xaudio2.h>
-#include <dinput.h>
-#include <cmath>
+#include <dxcapi.h>
 
 #include "Calc.h"
 
 class SpriteCommon;
-class WindowAPI;
 class DirectXCommon;
 
 class Sprite {
 public:
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon,std::string textureFilePath);
+	void Initialize(SpriteCommon* spriteCommon, DirectXCommon* dxCommon,std::string textureFilePath);
 	// 更新
 	void Update();
 	// 描画
@@ -63,8 +49,6 @@ public:
 private:
 	// 共通クラス
 	SpriteCommon* spriteCommon_ = nullptr;
-	// windowAPI
-	WindowAPI* windowAPI_ = nullptr;
 	// DirectX
 	DirectXCommon* dxCommon_ = nullptr;
 

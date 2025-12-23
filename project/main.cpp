@@ -34,6 +34,7 @@
 #include "ModelCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "Camera.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -64,6 +65,13 @@ struct Matrix3x3 {
 	float m[3][3] = { 0 };
 };
 
+Transform cameraTransform
+{
+	{ 1.0f, 1.0f, 1.0f }, // scale
+	{ 0.0f, 0.0f, 0.0f }, // rotate
+	{ 0.0f, 0.0f, -5.0f } // translate
+};
+
 // transformの初期化
 Transform transform
 {
@@ -78,15 +86,6 @@ Transform tranaformSprite
 	{1.0f,1.0f,1.0f},
 	{0.0f,0.0f,0.0f},
 	{0.0f,0.0f,0.0f}
-};
-
-
-// cameraTransformの初期化
-Transform cameraTransform
-{
-	{ 1.0f, 1.0f, 1.0f }, // scale
-	{ 0.0f, 0.0f, 0.0f }, // rotate
-	{ 0.0f, 0.0f, -5.0f } // translate
 };
 
 
@@ -295,11 +294,6 @@ void SoundPlayWave(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, const SoundData& so
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	// ポインタ
-	Input* input = nullptr; // input
-	WindowAPI* windowAPI = nullptr; // windowAPI
-	DirectXCommon* dxCommon = nullptr; // directXCommon
-
 
 	// リソースリークチェック
 	struct D3DResourceLeakChecker {
@@ -321,11 +315,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SetUnhandledExceptionFilter(ExportDump);
 
 	// WindowAPIの初期化
-	windowAPI = new WindowAPI();
+	WindowAPI* windowAPI = new WindowAPI();
 	windowAPI->Initialize();
 
 	// DirectXの初期化
-	dxCommon = new DirectXCommon();
+	DirectXCommon* dxCommon = new DirectXCommon();
 	dxCommon->Initialize(windowAPI);
 
 
@@ -372,7 +366,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// DirectXの初期化
 
 	// Input初期化
-	input = new Input();
+	Input* input = new Input();
 	input->Initialize(windowAPI);
 
 
@@ -397,6 +391,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	objectCommon = new ObjectCommon();
 	objectCommon->Initialize(dxCommon);
 
+	// カメラ初期化
+	Camera* camera = new Camera();
+	camera->SetRotate({cameraTransform.rotate});
+	camera->SetTranslate({cameraTransform.translate});
+	// カメラを3Dオブジェクト共通部にセット
+	objectCommon->SetDefaultCamera(camera);
 
 #pragma endregion
 
@@ -405,7 +405,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// スプライト
 	Sprite* sprite = nullptr;
 	sprite = new Sprite();
-	sprite->Initialize(spriteCommon, windowAPI, dxCommon, "Resource/uvChecker.png");
+	sprite->Initialize(spriteCommon,dxCommon, "Resource/uvChecker.png");
 
 	// 3Dオブジェクト
 	Object* object[2]{};
@@ -428,7 +428,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion
 
 	
-
 	
 	
 	
@@ -458,6 +457,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 入力の更新
 		input->Update();
+		// カメラ更新
+		camera->SetTranslate(cameraTransform.translate);
+		camera->SetRotate(cameraTransform.rotate);
+		camera->Update();
 
 
 		// 数字の０キーが押されていたら
@@ -506,8 +509,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
 		ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
 
-
-
+		// カメラ
+		ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
 		// 描画前処理
 		dxCommon->PreDraw();

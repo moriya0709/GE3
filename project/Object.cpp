@@ -1,15 +1,18 @@
 #include "Object.h"
 #include "DirectXCommon.h"
 #include "TextureManager.h"
-#include "DebugCamera.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "Camera.h"
 
 void Object::Initialize(ObjectCommon* objectCommon, WindowAPI* windowAPI, DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
 	objectCommon_ = objectCommon;
 	windowAPI_ = windowAPI;
 	dxCommon_ = dxCommon;
+
+	// デフォルトカメラをセット
+	camera_ = objectCommon_->GetDefaultCamera();
 
 	
 	// *座標変換行列* //
@@ -44,24 +47,20 @@ void Object::Initialize(ObjectCommon* objectCommon, WindowAPI* windowAPI, Direct
 		{0.0f,4.0f,-10.0f}
 	};
 
-	// *デバックカメラ* //
-	debugCamera = new DebugCamera();
-	// カメラの初期化
-	debugCamera->Initialize();
-
 }
 
 void Object::Update() {
-	// デバックカメラ
-	debugCamera->Update(windowAPI_->GetHwnd());
-
 	// Transformの更新
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-	Matrix4x4 cameraMatrix = MakeAffineMatrix(cameraTransform.scale, cameraTransform.rotate, cameraTransform.translate);
-	Matrix4x4 viewMatrix = Inverse(cameraMatrix);
-	viewMatrix = debugCamera->GetViewMatrix(); // デバッグカメラのビュー行列を取得
-	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(windowAPI_->kClientWidth) / float(windowAPI_->kClientHeight), 0.1f, 100.0f);
-	transformationMatrixData->WVP = worldMatrix * viewMatrix * projectionMatrix;   // WVP行列を設定
+	Matrix4x4 worldViewProjectionMatrix;
+	if (camera_) {
+		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
+		worldViewProjectionMatrix = Multiply(worldMatrix, viewProjectionMatrix);
+	} else {
+		worldViewProjectionMatrix = worldMatrix;
+	}
+	
+	transformationMatrixData->WVP = worldViewProjectionMatrix;   // WVP行列を設定
 	transformationMatrixData->World = worldMatrix; // World行列を設定
 }
 

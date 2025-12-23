@@ -5,6 +5,7 @@
 #include <dxcapi.h>
 
 class DirectXCommon;
+class Camera;
 
 class ObjectCommon {
 public:
@@ -13,8 +14,12 @@ public:
 	// 共通描画設定
 	void SetCommonPipelineState();
 
+	// setter
+	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
+
 	// getter
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
+	Camera* GetDefaultCamera() const { return defaultCamera_; }
 
 private:
 	// ルートシグネイチャ
@@ -31,6 +36,8 @@ private:
 
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;
+	// デフォルトカメラ
+	Camera* defaultCamera_ = nullptr;
 
 	// ルートシグネイチャの作成
 	void CreateRootSignature();

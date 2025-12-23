@@ -9,9 +9,9 @@
 
 class ObjectCommon;
 class DirectXCommon;
-class DebugCamera;
 class WindowAPI;
 class Model;
+class Camera;
 
 
 // 座標変換行列データ
@@ -41,6 +41,7 @@ public:
 	void SetScale(const Vector3& scale) { transform.scale = scale; }
 	void SetRotate(const Vector3& rotate) { transform.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transform.translate = translate; }
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 	// getter
 	const Vector3& GetScale() const { return transform.scale; }
@@ -70,8 +71,8 @@ private:
 	WindowAPI* windowAPI_ = nullptr;
 	// モデル
 	Model* model_ = nullptr;
-	// デバックカメラ
-	DebugCamera* debugCamera = nullptr;
+	// カメラ
+	Camera* camera_ = nullptr;
 
 };
 

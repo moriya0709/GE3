@@ -2,11 +2,9 @@
 #include "SpriteCommon.h"
 #include "TextureManager.h"
 
-
-void Sprite::Initialize(SpriteCommon* spriteCommon,WindowAPI* windowAPI,DirectXCommon* dxCommon, std::string textureFilePath) {
+void Sprite::Initialize(SpriteCommon* spriteCommon,DirectXCommon* dxCommon, std::string textureFilePath) {
 	// 引数で受け取ってメンバ変数に記録する
 	spriteCommon_ = spriteCommon;
-	windowAPI_ = windowAPI;
 	dxCommon_ = dxCommon;
 
 	// *頂点データ* //
@@ -128,7 +126,7 @@ void Sprite::Update() {
 
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(windowAPI_->kClientWidth), float(windowAPI_->kClientHeight), 0.0f, 100.0f);
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(WindowAPI::kClientWidth), float(WindowAPI::kClientHeight), 0.0f, 100.0f);
 	// WVPmatrixを作る
 	Matrix4x4 worldViewProjectionMatrix = Multiply(Multiply(worldMatrix, viewMatrix), projectionMatrix);
 	transformationMatrixData->WVP = worldViewProjectionMatrix;   // WVP行列を設定
