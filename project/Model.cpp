@@ -35,7 +35,6 @@ void Model::Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon, const 
 
 	// *テクスチャ* //
 
-	modelData.material.textureFilePath = "Resource/uvChecker.png";
 	// 読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData.material.textureFilePath);
 	// 番号取得

@@ -9,6 +9,7 @@
 #include <dxcapi.h>
 
 #include "Calc.h"
+#include "CommonStructs.h"
 
 class SpriteCommon;
 class DirectXCommon;
@@ -47,31 +48,16 @@ public:
 	void ChangeTexture(const std::string& textureFilePath);
 
 private:
-	// 共通クラス
-	SpriteCommon* spriteCommon_ = nullptr;
-	// DirectX
-	DirectXCommon* dxCommon_ = nullptr;
-
-	// 頂点データ
-	struct VertexData {
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	// マテリアルデータ
-	struct Material {
-		Vector4 color;
-		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
-
 	// 座標変換行列データ
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
+
+	// 共通クラス
+	SpriteCommon* spriteCommon_ = nullptr;
+	// DirectX
+	DirectXCommon* dxCommon_ = nullptr;
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;

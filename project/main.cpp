@@ -37,6 +37,8 @@
 #include "Camera.h"
 #include "CameraManager.h"
 #include "SrvManager.h"
+#include "ParticleManager.h"
+#include "ParticleEmitter.h"
 
 #include "externals/imgui\imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
@@ -90,7 +92,13 @@ Transform tranaformSprite
 	{0.0f,0.0f,0.0f}
 };
 
-
+// パーティクル
+Transform transformParticle
+{
+	{1.0f,1.0f,1.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f}
+};
 
 
 
@@ -395,7 +403,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Camera* camera = new Camera();
 	camera->SetRotate({cameraTransform.rotate});
 	camera->SetTranslate({cameraTransform.translate});
-
+	
 
 	// カメラマネージャ登録
 	auto* cameraManager = CameraManager::GetInstance();
@@ -411,7 +419,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	srvManager->Initialize(dxCommon);
 
 	// テクスチャマネージャの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon,srvManager);
+	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
+
+	// Particleマネージャ
+	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, camera, "Resource/", "plane.obj");
+	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
 
 #pragma endregion
 
@@ -429,6 +441,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		object[i]->Initialize(objectCommon, windowAPI, dxCommon);
 	}
 
+	// Emitパーティクル発生
+	ParticleEmitter* particleEmitter = new ParticleEmitter();
+	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
+	particleEmitter->Emit();
 
 	// .objファイルからモデル読み込み
 	ModelManager::GetInstance()->LoadModel("plane.obj");
@@ -492,6 +508,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			object[i]->Update();
 		}
 
+		// パーティクルエミッタ更新
+		particleEmitter->Update();
+		// パーティクル更新
+		ParticleManager::GetInstance()->Update();
+
 		// *スプライト* //
 
 		// sprite更新
@@ -535,15 +556,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		objectCommon->SetCommonPipelineState();
 
 		// 3Dオブジェクト描画
-		for (int i = 0; i < 2; i++) {
-			object[i]->Draw();
-		}
+		//for (int i = 0; i < 2; i++) {
+		//	object[i]->Draw();
+		//}
+
+		// パーティクル描画
+		ParticleManager::GetInstance()->Draw();
 
 		// スプライトの描画準備
 		spriteCommon->SetCommonPipelineState();
 
 		// スプライト描画
-		sprite->Draw();
+		//sprite->Draw();
 
 		// 実際のcommandListのImGuiの描画コマンドを詰む
 		//ImGui::Render();
@@ -570,6 +594,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Finalize();
 	// 3Dモデルマネージャの終了
 	ModelManager::GetInstance()->Finalize();
+	// Particleマネージャの終了
+	ParticleManager::GetInstance()->Finalize();
+
 	// 入力の初期化
 	delete input;
 	// WindowAPIの終了処理

@@ -322,3 +322,19 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && // y軸
 		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z);   // z軸
 }
+
+bool IsCollision(const AABB& aabb, const Vector3& point) {
+	// 各軸について、点がAABBの範囲内にあるかを確認
+	if (point.x < aabb.min.x || point.x > aabb.max.x) {
+		return false;
+	}
+	if (point.y < aabb.min.y || point.y > aabb.max.y) {
+		return false;
+	}
+	if (point.z < aabb.min.z || point.z > aabb.max.z) {
+		return false;
+	}
+
+	// すべての軸で範囲内なら、衝突（中にある）
+	return true;
+}
