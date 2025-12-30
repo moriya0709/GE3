@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include <cassert>
 
 #include "Calc.h"
 
@@ -22,6 +23,8 @@ public:
 
 	// パーティクル発生
 	void Emit();
+	// アクティブ設定
+	void SetActive(const std::string& name);
 
 private:
 	// パーティクルエミッタの設定

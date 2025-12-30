@@ -424,6 +424,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// Particleマネージャ
 	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, camera, "Resource/", "plane.obj");
 	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
 
 #pragma endregion
 
@@ -498,6 +499,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
 			// テクスチャ変更
 			sprite->ChangeTexture("Resource/uvChecker.png");
+			particleEmitter->SetActive("group2");
 		}
 
 		// y軸回転処理

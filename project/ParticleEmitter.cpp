@@ -23,3 +23,8 @@ void ParticleEmitter::Emit() {
 	ParticleManager::GetInstance()->Emit(emitter.name, emitter.transform.translate, emitter.count);
 
 }
+
+// アクティブ設定
+void ParticleEmitter::SetActive(const std::string& name) {
+	emitter.name = name;
+}

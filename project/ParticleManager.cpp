@@ -128,6 +128,10 @@ void ParticleManager::Draw() {
 	// パーティクルグループ描画
 	for (auto& groupPair : particleGroups) {
 		ParticleGroup& group = groupPair.second;
+
+		// パーティクルが1つ以上ある場合だけ描画
+		if (group.particles.empty()) continue;
+
 		// マテリアルCBufferの場所を設定
 		dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource->GetGPUVirtualAddress());
 		// パーティクル用 StructuredBuffer(SRV) を設定
