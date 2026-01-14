@@ -58,13 +58,13 @@
 #pragma comment(lib,"dxguid.lib")
 
 
-//•¶š—ñ‚ğŠi”[‚·‚é
+//æ–‡å­—åˆ—ã‚’æ ¼ç´ã™ã‚‹
 std::string str0{ "STRING" };
 
-//ƒƒO‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğ—pˆÓ
+//ãƒ­ã‚°ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ç”¨æ„
 namespace fs = std::filesystem;
 
-// 3x3s—ñ
+// 3x3è¡Œåˆ—
 struct Matrix3x3 {
 	float m[3][3] = { 0 };
 };
@@ -76,7 +76,7 @@ Transform cameraTransform
 	{ 0.0f, 0.0f, -5.0f } // translate
 };
 
-// transform‚Ì‰Šú‰»
+// transformã®åˆæœŸåŒ–
 Transform transform
 {
 	{ 1.0f, 1.0f, 1.0f }, // scale
@@ -84,7 +84,7 @@ Transform transform
 	{ 0.0f, 0.0f, 0.0f }  // translate
 };
 
-// transformSprite‚Ì‰Šú‰»
+// transformSpriteã®åˆæœŸåŒ–
 Transform tranaformSprite
 {
 	{1.0f,1.0f,1.0f},
@@ -92,7 +92,7 @@ Transform tranaformSprite
 	{0.0f,0.0f,0.0f}
 };
 
-// ƒp[ƒeƒBƒNƒ‹
+// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 Transform transformParticle
 {
 	{1.0f,1.0f,1.0f},
@@ -105,31 +105,31 @@ Transform transformParticle
 
 
 
-// ƒ`ƒƒƒ“ƒNƒwƒbƒ_
+// ãƒãƒ£ãƒ³ã‚¯ãƒ˜ãƒƒãƒ€
 struct ChunkHeader {
-	char id[4]; // ƒ`ƒƒƒ“ƒN–ˆ‚ÌID
-	int32_t size; // ƒ`ƒƒƒ“ƒNƒTƒCƒY
+	char id[4]; // ãƒãƒ£ãƒ³ã‚¯æ¯ã®ID
+	int32_t size; // ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚º
 };
 
-// ƒtƒH[ƒ}ƒbƒgƒ`ƒƒƒ“ƒN
+// ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãƒãƒ£ãƒ³ã‚¯
 struct FormatChunk {
-	ChunkHeader chunk; // "fmt "ƒ`ƒƒƒ“ƒNƒwƒbƒ_[
-	WAVEFORMATEX  fmt; // ƒtƒH[ƒ}ƒbƒg–{‘ÌiÅ‘å40ƒoƒCƒg’ö“xj
+	ChunkHeader chunk; // "fmt "ãƒãƒ£ãƒ³ã‚¯ãƒ˜ãƒƒãƒ€ãƒ¼
+	WAVEFORMATEX  fmt; // ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆæœ¬ä½“ï¼ˆæœ€å¤§40ãƒã‚¤ãƒˆç¨‹åº¦ï¼‰
 };
 
-// RIFFƒwƒbƒ_ƒ`ƒƒƒ“ƒN
+// RIFFãƒ˜ãƒƒãƒ€ãƒãƒ£ãƒ³ã‚¯
 struct RiffHeader {
 	ChunkHeader chunk; // RIFF
 	char type[4]; // WAVE
 };
 
-// ‰¹ºƒf[ƒ^
+// éŸ³å£°ãƒ‡ãƒ¼ã‚¿
 struct SoundData {
-	// ”gŒ`ƒtƒH[ƒ}ƒbƒg
+	// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	WAVEFORMATEX wfex;
-	// ƒoƒbƒtƒ@‚Ìæ“ªƒAƒhƒŒƒX
+	// ãƒãƒƒãƒ•ã‚¡ã®å…ˆé ­ã‚¢ãƒ‰ãƒ¬ã‚¹
 	BYTE* pBuffer;
-	// ƒoƒbƒtƒ@‚ÌƒTƒCƒY
+	// ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º
 	unsigned int bufferSize;
 };
 
@@ -140,7 +140,7 @@ Transform uvTransformSprite{
 	{0.0f,0.0f,0.0f},
 };
 
-// SRVØ‚è‘Ö‚¦
+// SRVåˆ‡ã‚Šæ›¿ãˆ
 bool useMonsterBall = true;
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
@@ -150,15 +150,15 @@ static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	CreateDirectory(L"./Duumps", nullptr);
 	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
 	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-	// processId(‚±‚Ìexe‚ÌID)‚ÆƒNƒ‰ƒbƒVƒ…i—áŠOj‚Ì”­¶‚µ‚½threadId‚ğæ“¾
+	// processId(ã“ã®exeã®ID)ã¨ã‚¯ãƒ©ãƒƒã‚·ãƒ¥ï¼ˆä¾‹å¤–ï¼‰ã®ç™ºç”Ÿã—ãŸthreadIdã‚’å–å¾—
 	DWORD processId = GetCurrentProcessId();
 	DWORD threadId = GetCurrentThreadId();
-	// İ’èî•ñ‚ğ“ü—Í
+	// è¨­å®šæƒ…å ±ã‚’å…¥åŠ›
 	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
 	minidumpInformation.ThreadId = threadId;
 	minidumpInformation.ExceptionPointers = exception;
 	minidumpInformation.ClientPointers = TRUE;
-	//Dump‚ğo—ÍBMiniDumpNormal‚ÍÅ’áŒÀ‚Ìî•ñ‚ğo—Í‚·‚éƒvƒ‰ƒO
+	//Dumpã‚’å‡ºåŠ›ã€‚MiniDumpNormalã¯æœ€ä½é™ã®æƒ…å ±ã‚’å‡ºåŠ›ã™ã‚‹ãƒ—ãƒ©ã‚°
 	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
 
 	return EXCEPTION_EXECUTE_HANDLER;
@@ -174,21 +174,21 @@ void Log(std::ostream& os, const std::string& message) {
 	OutputDebugStringA(message.c_str());
 }
 
-// ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 //LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 //	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam)) {
 //		return true;
 //	}
 //
-//	// ƒƒbƒZ[ƒW‚É‰‚¶‚ÄƒQ[ƒ€ŒÅ—L‚Ìˆ—‚ğs‚¤
+//	// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«å¿œã˜ã¦ã‚²ãƒ¼ãƒ å›ºæœ‰ã®å‡¦ç†ã‚’è¡Œã†
 //	switch (msg) {
-//		// ƒEƒBƒ“ƒhƒE‚ª”j‰ó‚³‚ê‚½
+//		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒç ´å£Šã•ã‚ŒãŸ
 //	case WM_DESTROY:
-//	// OS‚É‘Î‚µ‚ÄAƒAƒvƒŠ‚ÌI—¹‚ğ“`‚¦‚é
+//	// OSã«å¯¾ã—ã¦ã€ã‚¢ãƒ—ãƒªã®çµ‚äº†ã‚’ä¼ãˆã‚‹
 //	PostQuitMessage(0);
 //	return 0;
 //	}
-//	// •W€‚ÌƒƒbƒZ[ƒWˆ—‚ğs‚¤
+//	// æ¨™æº–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã‚’è¡Œã†
 //	return DefWindowProc(hwnd, msg, wParam, lParam);
 //
 //}
@@ -209,7 +209,7 @@ Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(Microsoft::WR
 
 
 
-// ³‹K‰»ŠÖ”
+// æ­£è¦åŒ–é–¢æ•°
 void Normalize(float& x, float& y, float& z) {
 	float len = std::sqrt(x * x + y * y + z * z);
 	if (len > 0.00001f) {
@@ -219,7 +219,7 @@ void Normalize(float& x, float& y, float& z) {
 	}
 }
 
-// ‰¹ºƒf[ƒ^‚Ì“Ç‚İ‚İ
+// éŸ³å£°ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿
 SoundData SoundLoadWave(const char* filename) {
 	std::ifstream file(filename, std::ios_base::binary);
 	assert(file.is_open());
@@ -257,7 +257,7 @@ SoundData SoundLoadWave(const char* filename) {
 		file.seekg(dataHeader.size, std::ios_base::cur);
 	}
 
-	assert(dataHeader.size < 100 * 1024 * 1024); // 100MB§ŒÀ‚È‚Ç“K‹X
+	assert(dataHeader.size < 100 * 1024 * 1024); // 100MBåˆ¶é™ãªã©é©å®œ
 
 	char* pBuffer = new char[dataHeader.size];
 	file.read(pBuffer, dataHeader.size);
@@ -271,9 +271,9 @@ SoundData SoundLoadWave(const char* filename) {
 	return soundData;
 }
 
-// ‰¹ºƒf[ƒ^‰ğ•ú
+// éŸ³å£°ãƒ‡ãƒ¼ã‚¿è§£æ”¾
 void SoundUnload(SoundData* soundData) {
-	// ƒoƒbƒtƒ@‚Ìƒƒ‚ƒŠ‚ğ‰ğ•ú
+	// ãƒãƒƒãƒ•ã‚¡ã®ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾
 	delete[] soundData->pBuffer;
 
 	soundData->pBuffer = 0;
@@ -281,31 +281,31 @@ void SoundUnload(SoundData* soundData) {
 	soundData->wfex = {};
 }
 
-// ‰¹ºÄ¶
+// éŸ³å£°å†ç”Ÿ
 void SoundPlayWave(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, const SoundData& soundData) {
 	HRESULT result;
 
-	// ”gŒ`ƒtƒH[ƒ}ƒbƒg‚ğŒ³‚ÉSourceVoice‚Ì¶¬
+	// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã‚’å…ƒã«SourceVoiceã®ç”Ÿæˆ
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
 	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
 
-	// Ä¶‚·‚é”gŒ`ƒf[ƒ^‚Ìİ’è
+	// å†ç”Ÿã™ã‚‹æ³¢å½¢ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 
-	// ”gŒ`ƒf[ƒ^‚ÌÄ¶
+	// æ³¢å½¢ãƒ‡ãƒ¼ã‚¿ã®å†ç”Ÿ
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();
 
 }
 
-// WindowsƒAƒvƒŠ‚Å‚ÌƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg(mainŠÖ”)
+// Windowsã‚¢ãƒ—ãƒªã§ã®ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ(mainé–¢æ•°)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	// ƒŠƒ\[ƒXƒŠ[ƒNƒ`ƒFƒbƒN
+	// ãƒªã‚½ãƒ¼ã‚¹ãƒªãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯
 	struct D3DResourceLeakChecker {
 		~D3DResourceLeakChecker() {
 			Microsoft::WRL::ComPtr <IDXGIDebug1> debug;
@@ -318,140 +318,140 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 
 
-	// COM‚Ì‰Šú‰»
+	// COMã®åˆæœŸåŒ–
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 
-	// ’N‚à•â‘«‚µ‚È‚©‚Á‚½ê‡‚É(Unhandled),•â‘«‚·‚éŠÖ”‚ğ“o˜^
+	// èª°ã‚‚è£œè¶³ã—ãªã‹ã£ãŸå ´åˆã«(Unhandled),è£œè¶³ã™ã‚‹é–¢æ•°ã‚’ç™»éŒ²
 	SetUnhandledExceptionFilter(ExportDump);
 
-	// WindowAPI‚Ì‰Šú‰»
+	// WindowAPIã®åˆæœŸåŒ–
 	WindowAPI* windowAPI = new WindowAPI();
 	windowAPI->Initialize();
 
-	// DirectX‚Ì‰Šú‰»
+	// DirectXã®åˆæœŸåŒ–
 	DirectXCommon* dxCommon = new DirectXCommon();
 	dxCommon->Initialize(windowAPI);
 
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
-	// Œ»İ‚ğæ“¾
+	// ç¾åœ¨æ™‚åˆ»ã‚’å–å¾—
 	//std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-	// ƒƒOƒtƒ@ƒCƒ‹‚Ì–¼‘O‚ÉƒRƒ“ƒ}‰½•b‚Í‚¢‚ç‚È‚¢‚Ì‚ÅAí‚Á‚Ä•b‚É‚·‚é
+	// ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã®åå‰ã«ã‚³ãƒ³ãƒä½•ç§’ã¯ã„ã‚‰ãªã„ã®ã§ã€å‰Šã£ã¦ç§’ã«ã™ã‚‹
 	//std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>
 		//nowSeconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
-	// “ú–{ŠÔiPC‚Ìİ’èŠÔ)‚É•ÏŠ·
+	// æ—¥æœ¬æ™‚é–“ï¼ˆPCã®è¨­å®šæ™‚é–“)ã«å¤‰æ›
 	//std::chrono::zoned_time localTime{ std::chrono::current_zone(),nowSeconds };
-	// format‚ğg‚Á‚Ä”NŒ“ú_•ª•b‚Ì•¶š—ñ‚É•ÏŠ·
+	// formatã‚’ä½¿ã£ã¦å¹´æœˆæ—¥_æ™‚åˆ†ç§’ã®æ–‡å­—åˆ—ã«å¤‰æ›
 	//std::string dateString = std::format("{:%Y%m%d_%H%M%S}", localTime);
-	// ‚ğg‚Äƒtƒ@ƒCƒ‹–¼‚ğŒˆ’è
+	// æ™‚åˆ»ã‚’ä½¿ã¦ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ±ºå®š
 	//std::string logFilePath = std::string("logs/") + dateString + ".log";
-	// ƒtƒ@ƒCƒ‹‚ğg‚Á‚Ä‘‚«‚İ€”õ
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½¿ã£ã¦æ›¸ãè¾¼ã¿æº–å‚™
 	//std::ofstream logStream(logFilePath);
 
-	// o—ÍƒEƒBƒ“ƒhƒE‚Ö‚Ì•¶šo—Í
+	// å‡ºåŠ›ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¸ã®æ–‡å­—å‡ºåŠ›
 	//OutputDebugStringA("Hello,DirectX!\n");
 
-	// ƒƒO
+	// ãƒ­ã‚°
 	//bool logs = fs::create_directory("logs");
 	//Log(logStream, logFilePath);
 
-	//DXGIƒtƒ@ƒNƒgƒŠ[‚Ì¶¬
+	//DXGIãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ç”Ÿæˆ
 	//Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
-	// HRESULT‚ÍWindowsŒn‚ÌƒGƒ‰[ƒR[ƒh‚Å‚ ‚èA
-	// ŠÖ”‚ª¬Œ÷‚µ‚½‚©‚Ç‚¤‚©‚ğSUCCEEDEDƒ}ƒNƒ‚Å”»’è‚Å‚«‚é
+	// HRESULTã¯Windowsç³»ã®ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ã§ã‚ã‚Šã€
+	// é–¢æ•°ãŒæˆåŠŸã—ãŸã‹ã©ã†ã‹ã‚’SUCCEEDEDãƒã‚¯ãƒ­ã§åˆ¤å®šã§ãã‚‹
 	//hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 
-	//XAudio2‚Ì‰Šú‰»
+	//XAudio2ã®åˆæœŸåŒ–
 	//Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	//IXAudio2MasteringVoice* masterVoice = nullptr;
 	//HRESULT result;
-	// XAudioƒGƒ“ƒWƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
+	// XAudioã‚¨ãƒ³ã‚¸ãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	//result = XAudio2Create(xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
 	//assert(SUCCEEDED(result));
-	// ƒ}ƒXƒ^[ƒ{ƒCƒX‚ğ¶¬
+	// ãƒã‚¹ã‚¿ãƒ¼ãƒœã‚¤ã‚¹ã‚’ç”Ÿæˆ
 	//result = xAudio2->CreateMasteringVoice(&masterVoice);
 	//assert(SUCCEEDED(result));
 
-	// DirectX‚Ì‰Šú‰»
+	// DirectXã®åˆæœŸåŒ–
 
-	// Input‰Šú‰»
+	// InputåˆæœŸåŒ–
 	Input* input = new Input();
 	input->Initialize(windowAPI);
 
 
 	
-	// 3Dƒ‚ƒfƒ‹ƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»
+	// 3Dãƒ¢ãƒ‡ãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ã®åˆæœŸåŒ–
 	ModelManager::GetInstance()->Initialize(dxCommon);
 	
 
-#pragma region Šî”ÕƒVƒXƒeƒ€
+#pragma region åŸºç›¤ã‚·ã‚¹ãƒ†ãƒ 
 
-	// ƒXƒvƒ‰ƒCƒg‹¤’Ê•”
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨
 	SpriteCommon* spriteCommon = nullptr;
-	// ƒXƒvƒ‰ƒCƒg‹¤’Ê•”‚Ì‰Šú‰»
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨ã®åˆæœŸåŒ–
 	spriteCommon = new SpriteCommon();
 	spriteCommon->Initialize(dxCommon);
 
-	// 3dƒXƒvƒ‰ƒCƒg‹¤’Ê•”
+	// 3dã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨
 	ObjectCommon* objectCommon = nullptr;
-	// 3dƒXƒvƒ‰ƒCƒg‹¤’Ê•”‚Ì‰Šú‰»
+	// 3dã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨ã®åˆæœŸåŒ–
 	objectCommon = new ObjectCommon();
 	objectCommon->Initialize(dxCommon);
 
-	// ƒJƒƒ‰‰Šú‰»
+	// ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
 	Camera* camera = new Camera();
 	camera->SetRotate({cameraTransform.rotate});
 	camera->SetTranslate({cameraTransform.translate});
 	
 
-	// ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ“o˜^
+	// ã‚«ãƒ¡ãƒ©ãƒãƒãƒ¼ã‚¸ãƒ£ç™»éŒ²
 	auto* cameraManager = CameraManager::GetInstance();
 	cameraManager->AddCamera("main", camera);
 	cameraManager->SetActiveCamera("main");
 
-	// ƒJƒƒ‰‚ğ3DƒIƒuƒWƒFƒNƒg‹¤’Ê•”‚ÉƒZƒbƒg
+	// ã‚«ãƒ¡ãƒ©ã‚’3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå…±é€šéƒ¨ã«ã‚»ãƒƒãƒˆ
 	objectCommon->SetDefaultCamera(camera);
 
-	// SRVƒ}ƒl[ƒWƒƒ
+	// SRVãƒãƒãƒ¼ã‚¸ãƒ£
 	SrvManager* srvManager = nullptr;
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
-	// ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒãƒ¼ã‚¸ãƒ£ã®åˆæœŸåŒ–
 	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
 
-	// Particleƒ}ƒl[ƒWƒƒ
+	// Particleãƒãƒãƒ¼ã‚¸ãƒ£
 	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, camera, "Resource/", "plane.obj");
 	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
 	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
 
 #pragma endregion
 
-#pragma region Å‰‚ÌƒV[ƒ“
+#pragma region æœ€åˆã®ã‚·ãƒ¼ãƒ³
 
-	// ƒXƒvƒ‰ƒCƒg
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 	Sprite* sprite = nullptr;
 	sprite = new Sprite();
 	sprite->Initialize(spriteCommon,dxCommon, "Resource/uvChecker.png");
 
-	// 3DƒIƒuƒWƒFƒNƒg
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	Object* object[2]{};
 	for (int i = 0; i < 2; i++) {
 		object[i] = new Object();
 		object[i]->Initialize(objectCommon, windowAPI, dxCommon);
 	}
 
-	// Emitƒp[ƒeƒBƒNƒ‹”­¶
+	// Emitãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç™ºç”Ÿ
 	ParticleEmitter* particleEmitter = new ParticleEmitter();
 	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
 	particleEmitter->Emit();
 
-	// .objƒtƒ@ƒCƒ‹‚©‚çƒ‚ƒfƒ‹“Ç‚İ‚İ
+	// .objãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«èª­ã¿è¾¼ã¿
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
-	// ‰Šú‰»Ï‚İ‚Ì3DƒIƒuƒWƒFƒNƒg‚Éƒ‚ƒfƒ‹‚ğ•R‚Ã‚¯‚é
+	// åˆæœŸåŒ–æ¸ˆã¿ã®3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ãƒ¢ãƒ‡ãƒ«ã‚’ç´ã¥ã‘ã‚‹
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
 
@@ -467,18 +467,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	
 
-	// ‰¹º“Ç‚İ‚İ
+	// éŸ³å£°èª­ã¿è¾¼ã¿
 	SoundData soundData1 = SoundLoadWave("Resource/Alarm01.wav");
-	// ‰¹ºÄ¶
+	// éŸ³å£°å†ç”Ÿ
 	//SoundPlayWave(xAudio2, soundData1);
 
 
 	MSG msg{};
-	// ƒEƒBƒ“ƒhƒE‚Ì‚˜ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚é‚Ü‚Åƒ‹[ƒv
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ï½˜ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—
 	while (msg.message != WM_QUIT) {
-		// Windows‚ÌƒƒbƒZˆÛˆ—
+		// Windowsã®ãƒ¡ãƒƒã‚»ç¶­æŒå‡¦ç†
 		if (windowAPI->ProcessMessage()) {
-			// ƒQ[ƒ€ƒ‹[ƒv‚ğ”²‚¯‚é
+			// ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
 			break;
 		}
 
@@ -486,92 +486,92 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui_ImplWin32_NewFrame();
 		//ImGui::NewFrame();
 		
-		// ƒQ[ƒ€‚Ìˆ—
+		// ã‚²ãƒ¼ãƒ ã®å‡¦ç†
 
-		// “ü—Í‚ÌXV
+		// å…¥åŠ›ã®æ›´æ–°
 		input->Update();
-		// ƒJƒƒ‰XV
+		// ã‚«ãƒ¡ãƒ©æ›´æ–°
 		CameraManager::GetInstance()->Update();
 
 
-		// ”š‚Ì‚OƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç
+		// æ•°å­—ã®ï¼ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ãŸã‚‰
 		if (input->TriggerKey(DIK_0)) {
-			OutputDebugStringA("Hit 0\n"); // o—ÍƒEƒBƒ“ƒhƒE‚ÉuHit ‚Ov‚Æ•\¦
-			// ƒeƒNƒXƒ`ƒƒ•ÏX
+			OutputDebugStringA("Hit 0\n"); // å‡ºåŠ›ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ã€ŒHit ï¼ã€ã¨è¡¨ç¤º
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ›´
 			sprite->ChangeTexture("Resource/uvChecker.png");
 			particleEmitter->SetActive("group2");
 		}
 
-		// y²‰ñ“]ˆ—
+		// yè»¸å›è»¢å‡¦ç†
 		transform.rotate.y = 3.00f;
 
-		// * 3DƒIƒuƒWƒFƒNƒg* //
+		// * 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ* //
 		for (int i = 0; i < 2; i++) {
 			object[i]->Update();
 		}
 
-		// ƒp[ƒeƒBƒNƒ‹ƒGƒ~ƒbƒ^XV
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¨ãƒŸãƒƒã‚¿æ›´æ–°
 		particleEmitter->Update();
-		// ƒp[ƒeƒBƒNƒ‹XV
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ›´æ–°
 		ParticleManager::GetInstance()->Update();
 
-		// *ƒXƒvƒ‰ƒCƒg* //
+		// *ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ* //
 
-		// spriteXV
+		// spriteæ›´æ–°
 		sprite->Update();
 		
 
-		// ‚±‚ê‚©‚ç‘‚«‚ŞƒoƒbƒNƒoƒbƒtƒ@‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+		// ã“ã‚Œã‹ã‚‰æ›¸ãè¾¼ã‚€ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
 
-		// ƒXƒ‰ƒCƒ_[
+		// ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼
 		//UI
 		//ImGui::SliderFloat("SpritePosX", &tranaformSprite.translate.x, 0.0f, 500.0f);
 		//ImGui::SliderFloat("SpritePosY", &tranaformSprite.translate.y, 0.0f, 500.0f);
 
-		// ƒ‰ƒCƒg‚ÌŒü‚«
+		// ãƒ©ã‚¤ãƒˆã®å‘ã
 		//ImGui::SliderFloat("directionX", &directionalLightData->direction.x, -10.0f, 10.0f);
 		//ImGui::SliderFloat("directionY", &directionalLightData->direction.y, -10.0f, 10.0f);
 		//ImGui::SliderFloat("directionZ", &directionalLightData->direction.z, -10.0f, 10.0f);
 
-		// SRV‚ÌØ‚è‘Ö‚¦
+		// SRVã®åˆ‡ã‚Šæ›¿ãˆ
 		//ImGui::Checkbox("UseMonsterBall", &useMonsterBall);
 
-		// UVÀ•W
+		// UVåº§æ¨™
 		//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
 		//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
 		//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
 
-		// ƒ‚ƒfƒ‹
+		// ãƒ¢ãƒ‡ãƒ«
 		//ImGui::DragFloat3("scale", &transform.scale.x, 0.01f, -10.0f, 10.0f);
 		//ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
 		//ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
 
-		// ƒJƒƒ‰
+		// ã‚«ãƒ¡ãƒ©
 		//ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
 		//ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
-		// •`‰æ‘Oˆ—
+		// æç”»å‰å‡¦ç†
 		dxCommon->PreDraw();
 		srvManager->PreDraw();
 
-		// 3DƒIƒuƒWƒFƒNƒg‚Ì•`‰æ€”õ
+		// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»æº–å‚™
 		objectCommon->SetCommonPipelineState();
 
-		// 3DƒIƒuƒWƒFƒNƒg•`‰æ
+		// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 		//for (int i = 0; i < 2; i++) {
 		//	object[i]->Draw();
 		//}
 
-		// ƒp[ƒeƒBƒNƒ‹•`‰æ
+		// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æç”»
 		ParticleManager::GetInstance()->Draw();
 
-		// ƒXƒvƒ‰ƒCƒg‚Ì•`‰æ€”õ
+		// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æç”»æº–å‚™
 		spriteCommon->SetCommonPipelineState();
 
-		// ƒXƒvƒ‰ƒCƒg•`‰æ
+		// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»
 		//sprite->Draw();
 
-		// ÀÛ‚ÌcommandList‚ÌImGui‚Ì•`‰æƒRƒ}ƒ“ƒh‚ğ‹l‚Ş
+		// å®Ÿéš›ã®commandListã®ImGuiã®æç”»ã‚³ãƒãƒ³ãƒ‰ã‚’è©°ã‚€
 		//ImGui::Render();
 		//if (ImDrawData* draw_data = ImGui::GetDrawData()) {
 		//	ImGui_ImplDX12_RenderDrawData(draw_data, dxCommon->GetCommandList());
@@ -581,43 +581,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	}
 
-	// ImGui‚ÌI—¹ˆ—BÚ×‚Í‚³‚µ‚Äd—v‚Å‚Í‚È‚¢‚Ì‚Å‰ğà‚ÍÈ—ª‚·‚éB
-	//@‚±‚¤‚¢‚¤‚à‚ñ‚Å‚ ‚éB‰Šú‰»‚Æ‹t‡‚És‚¤
+	// ImGuiã®çµ‚äº†å‡¦ç†ã€‚è©³ç´°ã¯ã•ã—ã¦é‡è¦ã§ã¯ãªã„ã®ã§è§£èª¬ã¯çœç•¥ã™ã‚‹ã€‚
+	//ã€€ã“ã†ã„ã†ã‚‚ã‚“ã§ã‚ã‚‹ã€‚åˆæœŸåŒ–ã¨é€†é †ã«è¡Œã†
 	//ImGui_ImplDX12_Shutdown();
 	//ImGui_ImplWin32_Shutdown();
 	//ImGui::DestroyContext();
 
-	// ‰ğ•ú
+	// è§£æ”¾
 	CloseHandle(dxCommon->fenceEvent);
 
-	// ‰¹ºƒf[ƒ^‰ğ•ú
+	// éŸ³å£°ãƒ‡ãƒ¼ã‚¿è§£æ”¾
 	//xAudio2.Reset();
-	// ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	TextureManager::GetInstance()->Finalize();
-	// 3Dƒ‚ƒfƒ‹ƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// 3Dãƒ¢ãƒ‡ãƒ«ãƒãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	ModelManager::GetInstance()->Finalize();
-	// Particleƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// Particleãƒãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	ParticleManager::GetInstance()->Finalize();
 
-	// “ü—Í‚Ì‰Šú‰»
+	// å…¥åŠ›ã®åˆæœŸåŒ–
 	delete input;
-	// WindowAPI‚ÌI—¹ˆ—
+	// WindowAPIã®çµ‚äº†å‡¦ç†
 	windowAPI->Finalize();
-	// WindowAPI‚Ì‰ğ•ú
+	// WindowAPIã®è§£æ”¾
 	delete windowAPI;
-	// DirectX‰ğ•ú
+	// DirectXè§£æ”¾
 	delete dxCommon;
-	// ƒXƒvƒ‰ƒCƒg‰ğ•ú
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆè§£æ”¾
 	delete sprite;
 	delete spriteCommon;
-	// 3DƒIƒuƒWƒFƒNƒg‰ğ•ú
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè§£æ”¾
 	for (int i = 0; i < 2; i++) {
 		delete object[i];
 	}
 	delete objectCommon;
-	// ƒJƒƒ‰‰ğ•ú
+	// ã‚«ãƒ¡ãƒ©è§£æ”¾
 	delete camera;
-	// SRVƒ}ƒl[ƒWƒƒ‰ğ•ú
+	// SRVãƒãƒãƒ¼ã‚¸ãƒ£è§£æ”¾
 	delete srvManager;
 
 	CoUninitialize();
