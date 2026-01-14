@@ -483,9 +483,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		//ImGui_ImplDX12_NewFrame();
-		//ImGui_ImplWin32_NewFrame();
-		//ImGui::NewFrame();
+		// ImGui受付開始
+		imGuiManager->Begin();
 		
 		// ゲームの処理
 
@@ -522,7 +521,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sprite->Update();
 		
 
-		// これから書き込むバックバッファのインデックスを取得
+
+
+
+
 
 		// スライダー
 		//UI
@@ -551,6 +553,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
 		//ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
+		// ImGui受付終了
+		imGuiManager->End();
+
 		// 描画前処理
 		dxCommon->PreDraw();
 		srvManager->PreDraw();
@@ -572,11 +577,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// スプライト描画
 		//sprite->Draw();
 
-		// 実際のcommandListのImGuiの描画コマンドを詰む
-		//ImGui::Render();
-		//if (ImDrawData* draw_data = ImGui::GetDrawData()) {
-		//	ImGui_ImplDX12_RenderDrawData(draw_data, dxCommon->GetCommandList());
-		//}
+		
+
+		// ImGui描画
+		imGuiManager->Draw();
 
 		dxCommon->PostDraw();
 
