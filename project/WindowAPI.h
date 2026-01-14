@@ -5,7 +5,6 @@
 #include <wrl.h>
 #include <dxgi1_6.h>
 
-#include "externals/imgui\imgui.h"
 #include "externals/DirectXTex/d3dx12.h"
 
 class WindowAPI {

@@ -3,7 +3,8 @@
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 
-void ImGuiManager::Initialize(WindowAPI* windowAPI, DirectXCommon* dxCommon, SrvManager* srvManager) {
+void ImGuiManager::Initialize([[maybe_unused]]WindowAPI* windowAPI, [[maybe_unused]] DirectXCommon* dxCommon, [[maybe_unused]] SrvManager* srvManager) {
+#ifdef USE_IMGUI
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
 	
@@ -21,9 +22,11 @@ void ImGuiManager::Initialize(WindowAPI* windowAPI, DirectXCommon* dxCommon, Srv
 		srvManager->GetDescriptorHeap(),
 		srvManager->GetCPUDescriptorHandle(index),
 		srvManager->GetGPUDescriptorHandle(index));
+#endif
 }
 
 void ImGuiManager::Draw() {
+#ifdef USE_IMGUI
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 	
 	// デスクリプタヒープの配列をセットするコマンド
@@ -31,25 +34,32 @@ void ImGuiManager::Draw() {
 	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	// 描画コマンドを発行
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+#endif
 }
 
 void ImGuiManager::Finalize() {
+#ifdef USE_IMGUI
 	// 後始末
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+#endif
 }
 
 // 受付開始
 void ImGuiManager::Begin() {
+#ifdef USE_IMGUI
 	// ImGuiフレーム開始
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+#endif
 }
 
 // 受付終了
 void ImGuiManager::End() {
+#ifdef USE_IMGUI
 	// 描画前準備
 	ImGui::Render();
+#endif
 }

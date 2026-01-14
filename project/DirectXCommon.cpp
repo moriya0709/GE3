@@ -26,8 +26,6 @@ void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	InitializeFence(); // フェンスの初期化
 	InitializeViewport(); // ビューポート矩形の初期化
 	InitializeScissorRect(); // シザリング矩形の初期化
-	//InitializeImGui(); // ImGuiの初期化
-
 
 }
 
@@ -327,20 +325,6 @@ void DirectXCommon::InitializeScissorRect() {
 	scissorRect.right = windowAPI_->kClientWidth;
 	scissorRect.top = 0;
 	scissorRect.bottom = windowAPI_->kClientHeight;
-}
-
-void DirectXCommon::InitializeImGui() {
-	// ImGuiの初期化
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(windowAPI_->GetHwnd());
-	ImGui_ImplDX12_Init(device.Get(),
-		swapChainDesc.BufferCount,
-		rtvDesc.Format,
-		srvDescriptorHeap.Get(),
-		srvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-		srvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
 // 描画前処理

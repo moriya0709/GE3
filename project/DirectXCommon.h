@@ -16,9 +16,6 @@
 #include "Logger.h"
 #include "StringUtility.h"
 
-#include "externals/imgui\imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 
@@ -49,7 +46,6 @@ public:
 	void InitializeFence(); // フェンスの初期化
 	void InitializeViewport(); // ビューポート矩形の初期化
 	void InitializeScissorRect(); // シザリング矩形の初期化
-	void InitializeImGui(); // ImGuiの初期化
 
 	// 描画前処理
 	void PreDraw();

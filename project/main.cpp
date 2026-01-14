@@ -549,10 +549,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
 		//ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
 
+	#ifdef USE_IMGUI
 		// カメラ
-		//ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
-		//ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
+		ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
+	#endif
+
 		// ImGui受付終了
 		imGuiManager->End();
 
