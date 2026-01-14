@@ -9,8 +9,9 @@ class SrvManager;
 
 class ImGuiManager {
 public:
+	// ‰Šú‰»
 	void Initialize(WindowAPI* windowAPI,DirectXCommon* dxCommon, SrvManager* srvManager);
-
-	
+	// I—¹
+	void Finalize();
 };
 

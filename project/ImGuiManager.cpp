@@ -19,3 +19,10 @@ void ImGuiManager::Initialize(WindowAPI* windowAPI, DirectXCommon* dxCommon, Srv
 		srvManager->GetCPUDescriptorHandle(index),
 		srvManager->GetGPUDescriptorHandle(index));
 }
+
+void ImGuiManager::Finalize() {
+	// å„énññ
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
