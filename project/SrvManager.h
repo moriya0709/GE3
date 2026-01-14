@@ -24,12 +24,13 @@ public:
 
 	// ヒープセットコマンド
 	void PreDraw();
-
 	// SRVセットコマンド
 	void SetGraphicsRootDescriptorTable(UINT RootparmeterIndex, uint32_t srvIndex);
-
 	// 確保可能チェック
 	bool CanAllocate() const;
+
+	// getter
+	ID3D12DescriptorHeap* GetDescriptorHeap() const {return descriptorHeap.Get();}
 
 private:
 	// 最大SRV数（最大テクスチャ枚数）

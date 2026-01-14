@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+﻿#define _USE_MATH_DEFINES
 
 #include <Windows.h>
 #include <cstdint>
@@ -39,10 +39,9 @@
 #include "SrvManager.h"
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
+#include "ImGuiManager.h"
 
-#include "externals/imgui\imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
+
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 
@@ -455,7 +454,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
 
-	
+	// ImGui
+	ImGuiManager* imGuiManager = new ImGuiManager();
+	imGuiManager->Initialize(windowAPI,dxCommon,srvManager);
 	
 #pragma endregion
 
