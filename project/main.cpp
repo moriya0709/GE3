@@ -1,4 +1,6 @@
 ﻿#define _USE_MATH_DEFINES
+#define IM_COUNTOF(_ARR)  ((int)(sizeof(_ARR) / sizeof(*(_ARR))))
+
 
 #include <Windows.h>
 #include <cstdint>
@@ -84,12 +86,13 @@ Transform transform
 };
 
 // transformSpriteの初期化
-Transform tranaformSprite
+Transform transformSprite
 {
 	{1.0f,1.0f,1.0f},
 	{0.0f,0.0f,0.0f},
-	{0.0f,0.0f,0.0f}
+	{100.0f,100.0f,0.0f}
 };
+
 
 // パーティクル
 Transform transformParticle
@@ -141,6 +144,13 @@ Transform uvTransformSprite{
 
 // SRV切り替え
 bool useMonsterBall = true;
+
+//p4
+char buf[256] = {};
+float f = 0.0f;
+//p6
+bool isToolAction;
+float color[4];
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	SYSTEMTIME time;
@@ -299,6 +309,13 @@ void SoundPlayWave(Microsoft::WRL::ComPtr<IXAudio2> xAudio2, const SoundData& so
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();
 
+}
+
+void MySaveFunction() {
+	std::ofstream file("config.tex");
+	file << buf << '\n';
+	file << f;
+	
 }
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -513,6 +530,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// パーティクルエミッタ更新
 		particleEmitter->Update();
 		// パーティクル更新
+
 		ParticleManager::GetInstance()->Update();
 
 		// *スプライト* //
@@ -526,34 +544,58 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-		// スライダー
-		//UI
-		//ImGui::SliderFloat("SpritePosX", &tranaformSprite.translate.x, 0.0f, 500.0f);
-		//ImGui::SliderFloat("SpritePosY", &tranaformSprite.translate.y, 0.0f, 500.0f);
-
-		// ライトの向き
-		//ImGui::SliderFloat("directionX", &directionalLightData->direction.x, -10.0f, 10.0f);
-		//ImGui::SliderFloat("directionY", &directionalLightData->direction.y, -10.0f, 10.0f);
-		//ImGui::SliderFloat("directionZ", &directionalLightData->direction.z, -10.0f, 10.0f);
-
-		// SRVの切り替え
-		//ImGui::Checkbox("UseMonsterBall", &useMonsterBall);
-
-		// UV座標
-		//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-
-		// モデル
-		//ImGui::DragFloat3("scale", &transform.scale.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
-
+		
 	#ifdef USE_IMGUI
 		// カメラ
-		ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
-		ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
+		//ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
+		//ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 		
+		// スプライト
+		ImGui::SetNextWindowSize(ImVec2(500.0f, 100.0f));
+		ImGui::Begin("win1");
+		ImGui::SliderFloat2("position", &transformSprite.translate.x, 0.0f, 1000.0f);
+		sprite->SetPosition(Vector2(transformSprite.translate.x, transformSprite.translate.y));
+		ImGui::End();
+
+		// p4
+		ImGui::Text("Hello, world %d", 123);
+		if (ImGui::Button("Save"))
+			MySaveFunction();
+		ImGui::InputText("string", buf, IM_COUNTOF(buf));
+		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+
+		// p6
+		ImGui::Begin("My First Tool", &isToolAction, ImGuiWindowFlags_MenuBar);
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+				if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+				if (ImGui::MenuItem("Close", "Ctrl+W")) { isToolAction = false; }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		// 色
+		ImGui::ColorEdit4("Color", color);
+
+		// Generate samples and plot them
+		float samples[100];
+		for (int n = 0; n < 100; n++)
+			samples[n] = sinf(n * 0.2f + float(ImGui::GetTime()) * 1.5f);
+		ImGui::PlotLines("Samples", samples, 100);
+
+		// Display contents in a scrolling region
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+		ImGui::BeginChild("Scrolling");
+		for (int n = 0; n < 50; n++)
+			ImGui::Text("%04d: Some text", n);
+		ImGui::EndChild();
+		ImGui::End();
+
+		// デモウィンドウの表示オン
+		ImGui::ShowDemoWindow();
+
 	#endif
 
 		// ImGui受付終了
@@ -578,7 +620,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		spriteCommon->SetCommonPipelineState();
 
 		// スプライト描画
-		//sprite->Draw();
+		sprite->Draw();
 
 		
 
