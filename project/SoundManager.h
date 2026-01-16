@@ -1,18 +1,22 @@
 #pragma once
+#include <windows.h>
 #include <xaudio2.h>
 #include <wrl.h>
 #include <cassert>
 #include <fstream>
 #include <vector>
+#include <mfapi.h>
+#include <mfidl.h> 
+#include <mfreadwrite.h>
+
+#include "StringUtility.h"
 
 // 音声データ
 struct SoundData {
 	// 波形フォーマット
 	WAVEFORMATEX wfex;
 	// バッファの先頭アドレス
-	BYTE* pBuffer;
-	// バッファのサイズ
-	unsigned int bufferSize;
+	std::vector<BYTE> pBuffer;
 };
 // チャンクヘッダ
 struct ChunkHeader {
@@ -36,16 +40,17 @@ public:
 	void Initialize();
 	// 音声再生
 	void SoundPlayWave(const SoundData& soundData);
-	// 音声データの読み込み
-	SoundData SoundLoadWave(const char* filename);
 
-	// 音声データ解放
-	void SoundUnload(SoundData* soundData);
+	// 音声データの読み込み
+	SoundData SoundLoadFile(const std::string& filename);
 
 	// 終了
 	void Finalize(SoundData* soundData);
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
+
+	// 音声データ解放
+	void SoundUnload(SoundData* soundData);
 };
 

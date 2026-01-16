@@ -351,7 +351,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 
 	// 音声読み込み
-	SoundData soundData1 = soundManager->SoundLoadWave("Resource/Alarm01.wav");
+	SoundData soundData1 = soundManager->SoundLoadFile("game.mp3");
 	// 音声再生
 	soundManager->SoundPlayWave(soundData1);
 
