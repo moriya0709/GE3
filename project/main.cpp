@@ -193,93 +193,21 @@ void Normalize(float& x, float& y, float& z) {
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	Game* game = new Game();
-	game->Initialize();
+	Game game;
+	// 初期化
+	game.Initialize();
 
 	MSG msg{};
 	// ウィンドウのｘボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
-		// Windowsのメッセ維持処理
-		if (windowAPI->ProcessMessage()) {
+
+		// 更新処理
+		game.Update();
+
+		if (game.IsEndRequest()) {
 			// ゲームループを抜ける
 			break;
 		}
-
-		// ImGui受付開始
-		imGuiManager->Begin();
-		
-		// ゲームの処理
-
-		// 入力の更新
-		input->Update();
-		// カメラ更新
-		CameraManager::GetInstance()->Update();
-
-
-		// 数字の０キーが押されていたら
-		if (input->TriggerKey(DIK_0)) {
-			OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
-			// テクスチャ変更
-			sprite->ChangeTexture("Resource/uvChecker.png");
-			particleEmitter->SetActive("group2");
-		}
-
-		// y軸回転処理
-		transform.rotate.y = 3.00f;
-
-		// * 3Dオブジェクト* //
-		for (int i = 0; i < 2; i++) {
-			object[i]->Update();
-		}
-
-		// パーティクルエミッタ更新
-		particleEmitter->Update();
-		// パーティクル更新
-		ParticleManager::GetInstance()->Update();
-
-		// *スプライト* //
-
-		// sprite更新
-		sprite->Update();
-		
-
-
-
-
-
-
-		// スライダー
-		//UI
-		//ImGui::SliderFloat("SpritePosX", &tranaformSprite.translate.x, 0.0f, 500.0f);
-		//ImGui::SliderFloat("SpritePosY", &tranaformSprite.translate.y, 0.0f, 500.0f);
-
-		// ライトの向き
-		//ImGui::SliderFloat("directionX", &directionalLightData->direction.x, -10.0f, 10.0f);
-		//ImGui::SliderFloat("directionY", &directionalLightData->direction.y, -10.0f, 10.0f);
-		//ImGui::SliderFloat("directionZ", &directionalLightData->direction.z, -10.0f, 10.0f);
-
-		// SRVの切り替え
-		//ImGui::Checkbox("UseMonsterBall", &useMonsterBall);
-
-		// UV座標
-		//ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);
-
-		// モデル
-		//ImGui::DragFloat3("scale", &transform.scale.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat3("translate", &transform.translate.x, 0.01f, -10.0f, 10.0f);
-		//ImGui::DragFloat3("rotate", &transform.rotate.x, 0.01f, -10.0f, 10.0f);
-
-	#ifdef USE_IMGUI
-		// カメラ
-		ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
-		ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
-		
-	#endif
-
-		// ImGui受付終了
-		imGuiManager->End();
 
 		// 描画前処理
 		dxCommon->PreDraw();

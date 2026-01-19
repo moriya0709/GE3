@@ -34,6 +34,9 @@ public:
 	// 終了
 	void Finalize();
 
+	// フラグチェック
+	bool IsEndRequest() { return endRequest_; }
+
 private:
 	Transform cameraTransform
 	{
@@ -48,6 +51,37 @@ private:
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f}
 	};
+
+	// WindowAPI
+	WindowAPI* windowAPI = nullptr;
+	// DirectX共通部
+	DirectXCommon* dxCommon = nullptr;
+	// 入力
+	Input* input = nullptr;
+	// スプライト共通部
+	SpriteCommon* spriteCommon = nullptr;
+	// 3Dオブジェクト共通部
+	ObjectCommon* objectCommon = nullptr;
+	// カメラ
+	Camera* camera = nullptr;
+	CameraManager* cameraManager;
+	// SRVマネージャ
+	SrvManager* srvManager = nullptr;
+	// ImGuiマネージャ
+	ImGuiManager* imGuiManager = nullptr;
+
+	// スプライト
+	Sprite* sprite = nullptr;
+	// 3Dオブジェクト
+	Object* object[2]{};
+	// パーティクルエミッタ
+	ParticleEmitter* particleEmitter = nullptr;
+	// サウンド
+	SoundManager* soundManager = nullptr;
+	SoundData soundData1; // サウンドデータ
+
+	// ゲーム終了フラグ
+	bool endRequest_ = false;
 
 };
 
