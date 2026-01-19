@@ -1,5 +1,8 @@
 #include "Game.h"
 
+#pragma comment(lib,"Dbghelp.lib")
+#pragma comment(lib,"dxcompiler.lib")
+
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	SYSTEMTIME time;
 	GetLocalTime(&time);
@@ -54,6 +57,8 @@ void Game::Initialize() {
 	input->Initialize(windowAPI);
 
 
+
+
 #pragma region 基盤システム
 
 
@@ -66,6 +71,7 @@ void Game::Initialize() {
 	objectCommon->Initialize(dxCommon);
 
 	// カメラ初期化
+	camera = new Camera();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
@@ -97,7 +103,6 @@ void Game::Initialize() {
 #pragma region 最初のシーン
 
 	// スプライト
-	Sprite* sprite = nullptr;
 	sprite = new Sprite();
 	sprite->Initialize(spriteCommon, dxCommon, "Resource/uvChecker.png");
 
@@ -138,6 +143,11 @@ void Game::Initialize() {
 }
 
 void Game::Update() {
+	if (windowAPI->ProcessMessage()) {
+		endRequest_ = true;
+		return;
+	}
+
 	// ImGui受付開始
 	imGuiManager->Begin();
 
@@ -174,7 +184,7 @@ void Game::Update() {
 
 #ifdef USE_IMGUI
 	// ImGui
-	
+
 	// カメラ
 	ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
 	ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
@@ -183,4 +193,76 @@ void Game::Update() {
 
 	// ImGui受付終了
 	imGuiManager->End();
+}
+
+void Game::Draw() {
+	// 描画前処理
+	dxCommon->PreDraw();
+	srvManager->PreDraw();
+
+	// 3Dオブジェクトの描画準備
+	objectCommon->SetCommonPipelineState();
+
+	// 3Dオブジェクト描画
+	//for (int i = 0; i < 2; i++) {
+	//	object[i]->Draw();
+	//}
+
+	// パーティクル描画
+	ParticleManager::GetInstance()->Draw();
+
+	// スプライトの描画準備
+	spriteCommon->SetCommonPipelineState();
+
+	// スプライト描画
+	sprite->Draw();
+
+	// ImGui描画
+	imGuiManager->Draw();
+
+	// 描画後処理
+	dxCommon->PostDraw();
+}
+
+void Game::Finalize() {
+	// ImGuiの終了処理
+	imGuiManager->Finalize();
+
+	// 解放
+	CloseHandle(dxCommon->fenceEvent);
+
+	// テクスチャマネージャの終了
+	TextureManager::GetInstance()->Finalize();
+	// 3Dモデルマネージャの終了
+	ModelManager::GetInstance()->Finalize();
+	// Particleマネージャの終了
+	ParticleManager::GetInstance()->Finalize();
+
+	//　サウンドマネージャー終了
+	soundManager->Finalize(&soundData1);
+
+	// 入力の初期化
+	delete input;
+	// WindowAPIの終了処理
+	windowAPI->Finalize();
+	// WindowAPIの解放
+	delete windowAPI;
+	// DirectX解放
+	delete dxCommon;
+	// スプライト解放
+	delete sprite;
+	delete spriteCommon;
+	// 3Dオブジェクト解放
+	for (int i = 0; i < 2; i++) {
+		delete object[i];
+	}
+	delete objectCommon;
+	// カメラ解放
+	delete camera;
+	// SRVマネージャ解放
+	delete srvManager;
+	// imGuiマネージャ解放
+	delete imGuiManager;
+
+	CoUninitialize();
 }
