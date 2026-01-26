@@ -4,9 +4,6 @@
 #include <strsafe.h>
 #include <minidumpapiset.h>
 
-#include "WindowAPI.h"
-#include "DirectXCommon.h"
-#include "Input.h"
 #include "SpriteCommon.h"
 #include "ObjectCommon.h"
 #include "Camera.h"
@@ -21,21 +18,18 @@
 #include "ModelManager.h"
 #include "SoundManager.h"
 #include "ImGuiManager.h"
+#include "M_Framework.h"
 
-class Game {
+class Game : public M_Framework {
 public:
 	// 初期化
-	void Initialize();
+	void Initialize() override;
 	// 更新
-	void Update();
+	void Update() override;
 	// 描画
-	void Draw();
-
+	void Draw() override;
 	// 終了
-	void Finalize();
-
-	// フラグチェック
-	bool IsEndRequest() { return endRequest_; }
+	void Finalize() override;
 
 private:
 	Transform cameraTransform
@@ -52,12 +46,6 @@ private:
 		{0.0f,0.0f,0.0f}
 	};
 
-	// WindowAPI
-	WindowAPI* windowAPI = nullptr;
-	// DirectX共通部
-	DirectXCommon* dxCommon = nullptr;
-	// 入力
-	Input* input = nullptr;
 	// スプライト共通部
 	SpriteCommon* spriteCommon = nullptr;
 	// 3Dオブジェクト共通部
@@ -79,9 +67,5 @@ private:
 	// サウンド
 	SoundManager* soundManager = nullptr;
 	SoundData soundData1; // サウンドデータ
-
-	// ゲーム終了フラグ
-	bool endRequest_ = false;
-
 };
 

@@ -408,6 +408,10 @@ void DirectXCommon::PostDraw() {
 	assert(SUCCEEDED(hr));
 }
 
+void DirectXCommon::Finalize() {
+	
+}
+
 // デスクリプタヒープ生成
 Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) {
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> descriptorHeap = nullptr;

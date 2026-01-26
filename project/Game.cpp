@@ -3,64 +3,14 @@
 #pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
-static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	wchar_t filePath[MAX_PATH] = { 0 };
-	CreateDirectory(L"./Duumps", nullptr);
-	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
-	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-	// processId(このexeのID)とクラッシュ（例外）の発生したthreadIdを取得
-	DWORD processId = GetCurrentProcessId();
-	DWORD threadId = GetCurrentThreadId();
-	// 設定情報を入力
-	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
-	minidumpInformation.ThreadId = threadId;
-	minidumpInformation.ExceptionPointers = exception;
-	minidumpInformation.ClientPointers = TRUE;
-	//Dumpを出力。MiniDumpNormalは最低限の情報を出力するプラグ
-	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
 
-	return EXCEPTION_EXECUTE_HANDLER;
-}
 
 void Game::Initialize() {
-	// リソースリークチェック
-	struct D3DResourceLeakChecker {
-		~D3DResourceLeakChecker() {
-			Microsoft::WRL::ComPtr <IDXGIDebug1> debug;
-			if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
-				debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-				debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
-				debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-			}
-		}
-	};
-
-
-	// COMの初期化
-	CoInitializeEx(0, COINIT_MULTITHREADED);
-
-	// 誰も補足しなかった場合に(Unhandled),補足する関数を登録
-	SetUnhandledExceptionFilter(ExportDump);
-
-	// WindowAPIの初期化
-	windowAPI = new WindowAPI();
-	windowAPI->Initialize();
-
-	// DirectXの初期化
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(windowAPI);
-
-	// Input初期化
-	input = new Input();
-	input->Initialize(windowAPI);
-
-
+	// 基底クラスの初期化
+	M_Framework::Initialize();
 
 
 #pragma region 基盤システム
-
 
 	// スプライト共通部の初期化
 	spriteCommon = new SpriteCommon();
@@ -143,10 +93,8 @@ void Game::Initialize() {
 }
 
 void Game::Update() {
-	if (windowAPI->ProcessMessage()) {
-		endRequest_ = true;
-		return;
-	}
+	//　基底クラス
+	M_Framework::Update();
 
 	// ImGui受付開始
 	imGuiManager->Begin();
@@ -197,7 +145,7 @@ void Game::Update() {
 
 void Game::Draw() {
 	// 描画前処理
-	dxCommon->PreDraw();
+	M_Framework::BeginFrame();
 	srvManager->PreDraw();
 
 	// 3Dオブジェクトの描画準備
@@ -221,15 +169,13 @@ void Game::Draw() {
 	imGuiManager->Draw();
 
 	// 描画後処理
-	dxCommon->PostDraw();
+	M_Framework::EndFrame();
+
 }
 
 void Game::Finalize() {
 	// ImGuiの終了処理
 	imGuiManager->Finalize();
-
-	// 解放
-	CloseHandle(dxCommon->fenceEvent);
 
 	// テクスチャマネージャの終了
 	TextureManager::GetInstance()->Finalize();
@@ -241,14 +187,6 @@ void Game::Finalize() {
 	//　サウンドマネージャー終了
 	soundManager->Finalize(&soundData1);
 
-	// 入力の初期化
-	delete input;
-	// WindowAPIの終了処理
-	windowAPI->Finalize();
-	// WindowAPIの解放
-	delete windowAPI;
-	// DirectX解放
-	delete dxCommon;
 	// スプライト解放
 	delete sprite;
 	delete spriteCommon;
@@ -264,5 +202,6 @@ void Game::Finalize() {
 	// imGuiマネージャ解放
 	delete imGuiManager;
 
-	CoUninitialize();
+	// 基底クラスの終了処理
+	M_Framework::Finalize();
 }

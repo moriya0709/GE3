@@ -40,6 +40,7 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="M_Framework.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
     <ClInclude Include="engine\math\Calc.h" />
+    <ClInclude Include="M_Framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Input.h" />

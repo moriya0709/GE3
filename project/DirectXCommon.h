@@ -52,6 +52,9 @@ public:
 	// •`‰æŒãˆ—
 	void PostDraw();
 
+	// I—¹
+	void Finalize();
+
 	// getter
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
