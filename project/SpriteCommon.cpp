@@ -1,4 +1,5 @@
 #include "SpriteCommon.h"
+#include "DirectXCommon.h"
 
 void SpriteCommon::Initialize(DirectXCommon* dxCommon) {
 	// ˆø”‚Åó‚¯æ‚Á‚Äƒƒ“ƒo•Ï”‚É‹L˜^‚·‚é

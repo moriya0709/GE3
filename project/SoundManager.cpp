@@ -4,6 +4,8 @@
 #pragma comment(lib,"Mfreadwrite.lib")
 #pragma comment(lib,"mfuuid.lib")
 
+SoundManager* SoundManager::instance = nullptr;
+
 void SoundManager::Initialize() {
 	//XAudio2‚Ì‰Šú‰»
 	IXAudio2MasteringVoice* masterVoice = nullptr;
@@ -103,6 +105,13 @@ SoundData SoundManager::SoundLoadFile(const std::string& filename) {
 
 	return soundData;
 
+}
+
+SoundManager* SoundManager::GetInstance() {
+	if (instance == nullptr) {
+		instance = new SoundManager;
+	}
+	return instance;
 }
 
 // ‰¹ºƒf[ƒ^‰ğ•ú

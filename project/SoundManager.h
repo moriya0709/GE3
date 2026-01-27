@@ -44,11 +44,17 @@ public:
 	// 音声データの読み込み
 	SoundData SoundLoadFile(const std::string& filename);
 
+	// シングルトンインスタンスの取得
+	static SoundManager* GetInstance();
+
 	// 終了
 	void Finalize(SoundData* soundData);
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
+
+	// シングルトンインスタンス
+	static SoundManager* instance;
 
 	// 音声データ解放
 	void SoundUnload(SoundData* soundData);

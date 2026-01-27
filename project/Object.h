@@ -4,15 +4,16 @@
 #include <vector>
 #include <fstream>
 
-#include "ObjectCommon.h"
+#include <D3d12.h>
+#include <cassert>
+#include <wrl.h>
+#include <dxcapi.h>
+
 #include "Calc.h"
 
-class ObjectCommon;
-class DirectXCommon;
-class WindowAPI;
 class Model;
 class Camera;
-
+class ObjectCommon;
 
 // 座標変換行列データ
 struct TransformationMatrix {
@@ -29,7 +30,7 @@ struct DirectionalLight {
 class Object {
 public:
 	// 初期化
-	void Initialize(ObjectCommon* objectCommon,WindowAPI* windowAPI,DirectXCommon* dxCommon);
+	void Initialize(ObjectCommon* objectCommon);
 	// 更新
 	void Update();
 	// 描画
@@ -63,16 +64,12 @@ private:
 	Transform cameraTransform;
 
 
-	// 3Dオブジェクト共通部
-	ObjectCommon* objectCommon_ = nullptr;
-	// DirectX共通部
-	DirectXCommon* dxCommon_ = nullptr;
-	// WindowAPI
-	WindowAPI* windowAPI_ = nullptr;
 	// モデル
 	Model* model_ = nullptr;
 	// カメラ
 	Camera* camera_ = nullptr;
+	// ObjectCommonのポインタ
+	ObjectCommon* objectCommon_ = nullptr;
 
 };
 

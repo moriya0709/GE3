@@ -29,8 +29,6 @@ private:
 	// グラフィックスパイプライン
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 
-
-
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;
 

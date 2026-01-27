@@ -1,6 +1,8 @@
 #include "ObjectCommon.h"
 #include "DirectXCommon.h"
 
+ObjectCommon* ObjectCommon::instance = nullptr;
+
 void ObjectCommon::Initialize(DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
 	dxCommon_ = dxCommon;
@@ -19,6 +21,14 @@ void ObjectCommon::SetCommonPipelineState() {
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけ良い
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+}
+
+// シングルトンインスタンスの取得
+ObjectCommon* ObjectCommon::GetInstance() {
+	if (instance == nullptr) {
+		instance = new ObjectCommon;
+	}
+	return instance;
 }
 
 // ルートしグネチャの作成

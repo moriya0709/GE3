@@ -12,12 +12,11 @@
 #include "CommonStructs.h"
 
 class SpriteCommon;
-class DirectXCommon;
 
 class Sprite {
 public:
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon, DirectXCommon* dxCommon,std::string textureFilePath);
+	void Initialize(SpriteCommon* spriteCommon,std::string textureFilePath);
 	// 更新
 	void Update();
 	// 描画
@@ -53,11 +52,6 @@ private:
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 	};
-
-	// 共通クラス
-	SpriteCommon* spriteCommon_ = nullptr;
-	// DirectX
-	DirectXCommon* dxCommon_ = nullptr;
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
@@ -108,6 +102,9 @@ private:
 
 	// テクスチャファイルパス
 	std::string textureFilePath_;
+
+	// DirectXCommonのポインタ
+	SpriteCommon* spriteCommon_ = nullptr;
 
 	// テクスチャサイズ調整
 	void AdjustTextureSize();

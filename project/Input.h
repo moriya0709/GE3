@@ -19,6 +19,9 @@ public:
 	// 更新
 	void  Update();
 
+	// シングルトンインスタンスの取得
+	static Input* GetInstance();
+
 	// キーが押されたかどうかを調べる
 	bool PushKey(BYTE keyNumBer); // プッシュ
 	bool TriggerKey(BYTE keyNumber); // トリガー
@@ -49,6 +52,9 @@ private:
 	// ゲームパッド
 	std::vector<IDirectInputDevice8> gamepads;
 	std::vector<DIJOYSTATE> padStates;
+
+	// シングルトンインスタンス
+	static Input* instance;
 
 	// WindowAPI
 	WindowAPI* windowAPI_ = nullptr;

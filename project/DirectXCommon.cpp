@@ -6,6 +6,7 @@
 using namespace Microsoft::WRL;
 
 const uint32_t DirectXCommon::kMaxSRVCount = 512;
+DirectXCommon* DirectXCommon::instance = nullptr;
 
 void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	// NULL検出
@@ -406,6 +407,14 @@ void DirectXCommon::PostDraw() {
 	// 次のフレーム用のコマンドリストを準備
 	hr = commandList->Reset(commandAllocator.Get(), nullptr);
 	assert(SUCCEEDED(hr));
+}
+
+// シングルトンインスタンスの取得
+DirectXCommon* DirectXCommon::GetInstance() {
+	if (instance == nullptr) {
+		instance = new DirectXCommon;
+	}
+	return instance;
 }
 
 void DirectXCommon::Finalize() {

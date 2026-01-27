@@ -6,6 +6,8 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+Input* Input::instance = nullptr;
+
 // 初期化
 void Input::Initialize(WindowAPI* windowAPI) {
 	// 借りてきたWindowAPIのインスタンスを記録
@@ -42,6 +44,13 @@ void Input::Update() {
 	keyboard->Acquire();
 	// 全キーの入力情報を取得する
 	keyboard->GetDeviceState(sizeof(key), key);
+}
+
+Input* Input::GetInstance() {
+	if (instance == nullptr) {
+		instance = new Input;
+	}
+	return instance;
 }
 
 // プッシュ入力

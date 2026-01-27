@@ -52,6 +52,9 @@ public:
 	// 描画後処理
 	void PostDraw();
 
+	// シングルトンインスタンスの取得
+	static DirectXCommon* GetInstance();
+
 	// 終了
 	void Finalize();
 
@@ -133,6 +136,10 @@ private:
 
 	// バリア
 	D3D12_RESOURCE_BARRIER barrier{};
+
+	// シングルトンインスタンス
+	static DirectXCommon* instance;
+
 
 	// WindowAPI
 	WindowAPI* windowAPI_ = nullptr;

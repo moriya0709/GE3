@@ -4,7 +4,8 @@
 #include <wrl.h>
 #include <dxcapi.h>
 
-class DirectXCommon;
+#include "DirectXCommon.h"
+
 class Camera;
 
 class ObjectCommon {
@@ -13,6 +14,9 @@ public:
 	void Initialize(DirectXCommon* dxCommon);
 	// 共通描画設定
 	void SetCommonPipelineState();
+
+	// シングルトンインスタンスの取得
+	static ObjectCommon* GetInstance();
 
 	// setter
 	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
@@ -33,6 +37,9 @@ private:
 
 	// グラフィックスパイプライン
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+
+	// シングルトンインスタンス
+	static ObjectCommon* instance;
 
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;

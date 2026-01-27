@@ -12,11 +12,10 @@ constexpr uint32_t kMaxParticleInstance = 1024;
 std::random_device seedGenerator;
 std::mt19937 randomEngine(seedGenerator());
 
-void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager,Camera* camera, const std::string& directoryPath, const std::string& filename) {
+void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, const std::string& directoryPath, const std::string& filename) {
 	// 引数で受け取ってメンバ変数に記録する
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
-	camera_ = camera;
 
 	// モデル読み込み
 	modelData = LoadObjFile(directoryPath, filename);
@@ -55,14 +54,20 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 	CreateGraphicsPipeline();
 }
 
-void ParticleManager::Update() {
+void ParticleManager::Update(Camera* camera) {
 	// 表面がカメラの方を向くようにする
 	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
 	// カメラの向きに合わせる
-	Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix, camera_->GetViewProjectionMatrix());
-	billboardMatrix.m[3][0] = 0.0f;
-	billboardMatrix.m[3][1] = 0.0f;
-	billboardMatrix.m[3][2] = 0.0f;
+	  // カメラの View 行列
+	Matrix4x4 view = camera->GetViewMatrix();
+
+	// 平行移動を消す
+	view.m[3][0] = 0.0f;
+	view.m[3][1] = 0.0f;
+	view.m[3][2] = 0.0f;
+
+	// ビルボード行列（回転のみ）
+	Matrix4x4 billboardMatrix = Inverse(view);
 
 	// 全てのパーティクルグループについて処理する
 	for (auto& groupPair : particleGroups) {
@@ -100,7 +105,7 @@ void ParticleManager::Update() {
 				Multiply(Multiply(scale, billboardMatrix), translate);
 
 			Matrix4x4 viewProj =
-				Multiply(camera_->GetViewMatrix(), camera_->GetProjectionMatrix());
+				Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 
 			mapped[index].world = world;
 			mapped[index].WVP = Multiply(world, viewProj);
