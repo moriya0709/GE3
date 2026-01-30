@@ -11,9 +11,10 @@
 #include "ImGuiManager.h"
 #include "BaseScene.h"
 
-class DirectXCommon;
+class SpriteCommon;
+class ObjectCommon;
 
-class GamePlayScene : public BaseScene{
+class TitleScene : public BaseScene {
 public:
 	// ‰Šú‰»
 	void Initialize(DirectXCommon* dxCommon) override;

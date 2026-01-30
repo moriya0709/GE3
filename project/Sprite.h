@@ -11,12 +11,12 @@
 #include "Calc.h"
 #include "CommonStructs.h"
 
-class SpriteCommon;
+class DirectXCommon;
 
 class Sprite {
 public:
 	// 初期化
-	void Initialize(SpriteCommon* spriteCommon,std::string textureFilePath);
+	void Initialize(DirectXCommon* dxCommon,std::string textureFilePath);
 	// 更新
 	void Update();
 	// 描画
@@ -104,7 +104,7 @@ private:
 	std::string textureFilePath_;
 
 	// DirectXCommonのポインタ
-	SpriteCommon* spriteCommon_ = nullptr;
+	DirectXCommon* dxCommon_ = nullptr;
 
 	// テクスチャサイズ調整
 	void AdjustTextureSize();

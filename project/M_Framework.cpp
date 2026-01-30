@@ -54,6 +54,9 @@ void M_Framework::Initialize() {
 	input = new Input();
 	input->Initialize(windowAPI);
 
+	// シーンの生成
+	scene = std::make_unique <GamePlayScene>();
+
 #pragma endregion
 }
 
@@ -80,6 +83,8 @@ void M_Framework::Finalize() {
 	// イベントハンドルを閉じる
 	CloseHandle(dxCommon->fenceEvent);
 	delete dxCommon;
+	// シーン解放
+	scene->Finalize();
 
 	CoUninitialize();
 }

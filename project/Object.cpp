@@ -3,18 +3,17 @@
 #include "ModelManager.h"
 #include "Camera.h"
 #include "CameraManager.h"
-#include "ObjectCommon.h"
+#include "DirectXCommon.h"
 
-void Object::Initialize(ObjectCommon* objectCommon) {
+void Object::Initialize(DirectXCommon* dxCommon,Camera* camera) {
 	// 引数で受け取ってメンバ変数に記録する
-	objectCommon_ = objectCommon;
-
+	dxCommon_ = dxCommon;
 	// デフォルトカメラをセット
-	camera_ = ObjectCommon::GetInstance()->GetDefaultCamera();
+	camera_ = camera;
 
 	
 	// *座標変換行列* //
-	transformationMatrixResource = objectCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
+	transformationMatrixResource = dxCommon_->CreateBufferResource(sizeof(TransformationMatrix));
 	// 書き込む為のアドレスを取得
 	transformationMatrixResource->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData));
 	// 単位行列を書き込んでおく
@@ -24,7 +23,7 @@ void Object::Initialize(ObjectCommon* objectCommon) {
 	// *平行光源* //
 
 	// リソース
-	directionalLightResource = objectCommon_->GetDxCommon()->CreateBufferResource(sizeof(DirectionalLight));
+	directionalLightResource = dxCommon_->CreateBufferResource(sizeof(DirectionalLight));
 	// 書き込む
 	directionalLightResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData));
 	// 初期値を書き込む
@@ -63,9 +62,9 @@ void Object::Update() {
 
 void Object::Draw() {
 	// wvp用とWorld用のCBufferの場所を設定
-	objectCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
 	// 平行光源
-	objectCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {

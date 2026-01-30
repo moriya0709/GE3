@@ -1,12 +1,16 @@
+
 #pragma once
 #include <dxgidebug.h>
 #include <strsafe.h>
 #include <minidumpapiset.h>
 
-
 #include "WindowAPI.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+
+#include "BaseScene.h"
+#include "TitleScene.h"
+#include "GamePlayScene.h"
 
 class M_Framework {
 public:
@@ -36,10 +40,11 @@ public:
 	DirectXCommon* dxCommon = nullptr;
 	// ì¸óÕ
 	Input* input = nullptr;
+	// ÉVÅ[Éì
+	std::unique_ptr<BaseScene> scene;
 
 private:
 	bool endRequest_ = false;
 
 
 };
-

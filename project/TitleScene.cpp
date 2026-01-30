@@ -1,6 +1,6 @@
-#include "GamePlayScene.h"
+#include "TitleScene.h"
 
-void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
+void TitleScene::Initialize(DirectXCommon* dxCommon) {
 	// カメラ初期化
 	camera = new Camera();
 	camera->SetRotate({ cameraTransform.rotate });
@@ -12,7 +12,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 
 	// スプライト
 	sprite = new Sprite();
-	sprite->Initialize(dxCommon,"Resource/uvChecker.png");
+	sprite->Initialize(dxCommon, "Resource/monsterBall.png");
 
 	// 3Dオブジェクト
 	for (int i = 0; i < 2; i++) {
@@ -43,7 +43,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	SoundManager::GetInstance()->SoundPlayWave(soundData1);
 }
 
-void GamePlayScene::Update() {
+void TitleScene::Update() {
 	// 入力取得
 	auto input = Input::GetInstance();
 	// カメラ更新
@@ -82,18 +82,18 @@ void GamePlayScene::Update() {
 
 }
 
-void GamePlayScene::Draw3D() {
+void TitleScene::Draw3D() {
 	// 3Dオブジェクト描画
 	//for (int i = 0; i < 2; i++) {
 	//	object[i]->Draw();
 	//}
 }
-void GamePlayScene::Draw2D() {
+void TitleScene::Draw2D() {
 	// スプライト描画
 	sprite->Draw();
 }
 
-void GamePlayScene::Finalize() {
+void TitleScene::Finalize() {
 	//　サウンドマネージャー終了
 	SoundManager::GetInstance()->Finalize(&soundData1);
 	// スプライト解放

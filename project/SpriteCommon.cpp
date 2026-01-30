@@ -1,6 +1,8 @@
 #include "SpriteCommon.h"
 #include "DirectXCommon.h"
 
+SpriteCommon* SpriteCommon::instance = nullptr;
+
 void SpriteCommon::Initialize(DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
 	dxCommon_ = dxCommon;
@@ -21,6 +23,13 @@ void SpriteCommon::SetCommonPipelineState() {
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけ良い
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+}
+
+SpriteCommon* SpriteCommon::GetInstance() {
+	if (instance == nullptr) {
+		instance = new SpriteCommon;
+	}
+	return instance;
 }
 
 // ルートシグネイチャの作成

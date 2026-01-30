@@ -13,6 +13,9 @@ public:
 	// 共通描画設定
 	void SetCommonPipelineState();
 
+	// シングルトンインスタンスの取得
+	static SpriteCommon* GetInstance();
+
 	// ゲッター
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
@@ -28,6 +31,9 @@ private:
 
 	// グラフィックスパイプライン
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
+
+	// シングルトンインスタンス
+	static SpriteCommon* instance;
 
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;

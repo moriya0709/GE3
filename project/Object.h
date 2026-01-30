@@ -13,7 +13,7 @@
 
 class Model;
 class Camera;
-class ObjectCommon;
+class DirectXCommon;
 
 // 座標変換行列データ
 struct TransformationMatrix {
@@ -30,7 +30,7 @@ struct DirectionalLight {
 class Object {
 public:
 	// 初期化
-	void Initialize(ObjectCommon* objectCommon);
+	void Initialize(DirectXCommon* dxCommon,Camera* camera);
 	// 更新
 	void Update();
 	// 描画
@@ -68,8 +68,8 @@ private:
 	Model* model_ = nullptr;
 	// カメラ
 	Camera* camera_ = nullptr;
-	// ObjectCommonのポインタ
-	ObjectCommon* objectCommon_ = nullptr;
+	// DirectXCommonのポインタ
+	DirectXCommon* dxCommon_ = nullptr;
 
 };
 

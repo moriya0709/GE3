@@ -36,7 +36,4 @@ private:
 	SrvManager* srvManager = nullptr;
 	// ImGuiマネージャ
 	ImGuiManager* imGuiManager = nullptr;
-	// シーン
-	GamePlayScene* scene = nullptr;
 };
-

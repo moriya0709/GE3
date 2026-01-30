@@ -45,10 +45,8 @@ void Game::Initialize() {
 	imGuiManager = new ImGuiManager();
 	imGuiManager->Initialize(windowAPI, dxCommon, srvManager);
 
-	// ゲームプレイシーンの生成
-	scene = new GamePlayScene();
 	// ゲームプレイシーンの初期化
-	scene->Initialize(spriteCommon,objectCommon);
+	scene->Initialize(dxCommon);
 
 	// カメラを3Dオブジェクト共通部にセット
 	objectCommon->SetDefaultCamera(scene->GetCamera());
@@ -117,10 +115,6 @@ void Game::Finalize() {
 	delete srvManager;
 	// imGuiマネージャ解放
 	delete imGuiManager;
-
-	// シーン解放
-	scene->Finalize();
-	delete scene;
 
 	// 基底クラスの終了処理
 	M_Framework::Finalize();
