@@ -3,6 +3,11 @@
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 
+#ifdef _DEBUG
+#include <dxgidebug.h>
+#pragma comment(lib, "dxguid.lib")
+#endif
+
 using namespace Microsoft::WRL;
 
 const uint32_t DirectXCommon::kMaxSRVCount = 512;
@@ -418,7 +423,13 @@ DirectXCommon* DirectXCommon::GetInstance() {
 }
 
 void DirectXCommon::Finalize() {
-	
+#ifdef _DEBUG
+	IDXGIDebug1* debug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
+		debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+		debug->Release();
+	}
+#endif
 }
 
 // デスクリプタヒープ生成

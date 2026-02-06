@@ -1,28 +1,31 @@
 #include "GamePlayScene.h"
+#include "ObjectCommon.h"
+#include "SpriteCommon.h"
+#include "SceneManager.h"
 
-void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
+void GamePlayScene::Initialize() {
 	// カメラ初期化
 	camera = new Camera();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
 	// カメラマネージャ登録
-	CameraManager::GetInstance()->AddCamera("main", camera);
+	//CameraManager::GetInstance()->AddCamera("main", camera);
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
 	// スプライト
 	sprite = new Sprite();
-	sprite->Initialize(dxCommon,"Resource/uvChecker.png");
+	sprite->Initialize("Resource/uvChecker.png");
 
 	// 3Dオブジェクト
 	for (int i = 0; i < 2; i++) {
 		object[i] = new Object();
-		object[i]->Initialize(dxCommon,camera);
+		object[i]->Initialize(camera);
 	}
 
 	// パーティクルマネージャ初期化
-	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
-	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
+	//ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
+	//ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
 
 	// Emitパーティクル発生
 	particleEmitter = new ParticleEmitter();
@@ -30,17 +33,17 @@ void GamePlayScene::Initialize(DirectXCommon* dxCommon) {
 	particleEmitter->Emit();
 
 	// .objファイルからモデル読み込み
-	ModelManager::GetInstance()->LoadModel("plane.obj");
-	ModelManager::GetInstance()->LoadModel("axis.obj");
+	//ModelManager::GetInstance()->LoadModel("plane.obj");
+	//ModelManager::GetInstance()->LoadModel("axis.obj");
 
 	// 初期化済みの3Dオブジェクトにモデルを紐づける
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
 
 	// 音声読み込み
-	soundData1 = SoundManager::GetInstance()->SoundLoadFile("game.mp3");
+	//soundData1 = SoundManager::GetInstance()->SoundLoadFile("game.mp3");
 	// 音声再生
-	SoundManager::GetInstance()->SoundPlayWave(soundData1);
+	//SoundManager::GetInstance()->SoundPlayWave(soundData1);
 }
 
 void GamePlayScene::Update() {
@@ -49,12 +52,21 @@ void GamePlayScene::Update() {
 	// カメラ更新
 	CameraManager::GetInstance()->Update();
 
+	// ENTERキーを押したら
+	if (input->TriggerKey(DIK_RETURN)) {
+		// ゲームプレイシーン(次シーン)を生成
+		BaseScene* scene = new TitleScene();
+		// シーン切り換え依頼
+		SceneManager::GetInstance()->SetNextScene(scene);
+	}
+
 	// 数字の０キーが押されていたら
 	if (input->TriggerKey(DIK_0)) {
 		OutputDebugStringA("Hit 0\n"); // 出力ウィンドウに「Hit ０」と表示
 		// テクスチャ変更
 		sprite->ChangeTexture("Resource/uvChecker.png");
 		particleEmitter->SetActive("group2");
+
 	}
 
 	// * 3Dオブジェクト* //
@@ -82,20 +94,26 @@ void GamePlayScene::Update() {
 
 }
 
-void GamePlayScene::Draw3D() {
+void GamePlayScene::Draw() {
+	// 3Dオブジェクトの描画準備
+	ObjectCommon::GetInstance()->SetCommonPipelineState();
+
 	// 3Dオブジェクト描画
 	//for (int i = 0; i < 2; i++) {
 	//	object[i]->Draw();
 	//}
-}
-void GamePlayScene::Draw2D() {
+	
+	// パーティクル描画
+	ParticleManager::GetInstance()->Draw();
+
+	// 2Dオブジェクトの描画準備
+	SpriteCommon::GetInstance()->SetCommonPipelineState();
+
 	// スプライト描画
 	sprite->Draw();
 }
 
 void GamePlayScene::Finalize() {
-	//　サウンドマネージャー終了
-	SoundManager::GetInstance()->Finalize(&soundData1);
 	// スプライト解放
 	delete sprite;
 	// 3Dオブジェクト解放

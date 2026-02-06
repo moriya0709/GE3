@@ -16,7 +16,7 @@ class DirectXCommon;
 class Sprite {
 public:
 	// ‰Šú‰»
-	void Initialize(DirectXCommon* dxCommon,std::string textureFilePath);
+	void Initialize(std::string textureFilePath);
 	// XV
 	void Update();
 	// •`‰æ

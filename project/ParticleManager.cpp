@@ -16,6 +16,7 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 	// 引数で受け取ってメンバ変数に記録する
 	dxCommon_ = dxCommon;
 	srvManager_ = srvManager;
+	camera_ = Camera::GetInstance();
 
 	// モデル読み込み
 	modelData = LoadObjFile(directoryPath, filename);
@@ -54,12 +55,12 @@ void ParticleManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager
 	CreateGraphicsPipeline();
 }
 
-void ParticleManager::Update(Camera* camera) {
+void ParticleManager::Update() {
 	// 表面がカメラの方を向くようにする
 	Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
 	// カメラの向きに合わせる
 	  // カメラの View 行列
-	Matrix4x4 view = camera->GetViewMatrix();
+	Matrix4x4 view = camera_->GetViewMatrix();
 
 	// 平行移動を消す
 	view.m[3][0] = 0.0f;
@@ -105,7 +106,7 @@ void ParticleManager::Update(Camera* camera) {
 				Multiply(Multiply(scale, billboardMatrix), translate);
 
 			Matrix4x4 viewProj =
-				Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix());
+				Multiply(camera_->GetViewMatrix(), camera_->GetProjectionMatrix());
 
 			mapped[index].world = world;
 			mapped[index].WVP = Multiply(world, viewProj);

@@ -8,10 +8,6 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 
-#include "BaseScene.h"
-#include "TitleScene.h"
-#include "GamePlayScene.h"
-
 class M_Framework {
 public:
 	// ‰Šú‰»
@@ -40,8 +36,6 @@ public:
 	DirectXCommon* dxCommon = nullptr;
 	// “ü—Í
 	Input* input = nullptr;
-	// ƒV[ƒ“
-	std::unique_ptr<BaseScene> scene;
 
 private:
 	bool endRequest_ = false;

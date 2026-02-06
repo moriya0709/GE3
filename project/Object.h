@@ -30,7 +30,7 @@ struct DirectionalLight {
 class Object {
 public:
 	// ‰Šú‰»
-	void Initialize(DirectXCommon* dxCommon,Camera* camera);
+	void Initialize(Camera* camera);
 	// XV
 	void Update();
 	// •`‰æ

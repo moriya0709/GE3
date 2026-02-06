@@ -11,23 +11,22 @@
 #include "ImGuiManager.h"
 #include "BaseScene.h"
 
-class DirectXCommon;
+class SpriteCommon;
+class ObjectCommon;
 
 class GamePlayScene : public BaseScene{
 public:
 	// ‰Šú‰»
-	void Initialize(DirectXCommon* dxCommon) override;
+	void Initialize() override;
 	// XV
 	void Update() override;
 	// •`‰æ
-	void Draw3D() override;
-	void Draw2D() override;
+	void Draw() override;
 	// I—¹
 	void Finalize() override;
 
 	// getter
 	Camera* GetCamera() override { return camera; }
-
 
 private:
 	Transform cameraTransform

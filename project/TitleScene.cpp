@@ -1,46 +1,37 @@
 #include "TitleScene.h"
+#include "ObjectCommon.h"
+#include "SpriteCommon.h"
+#include "SceneManager.h"
 
-void TitleScene::Initialize(DirectXCommon* dxCommon) {
+void TitleScene::Initialize() {
 	// カメラ初期化
 	camera = new Camera();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
-	// カメラマネージャ登録
-	CameraManager::GetInstance()->AddCamera("main", camera);
-	CameraManager::GetInstance()->SetActiveCamera("main");
-
 	// スプライト
 	sprite = new Sprite();
-	sprite->Initialize(dxCommon, "Resource/monsterBall.png");
+	sprite->Initialize("Resource/monsterBall.png");
 
 	// 3Dオブジェクト
 	for (int i = 0; i < 2; i++) {
 		object[i] = new Object();
-		object[i]->Initialize(dxCommon,camera);
+		object[i]->Initialize(camera);
 	}
 
-	// パーティクルマネージャ初期化
-	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
-	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
 
 	// Emitパーティクル発生
 	particleEmitter = new ParticleEmitter();
 	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
 	particleEmitter->Emit();
 
-	// .objファイルからモデル読み込み
-	ModelManager::GetInstance()->LoadModel("plane.obj");
-	ModelManager::GetInstance()->LoadModel("axis.obj");
-
 	// 初期化済みの3Dオブジェクトにモデルを紐づける
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
 
-	// 音声読み込み
-	soundData1 = SoundManager::GetInstance()->SoundLoadFile("game.mp3");
 	// 音声再生
-	SoundManager::GetInstance()->SoundPlayWave(soundData1);
+	SoundManager::GetInstance()->Play("bgm");
+
 }
 
 void TitleScene::Update() {
@@ -48,6 +39,16 @@ void TitleScene::Update() {
 	auto input = Input::GetInstance();
 	// カメラ更新
 	CameraManager::GetInstance()->Update();
+
+	// ENTERキーを押したら
+	if (input->TriggerKey(DIK_RETURN)) {
+		// ゲームプレイシーン(次シーン)を生成
+		BaseScene* scene = new GamePlayScene();
+		// シーン切り換え依頼
+		SceneManager::GetInstance()->SetNextScene(scene);
+		// 音声再生
+		SoundManager::GetInstance()->Stop("bgm");
+	}
 
 	// 数字の０キーが押されていたら
 	if (input->TriggerKey(DIK_0)) {
@@ -82,20 +83,26 @@ void TitleScene::Update() {
 
 }
 
-void TitleScene::Draw3D() {
+void TitleScene::Draw() {
+	// 3Dオブジェクトの描画準備
+	ObjectCommon::GetInstance()->SetCommonPipelineState();
+
 	// 3Dオブジェクト描画
 	//for (int i = 0; i < 2; i++) {
 	//	object[i]->Draw();
 	//}
-}
-void TitleScene::Draw2D() {
+
+	// パーティクル描画
+	ParticleManager::GetInstance()->Draw();
+
+	// 2Dオブジェクトの描画準備
+	SpriteCommon::GetInstance()->SetCommonPipelineState();
+
 	// スプライト描画
 	sprite->Draw();
 }
 
 void TitleScene::Finalize() {
-	//　サウンドマネージャー終了
-	SoundManager::GetInstance()->Finalize(&soundData1);
 	// スプライト解放
 	delete sprite;
 	// 3Dオブジェクト解放

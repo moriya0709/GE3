@@ -5,9 +5,9 @@
 #include "CameraManager.h"
 #include "DirectXCommon.h"
 
-void Object::Initialize(DirectXCommon* dxCommon,Camera* camera) {
+void Object::Initialize(Camera* camera) {
 	// 引数で受け取ってメンバ変数に記録する
-	dxCommon_ = dxCommon;
+	dxCommon_ = DirectXCommon::GetInstance();
 	// デフォルトカメラをセット
 	camera_ = camera;
 

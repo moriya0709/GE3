@@ -15,11 +15,11 @@ void Game::Initialize() {
 	CameraManager::GetInstance();
 
 	// スプライト共通部の初期化
-	spriteCommon = new SpriteCommon();
+	spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize(dxCommon);
 
 	// 3dスプライト共通部の初期化
-	objectCommon = new ObjectCommon();
+	objectCommon = ObjectCommon::GetInstance();
 	objectCommon->Initialize(dxCommon);
 
 	// SRVマネージャ
@@ -33,23 +33,39 @@ void Game::Initialize() {
 	// Particleマネージャ
 	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, "Resource/", "plane.obj");
 
-
 #pragma endregion
 
 #pragma region 最初のシーン
 
+	// パーティクルマネージャ初期化
+	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
+	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
+
+	// .objファイルからモデル読み込み
+	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
+
 	// サウンド
 	SoundManager::GetInstance()->Initialize();
+	SoundManager::GetInstance()->Load("bgm", "game.mp3");
 
 	// ImGui
 	imGuiManager = new ImGuiManager();
 	imGuiManager->Initialize(windowAPI, dxCommon, srvManager);
 
-	// ゲームプレイシーンの初期化
-	scene->Initialize(dxCommon);
 
-	// カメラを3Dオブジェクト共通部にセット
-	objectCommon->SetDefaultCamera(scene->GetCamera());
+	// シーンマネージャーの生成
+	sceneManager_ = SceneManager::GetInstance();
+	// 最初のシーン生成
+	BaseScene* scene = new TitleScene();
+	// シーンマネージャーに最初のシーンをセット
+	sceneManager_->SetNextScene(scene);
+	// 初期化
+	sceneManager_->Initialize();
+
+	// カメラマネージャ登録
+	CameraManager::GetInstance()->AddCamera("main", scene->GetCamera());
+	CameraManager::GetInstance()->SetActiveCamera("main");
 
 #pragma endregion
 
@@ -61,11 +77,12 @@ void Game::Update() {
 
 	//　基底クラス
 	M_Framework::Update();
-	// シーン更新
-	scene->Update();
+	
+	// シーンマネージャー更新
+	sceneManager_->Update();
 
 	// パーティクル更新
-	ParticleManager::GetInstance()->Update(scene->GetCamera());
+	ParticleManager::GetInstance()->Update();
 	// ImGui受付終了
 	imGuiManager->End();
 }
@@ -75,18 +92,8 @@ void Game::Draw() {
 	M_Framework::BeginFrame();
 	srvManager->PreDraw();
 
-	// 3Dオブジェクトの描画準備
-	objectCommon->SetCommonPipelineState();
-	// 3Dシーン描画
-	scene->Draw3D();
-
-	// パーティクル描画
-	ParticleManager::GetInstance()->Draw();
-
-	// スプライトの描画準備
-	spriteCommon->SetCommonPipelineState();
-	// 2Dシーン描画
-	scene->Draw2D();
+	// シーンマネージャー描画
+	sceneManager_->Draw();
 
 	// ImGui描画
 	imGuiManager->Draw();
@@ -106,6 +113,8 @@ void Game::Finalize() {
 	ModelManager::GetInstance()->Finalize();
 	// Particleマネージャの終了
 	ParticleManager::GetInstance()->Finalize();
+	//　サウンドマネージャー終了
+	SoundManager::GetInstance()->Finalize();
 
 	// スプライト共通部解放
 	delete spriteCommon;
@@ -115,6 +124,9 @@ void Game::Finalize() {
 	delete srvManager;
 	// imGuiマネージャ解放
 	delete imGuiManager;
+
+	// シーンマネージャ解放
+	delete sceneManager_;
 
 	// 基底クラスの終了処理
 	M_Framework::Finalize();

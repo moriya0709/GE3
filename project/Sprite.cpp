@@ -2,9 +2,9 @@
 #include "DirectXCommon.h"
 #include "TextureManager.h"
 
-void Sprite::Initialize(DirectXCommon* dxCommon, std::string textureFilePath) {
+void Sprite::Initialize(std::string textureFilePath) {
 	// 引数で受け取ってメンバ変数に記録する
-	dxCommon_ = dxCommon;
+	dxCommon_ = DirectXCommon::GetInstance();
 	textureFilePath_ = textureFilePath;
 
 	// *頂点データ* //

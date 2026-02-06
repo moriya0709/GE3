@@ -15,6 +15,8 @@
 #include "SoundManager.h"
 #include "ModelManager.h"
 
+#include "SceneManager.h"
+
 class Game : public M_Framework {
 public:
 	// 初期化
@@ -36,4 +38,6 @@ private:
 	SrvManager* srvManager = nullptr;
 	// ImGuiマネージャ
 	ImGuiManager* imGuiManager = nullptr;
+	// シーンマネージャ
+	SceneManager* sceneManager_ = nullptr;
 };

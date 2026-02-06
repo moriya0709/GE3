@@ -17,18 +17,16 @@ class ObjectCommon;
 class TitleScene : public BaseScene {
 public:
 	// ‰Šú‰»
-	void Initialize(DirectXCommon* dxCommon) override;
+	void Initialize() override;
 	// XV
 	void Update() override;
 	// •`‰æ
-	void Draw3D() override;
-	void Draw2D() override;
+	void Draw() override;
 	// I—¹
 	void Finalize() override;
 
 	// getter
 	Camera* GetCamera() override { return camera; }
-
 
 private:
 	Transform cameraTransform

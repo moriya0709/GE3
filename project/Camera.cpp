@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "WindowAPI.h"
 
+Camera* Camera::instance = nullptr;
+
 Camera::Camera()
 	: transform({{1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}})
 	, fovY_(0.45f)
@@ -24,4 +26,12 @@ void Camera::Update() {
 	// 合成行列
 	viewProjectionMatrix = Multiply(viewMatrix,projectionMatrix);
 
+}
+
+// シングルトンインスタンスの取得
+Camera* Camera::GetInstance() {
+	if (instance == nullptr) {
+		instance = new Camera;
+	}
+	return instance;
 }

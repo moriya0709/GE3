@@ -21,26 +21,6 @@ void SoundManager::Initialize() {
 	assert(SUCCEEDED(result));
 }
 
-// 音声再生
-void SoundManager::SoundPlayWave(const SoundData& soundData) {
-	HRESULT result;
-
-	// 波形フォーマットを元にSourceVoiceの生成
-	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
-	assert(SUCCEEDED(result));
-
-	// 再生する波形データの設定
-	XAUDIO2_BUFFER buf{};
-	buf.pAudioData = soundData.pBuffer.data();
-	buf.AudioBytes = static_cast<UINT32>(soundData.pBuffer.size());
-	buf.Flags = XAUDIO2_END_OF_STREAM;
-
-	// 波形データの再生
-	result = pSourceVoice->SubmitSourceBuffer(&buf);
-	result = pSourceVoice->Start();
-}
-
 // 音声データの読み込み
 SoundData SoundManager::SoundLoadFile(const std::string& filename) {
 	std::string fullpath = ("Resource/Sounds/") + filename;
@@ -107,6 +87,52 @@ SoundData SoundManager::SoundLoadFile(const std::string& filename) {
 
 }
 
+void SoundManager::Load(const std::string& name, const std::string& filename) {
+	if (sounds_.count(name)) {
+		return; // すでにロード済み
+	}
+
+	SoundData data = SoundLoadFile(filename); // ← さっきの関数
+	sounds_.emplace(name, std::move(data));
+}
+
+void SoundManager::Play(const std::string& name, bool loop) {
+	assert(sounds_.count(name));
+
+	SoundData& data = sounds_.at(name);
+
+	// すでに再生中なら止める（BGM向け）
+	if (data.voice) {
+		data.voice->Stop();
+		data.voice->FlushSourceBuffers();
+	}
+
+	HRESULT result = xAudio2->CreateSourceVoice(
+		&data.voice,
+		&data.wfex
+	);
+	assert(SUCCEEDED(result));
+
+	XAUDIO2_BUFFER buffer{};
+	buffer.pAudioData = data.pBuffer.data();
+	buffer.AudioBytes = static_cast<UINT32>(data.pBuffer.size());
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	buffer.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
+
+	data.voice->SubmitSourceBuffer(&buffer);
+	data.voice->Start();
+}
+
+void SoundManager::Stop(const std::string& name) {
+	if (!sounds_.count(name)) return;
+
+	SoundData& data = sounds_.at(name);
+	if (data.voice) {
+		data.voice->Stop();
+		data.voice->FlushSourceBuffers();
+	}
+}
+
 SoundManager* SoundManager::GetInstance() {
 	if (instance == nullptr) {
 		instance = new SoundManager;
@@ -114,21 +140,14 @@ SoundManager* SoundManager::GetInstance() {
 	return instance;
 }
 
-// 音声データ解放
-void SoundManager::SoundUnload(SoundData* soundData) {
-	soundData->pBuffer.clear();
-	soundData->wfex = {};
-}
 
-void SoundManager::Finalize(SoundData* soundData) {
+void SoundManager::Finalize() {
 	// 後始末
 	HRESULT result;
 	// Windows Media Foundationの終了
 	result = MFShutdown();
 	assert(SUCCEEDED(result));
 
-	// 音声データ解放
-	SoundUnload(soundData);
 	// 音声データ解放
 	xAudio2.Reset();
 }

@@ -25,6 +25,9 @@ public:
 	const Vector3& GetRotate() const { return transform.rotate; }
 	const Vector3& GetTranslate() const { return transform.translate; }
 
+	// シングルトンインスタンスの取得
+	static Camera* GetInstance();
+
 private:
 	// ビュー行列
 	Transform transform;
@@ -40,6 +43,9 @@ private:
 
 	// 合成行列
 	Matrix4x4 viewProjectionMatrix;
+
+	// シングルトンインスタンス
+	static Camera* instance;
 
 };
 

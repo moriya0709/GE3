@@ -59,7 +59,7 @@ public:
 	// ‰Šú‰»
 	void Initialize(DirectXCommon* dxCommon, SrvManager* srvManager, const std::string& directoryPath, const std::string& filename);
 	// XV
-	void Update(Camera* camera);
+	void Update();
 	// •`‰æ
 	void Draw();
 

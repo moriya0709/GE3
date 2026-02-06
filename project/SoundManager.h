@@ -8,6 +8,7 @@
 #include <mfapi.h>
 #include <mfidl.h> 
 #include <mfreadwrite.h>
+#include <unordered_map>
 
 #include "StringUtility.h"
 
@@ -17,6 +18,7 @@ struct SoundData {
 	WAVEFORMATEX wfex;
 	// バッファの先頭アドレス
 	std::vector<BYTE> pBuffer;
+	IXAudio2SourceVoice* voice;
 };
 // チャンクヘッダ
 struct ChunkHeader {
@@ -38,25 +40,30 @@ class SoundManager {
 public:
 	// 初期化
 	void Initialize();
-	// 音声再生
-	void SoundPlayWave(const SoundData& soundData);
 
 	// 音声データの読み込み
 	SoundData SoundLoadFile(const std::string& filename);
+
+	// 起動時に一度だけ
+	void Load(const std::string& name, const std::string& filename);
+
+	// Scene から使う
+	void Play(const std::string& name, bool loop = false);
+	void Stop(const std::string& name);
+
 
 	// シングルトンインスタンスの取得
 	static SoundManager* GetInstance();
 
 	// 終了
-	void Finalize(SoundData* soundData);
+	void Finalize();
 
 private:
+	// サウンドデータ
+	std::unordered_map<std::string, SoundData> sounds_;
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 
 	// シングルトンインスタンス
 	static SoundManager* instance;
-
-	// 音声データ解放
-	void SoundUnload(SoundData* soundData);
 };
 
