@@ -30,14 +30,8 @@ public:
 
 private:
 
-	// スプライト共通部
-	SpriteCommon* spriteCommon = nullptr;
-	// 3Dオブジェクト共通部
-	ObjectCommon* objectCommon = nullptr;
 	// SRVマネージャ
 	SrvManager* srvManager = nullptr;
 	// ImGuiマネージャ
 	ImGuiManager* imGuiManager = nullptr;
-	// シーンマネージャ
-	SceneManager* sceneManager_ = nullptr;
 };

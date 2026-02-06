@@ -46,6 +46,11 @@ void SceneManager::Draw() {
 	scene_->Draw();
 }
 
+void SceneManager::Finalize() {
+	delete instance;
+	instance = nullptr;
+}
+
 SceneManager* SceneManager::GetInstance() {
 	if (instance == nullptr) {
 		instance = new SceneManager;

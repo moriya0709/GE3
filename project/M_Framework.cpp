@@ -1,4 +1,4 @@
-#include "M_Framework.h"
+ï»¿#include "M_Framework.h"
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	SYSTEMTIME time;
@@ -7,22 +7,22 @@ static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	CreateDirectory(L"./Duumps", nullptr);
 	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d-%02d%02d-%02d%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
 	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-	// processId(‚±‚Ìexe‚ÌID)‚ÆƒNƒ‰ƒbƒVƒ…i—áŠOj‚Ì”­¶‚µ‚½threadId‚ğæ“¾
+	// processId(ã“ã®exeã®ID)ã¨ã‚¯ãƒ©ãƒƒã‚·ãƒ¥ï¼ˆä¾‹å¤–ï¼‰ã®ç™ºç”Ÿã—ãŸthreadIdã‚’å–å¾—
 	DWORD processId = GetCurrentProcessId();
 	DWORD threadId = GetCurrentThreadId();
-	// İ’èî•ñ‚ğ“ü—Í
+	// è¨­å®šæƒ…å ±ã‚’å…¥åŠ›
 	MINIDUMP_EXCEPTION_INFORMATION minidumpInformation{ 0 };
 	minidumpInformation.ThreadId = threadId;
 	minidumpInformation.ExceptionPointers = exception;
 	minidumpInformation.ClientPointers = TRUE;
-	//Dump‚ğo—ÍBMiniDumpNormal‚ÍÅ’áŒÀ‚Ìî•ñ‚ğo—Í‚·‚éƒvƒ‰ƒO
+	//Dumpã‚’å‡ºåŠ›ã€‚MiniDumpNormalã¯æœ€ä½é™ã®æƒ…å ±ã‚’å‡ºåŠ›ã™ã‚‹ãƒ—ãƒ©ã‚°
 	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &minidumpInformation, nullptr, nullptr);
 
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 void M_Framework::Initialize() {
-	// ƒŠƒ\[ƒXƒŠ[ƒNƒ`ƒFƒbƒN
+	// ãƒªã‚½ãƒ¼ã‚¹ãƒªãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯
 	struct D3DResourceLeakChecker {
 		~D3DResourceLeakChecker() {
 			Microsoft::WRL::ComPtr <IDXGIDebug1> debug;
@@ -34,23 +34,23 @@ void M_Framework::Initialize() {
 		}
 	};
 
-	// COM‚Ì‰Šú‰»
+	// COMã®åˆæœŸåŒ–
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 
-	// ’N‚à•â‘«‚µ‚È‚©‚Á‚½ê‡‚É(Unhandled),•â‘«‚·‚éŠÖ”‚ğ“o˜^
+	// èª°ã‚‚è£œè¶³ã—ãªã‹ã£ãŸå ´åˆã«(Unhandled),è£œè¶³ã™ã‚‹é–¢æ•°ã‚’ç™»éŒ²
 	SetUnhandledExceptionFilter(ExportDump);
 
-#pragma region Šî”ÕƒVƒXƒeƒ€
+#pragma region åŸºç›¤ã‚·ã‚¹ãƒ†ãƒ 
 
-	// WindowAPI‚Ì‰Šú‰»
+	// WindowAPIã®åˆæœŸåŒ–
 	windowAPI = new WindowAPI();
 	windowAPI->Initialize();
 
-	// DirectX‚Ì‰Šú‰»
+	// DirectXã®åˆæœŸåŒ–
 	dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize(windowAPI);
 
-	// Input‰Šú‰»
+	// InputåˆæœŸåŒ–
 	input = Input::GetInstance();
 	input->Initialize(windowAPI);
 
@@ -63,7 +63,7 @@ void M_Framework::Update() {
 		return;
 	}
 
-	// “ü—Í‚ÌXV
+	// å…¥åŠ›ã®æ›´æ–°
 	input->Update();
 }
 
@@ -71,46 +71,46 @@ void M_Framework::Draw() {
 }
 
 void M_Framework::Finalize() {
-	// “ü—Í‚ÌI—¹ˆ—
+	// å…¥åŠ›ã®çµ‚äº†å‡¦ç†
 	delete input;
-	// WindowAPI‚ÌI—¹ˆ—
+	// WindowAPIã®çµ‚äº†å‡¦ç†
 	windowAPI->Finalize();
 	delete windowAPI;
-	// DirectX‚ÌI—¹ˆ—
-	// ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‹‚ğ•Â‚¶‚é
+	// DirectXã®çµ‚äº†å‡¦ç†
+	// ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ«ã‚’é–‰ã˜ã‚‹
 	CloseHandle(dxCommon->fenceEvent);
 	delete dxCommon;
 	CoUninitialize();
 }
 
 void M_Framework::Run() {
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	Initialize();
 
-	// ƒQ[ƒ€ƒ‹[ƒv
+	// ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—
 	while (true) {
-		// XV
+		// æ›´æ–°
 		Update();
 
 		if (IsEndRequest()) {
-			// ƒQ[ƒ€ƒ‹[ƒv‚ğ”²‚¯‚é
+			// ã‚²ãƒ¼ãƒ ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
 			break;
 		}
 
-		// •`‰æ
+		// æç”»
 		Draw();
 	}
-	// I—¹
+	// çµ‚äº†
 	Finalize();
 
 }
 
 void M_Framework::BeginFrame() {
-	// •`‰æ‘Oˆ—
+	// æç”»å‰å‡¦ç†
 	dxCommon->PreDraw();
 }
 
 void M_Framework::EndFrame() {
-	// •`‰æŒãˆ—
+	// æç”»å¾Œå‡¦ç†
 	dxCommon->PostDraw();
 }

@@ -12,6 +12,9 @@ class ObjectCommon {
 public:
 	// ‰Šú‰»
 	void Initialize(DirectXCommon* dxCommon);
+	// I—¹
+	void Finalize();
+
 	// ‹¤’Ê•`‰æİ’è
 	void SetCommonPipelineState();
 

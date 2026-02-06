@@ -150,4 +150,7 @@ void SoundManager::Finalize() {
 
 	// ‰¹ºƒf[ƒ^‰ğ•ú
 	xAudio2.Reset();
+	
+	delete instance;
+	instance = nullptr;
 }

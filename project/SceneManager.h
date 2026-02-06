@@ -11,6 +11,8 @@ public:
 	void Update();
 	// •`‰æ
 	void Draw();
+	// I—¹
+	void Finalize();
 
 	// ŸƒV[ƒ“—\–ñ
 	void SetNextScene(BaseScene* nextScene) {nextScene_ = nextScene;}

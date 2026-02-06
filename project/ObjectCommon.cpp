@@ -13,6 +13,11 @@ void ObjectCommon::Initialize(DirectXCommon* dxCommon) {
 	CreateGraphicsPipeline();
 }
 
+void ObjectCommon::Finalize() {
+	delete instance;
+	instance = nullptr;
+}
+
 // ‹¤’Ê•`‰æİ’è
 void ObjectCommon::SetCommonPipelineState() {
 	// RootSignature‚ğİ’èBPSO‚Éİ’è‚µ‚Ä‚¢‚é‚¯‚Ç•Ê“rİ’è‚ª•K—v

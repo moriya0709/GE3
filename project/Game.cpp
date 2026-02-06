@@ -1,51 +1,49 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 
 
 #pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
 void Game::Initialize() {
-	// Šî’êƒNƒ‰ƒX‚Ì‰Šú‰»
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–
 	M_Framework::Initialize();
 
 
-#pragma region Šî”ÕƒVƒXƒeƒ€
+#pragma region åŸºç›¤ã‚·ã‚¹ãƒ†ãƒ 
 
-	// ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ
+	// ã‚«ãƒ¡ãƒ©ãƒžãƒãƒ¼ã‚¸ãƒ£
 	CameraManager::GetInstance();
 
-	// ƒXƒvƒ‰ƒCƒg‹¤’Ê•”‚Ì‰Šú‰»
-	spriteCommon = SpriteCommon::GetInstance();
-	spriteCommon->Initialize(dxCommon);
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨ã®åˆæœŸåŒ–
+	SpriteCommon::GetInstance()->Initialize(dxCommon);
 
-	// 3dƒXƒvƒ‰ƒCƒg‹¤’Ê•”‚Ì‰Šú‰»
-	objectCommon = ObjectCommon::GetInstance();
-	objectCommon->Initialize(dxCommon);
+	// 3dã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨ã®åˆæœŸåŒ–
+	ObjectCommon::GetInstance()->Initialize(dxCommon);
 
-	// SRVƒ}ƒl[ƒWƒƒ
+	// SRVãƒžãƒãƒ¼ã‚¸ãƒ£
 	srvManager = new SrvManager();
 	srvManager->Initialize(dxCommon);
 
-	// ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒžãƒãƒ¼ã‚¸ãƒ£ã®åˆæœŸåŒ–
 	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
-	// 3Dƒ‚ƒfƒ‹ƒ}ƒl[ƒWƒƒ‚Ì‰Šú‰»
+	// 3Dãƒ¢ãƒ‡ãƒ«ãƒžãƒãƒ¼ã‚¸ãƒ£ã®åˆæœŸåŒ–
 	ModelManager::GetInstance()->Initialize(dxCommon);
-	// Particleƒ}ƒl[ƒWƒƒ
+	// Particleãƒžãƒãƒ¼ã‚¸ãƒ£
 	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, "Resource/", "plane.obj");
 
 #pragma endregion
 
-#pragma region Å‰‚ÌƒV[ƒ“
+#pragma region æœ€åˆã®ã‚·ãƒ¼ãƒ³
 
-	// ƒp[ƒeƒBƒNƒ‹ƒ}ƒl[ƒWƒƒ‰Šú‰»
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ãƒžãƒãƒ¼ã‚¸ãƒ£åˆæœŸåŒ–
 	ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
 	ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
 
-	// .objƒtƒ@ƒCƒ‹‚©‚çƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
+	// .objãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ¢ãƒ‡ãƒ«èª­ã¿è¾¼ã¿
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
-	// ƒTƒEƒ“ƒh
+	// ã‚µã‚¦ãƒ³ãƒ‰
 	SoundManager::GetInstance()->Initialize();
 	SoundManager::GetInstance()->Load("bgm", "game.mp3");
 
@@ -54,16 +52,15 @@ void Game::Initialize() {
 	imGuiManager->Initialize(windowAPI, dxCommon, srvManager);
 
 
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[‚Ì¶¬
-	sceneManager_ = SceneManager::GetInstance();
-	// Å‰‚ÌƒV[ƒ“¶¬
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®ç”Ÿæˆ
+	// æœ€åˆã®ã‚·ãƒ¼ãƒ³ç”Ÿæˆ
 	BaseScene* scene = new TitleScene();
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[‚ÉÅ‰‚ÌƒV[ƒ“‚ðƒZƒbƒg
-	sceneManager_->SetNextScene(scene);
-	// ‰Šú‰»
-	sceneManager_->Initialize();
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã«æœ€åˆã®ã‚·ãƒ¼ãƒ³ã‚’ã‚»ãƒƒãƒˆ
+	SceneManager::GetInstance()->SetNextScene(scene);
+	// åˆæœŸåŒ–
+	SceneManager::GetInstance()->Initialize();
 
-	// ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ“o˜^
+	// ã‚«ãƒ¡ãƒ©ãƒžãƒãƒ¼ã‚¸ãƒ£ç™»éŒ²
 	CameraManager::GetInstance()->AddCamera("main", scene->GetCamera());
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
@@ -72,62 +69,62 @@ void Game::Initialize() {
 }
 
 void Game::Update() {
-	// ImGuiŽó•tŠJŽn
+	// ImGuiå—ä»˜é–‹å§‹
 	imGuiManager->Begin();
 
-	//@Šî’êƒNƒ‰ƒX
+	//ã€€åŸºåº•ã‚¯ãƒ©ã‚¹
 	M_Framework::Update();
 	
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[XV
-	sceneManager_->Update();
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼æ›´æ–°
+	SceneManager::GetInstance()->Update();
 
-	// ƒp[ƒeƒBƒNƒ‹XV
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æ›´æ–°
 	ParticleManager::GetInstance()->Update();
-	// ImGuiŽó•tI—¹
+	// ImGuiå—ä»˜çµ‚äº†
 	imGuiManager->End();
 }
 
 void Game::Draw() {
-	// •`‰æ‘Oˆ—
+	// æç”»å‰å‡¦ç†
 	M_Framework::BeginFrame();
 	srvManager->PreDraw();
 
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[•`‰æ
-	sceneManager_->Draw();
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼æç”»
+	SceneManager::GetInstance()->Draw();
 
-	// ImGui•`‰æ
+	// ImGuiæç”»
 	imGuiManager->Draw();
 
-	// •`‰æŒãˆ—
+	// æç”»å¾Œå‡¦ç†
 	M_Framework::EndFrame();
 
 }
 
 void Game::Finalize() {
-	// ImGui‚ÌI—¹ˆ—
+	// ImGuiã®çµ‚äº†å‡¦ç†
 	imGuiManager->Finalize();
 
-	// ƒeƒNƒXƒ`ƒƒƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒžãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	TextureManager::GetInstance()->Finalize();
-	// 3Dƒ‚ƒfƒ‹ƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// 3Dãƒ¢ãƒ‡ãƒ«ãƒžãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	ModelManager::GetInstance()->Finalize();
-	// Particleƒ}ƒl[ƒWƒƒ‚ÌI—¹
+	// Particleãƒžãƒãƒ¼ã‚¸ãƒ£ã®çµ‚äº†
 	ParticleManager::GetInstance()->Finalize();
-	//@ƒTƒEƒ“ƒhƒ}ƒl[ƒWƒƒ[I—¹
+	//ã€€ã‚µã‚¦ãƒ³ãƒ‰ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼çµ‚äº†
 	SoundManager::GetInstance()->Finalize();
 
-	// ƒXƒvƒ‰ƒCƒg‹¤’Ê•”‰ð•ú
-	delete spriteCommon;
-	// 3DƒIƒuƒWƒFƒNƒg‹¤’Ê•”‰ð•ú
-	delete objectCommon;
-	// SRVƒ}ƒl[ƒWƒƒ‰ð•ú
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆå…±é€šéƒ¨è§£æ”¾
+	SpriteCommon::GetInstance()->Finalize();
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå…±é€šéƒ¨è§£æ”¾
+	ObjectCommon::GetInstance()->Finalize();
+	// SRVãƒžãƒãƒ¼ã‚¸ãƒ£è§£æ”¾
 	delete srvManager;
-	// imGuiƒ}ƒl[ƒWƒƒ‰ð•ú
+	// imGuiãƒžãƒãƒ¼ã‚¸ãƒ£è§£æ”¾
 	delete imGuiManager;
 
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ‰ð•ú
-	delete sceneManager_;
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£è§£æ”¾
+	SceneManager::GetInstance()->Finalize();
 
-	// Šî’êƒNƒ‰ƒX‚ÌI—¹ˆ—
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®çµ‚äº†å‡¦ç†
 	M_Framework::Finalize();
 }

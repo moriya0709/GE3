@@ -15,6 +15,11 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon) {
 	
 }
 
+void SpriteCommon::Finalize() {
+	delete instance;
+	instance = nullptr;
+}
+
 // ‹¤’Ê•`‰æİ’è
 void SpriteCommon::SetCommonPipelineState() {
 	// RootSignature‚ğİ’èBPSO‚Éİ’è‚µ‚Ä‚¢‚é‚¯‚Ç•Ê“rİ’è‚ª•K—v
