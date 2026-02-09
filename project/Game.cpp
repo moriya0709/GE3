@@ -54,15 +54,12 @@ void Game::Initialize() {
 
 	// シーンマネージャーの生成
 	// 最初のシーン生成
-	BaseScene* scene = new TitleScene();
+	sceneFactory_ = new SceneFactory();
+	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
 	// シーンマネージャーに最初のシーンをセット
-	SceneManager::GetInstance()->SetNextScene(scene);
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 	// 初期化
 	SceneManager::GetInstance()->Initialize();
-
-	// カメラマネージャ登録
-	CameraManager::GetInstance()->AddCamera("main", scene->GetCamera());
-	CameraManager::GetInstance()->SetActiveCamera("main");
 
 #pragma endregion
 

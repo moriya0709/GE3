@@ -15,6 +15,8 @@ public:
 	void SetActiveCamera(const std::string& name);
 	// アクティブカメラ取得
 	Camera* GetActiveCamera() const;
+	// 削除
+	void RemoveCamera(const std::string& name);
 
 	// 更新
 	void Update();

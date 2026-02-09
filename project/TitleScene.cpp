@@ -9,6 +9,10 @@ void TitleScene::Initialize() {
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
+	// カメラマネージャ登録
+	CameraManager::GetInstance()->AddCamera("main", camera);
+	CameraManager::GetInstance()->SetActiveCamera("main");
+
 	// スプライト
 	sprite = new Sprite();
 	sprite->Initialize("Resource/monsterBall.png");
@@ -43,9 +47,7 @@ void TitleScene::Update() {
 	// ENTERキーを押したら
 	if (input->TriggerKey(DIK_RETURN)) {
 		// ゲームプレイシーン(次シーン)を生成
-		BaseScene* scene = new GamePlayScene();
-		// シーン切り換え依頼
-		SceneManager::GetInstance()->SetNextScene(scene);
+		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 		// 音声再生
 		SoundManager::GetInstance()->Stop("bgm");
 	}
@@ -111,4 +113,5 @@ void TitleScene::Finalize() {
 	}
 	// カメラ解放
 	delete camera;
+	CameraManager::GetInstance()->RemoveCamera("main");
 }

@@ -1,7 +1,8 @@
 #pragma once
+#include <cassert>
+
 #include "BaseScene.h"
-#include "TitleScene.h"
-#include "GamePlayScene.h"
+#include "AbstractSceneFactory.h"
 
 class SceneManager {
 public:
@@ -19,6 +20,11 @@ public:
 	// シングルトンインスタンスの取得
 	static SceneManager* GetInstance();
 
+	// シーンファクトリーのsetter
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
+	// シーンの変更
+	void ChangeScene(const std::string& sceneName);
+
 	~SceneManager();
 
 private:
@@ -29,6 +35,8 @@ private:
 	BaseScene* scene_ = nullptr;
 	// 次のシーン
 	BaseScene* nextScene_ = nullptr;
+	// シーンファクトリー
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 };
 

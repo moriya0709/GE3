@@ -16,6 +16,7 @@
 #include "ModelManager.h"
 
 #include "SceneManager.h"
+#include "SceneFactory.h"
 
 class Game : public M_Framework {
 public:
@@ -34,4 +35,7 @@ private:
 	SrvManager* srvManager = nullptr;
 	// ImGuiマネージャ
 	ImGuiManager* imGuiManager = nullptr;
+	// シーンファクトリー
+	SceneFactory* sceneFactory_ = nullptr;
+
 };

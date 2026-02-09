@@ -10,7 +10,7 @@ void GamePlayScene::Initialize() {
 	camera->SetTranslate({ cameraTransform.translate });
 
 	// カメラマネージャ登録
-	//CameraManager::GetInstance()->AddCamera("main", camera);
+	CameraManager::GetInstance()->AddCamera("main", camera);
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
 	// スプライト
@@ -54,10 +54,8 @@ void GamePlayScene::Update() {
 
 	// ENTERキーを押したら
 	if (input->TriggerKey(DIK_RETURN)) {
-		// ゲームプレイシーン(次シーン)を生成
-		BaseScene* scene = new TitleScene();
-		// シーン切り換え依頼
-		SceneManager::GetInstance()->SetNextScene(scene);
+		// シーン切り換え
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 	// 数字の０キーが押されていたら

@@ -7,6 +7,7 @@
 #include "WindowAPI.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "AbstractSceneFactory.h"
 
 class M_Framework {
 public:
@@ -40,5 +41,7 @@ public:
 private:
 	bool endRequest_ = false;
 
+	// シーンファクトリー
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 };

@@ -23,6 +23,11 @@ Camera* CameraManager::GetActiveCamera() const {
     return activeCamera_;
 }
 
+// íœ
+void CameraManager::RemoveCamera(const std::string& name) {
+    cameras_.erase(name);
+}
+
 void CameraManager::Update() {
     if (activeCamera_) {
         activeCamera_->Update();

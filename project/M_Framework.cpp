@@ -80,6 +80,9 @@ void M_Framework::Finalize() {
 	// イベントハンドルを閉じる
 	CloseHandle(dxCommon->fenceEvent);
 	delete dxCommon;
+	// シーンファクトリー解放
+	delete sceneFactory_;
+
 	CoUninitialize();
 }
 
