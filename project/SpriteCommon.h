@@ -10,8 +10,6 @@ class SpriteCommon {
 public:
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon);
-	// 終了
-	void Finalize();
 
 	// 共通描画設定
 	void SetCommonPipelineState();
@@ -21,6 +19,11 @@ public:
 
 	// ゲッター
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
+
+	SpriteCommon() = default;
+	~SpriteCommon() = default;
+	SpriteCommon(SpriteCommon&) = delete;
+	SpriteCommon& operator=(SpriteCommon&) = delete;
 
 private:
 	// ルートシグネイチャ
@@ -36,7 +39,7 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 
 	// シングルトンインスタンス
-	static SpriteCommon* instance;
+	static std::unique_ptr <SpriteCommon> instance;
 
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;

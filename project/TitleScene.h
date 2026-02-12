@@ -25,9 +25,6 @@ public:
 	// 終了
 	void Finalize() override;
 
-	// getter
-	Camera* GetCamera() override { return camera; }
-
 private:
 	Transform cameraTransform
 	{
@@ -44,14 +41,12 @@ private:
 	};
 
 	// カメラ
-	Camera* camera = nullptr;
+	std::unique_ptr <Camera> camera = nullptr;
 	// スプライト
-	Sprite* sprite = nullptr;
+	std::unique_ptr <Sprite> sprite = nullptr;
 	// 3Dオブジェクト
-	Object* object[2]{};
+	std::unique_ptr <Object> object[2]{};
 	// パーティクルエミッタ
-	ParticleEmitter* particleEmitter = nullptr;
-	// サウンド
-	SoundData soundData1; // サウンドデータ
+	std::unique_ptr <ParticleEmitter> particleEmitter = nullptr;
 
 };

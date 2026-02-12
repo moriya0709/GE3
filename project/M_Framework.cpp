@@ -43,16 +43,16 @@ void M_Framework::Initialize() {
 #pragma region 基盤システム
 
 	// WindowAPIの初期化
-	windowAPI = new WindowAPI();
+	windowAPI = std::make_unique <WindowAPI>();
 	windowAPI->Initialize();
 
 	// DirectXの初期化
 	dxCommon = DirectXCommon::GetInstance();
-	dxCommon->Initialize(windowAPI);
+	dxCommon->Initialize(windowAPI.get());
 
 	// Input初期化
 	input = Input::GetInstance();
-	input->Initialize(windowAPI);
+	input->Initialize(windowAPI.get());
 
 #pragma endregion
 }
@@ -71,17 +71,11 @@ void M_Framework::Draw() {
 }
 
 void M_Framework::Finalize() {
-	// 入力の終了処理
-	delete input;
 	// WindowAPIの終了処理
 	windowAPI->Finalize();
-	delete windowAPI;
 	// DirectXの終了処理
 	// イベントハンドルを閉じる
 	CloseHandle(dxCommon->fenceEvent);
-	delete dxCommon;
-	// シーンファクトリー解放
-	delete sceneFactory_;
 
 	CoUninitialize();
 }

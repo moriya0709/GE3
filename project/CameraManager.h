@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 class Camera;
 
@@ -21,11 +22,17 @@ public:
 	// 更新
 	void Update();
 
-private:
 	CameraManager() = default;
+	~CameraManager() = default;
+	CameraManager(CameraManager&) = delete;
+	CameraManager& operator=(CameraManager&) = delete;
 
+private:
 	std::unordered_map<std::string, Camera*> cameras_;
 	Camera* activeCamera_ = nullptr;
+
+	// シングルトン
+	static std::unique_ptr <CameraManager> instance;
 
 };
 

@@ -5,45 +5,32 @@
 
 void GamePlayScene::Initialize() {
 	// カメラ初期化
-	camera = new Camera();
+	camera = std::make_unique <Camera>();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
 	// カメラマネージャ登録
-	CameraManager::GetInstance()->AddCamera("main", camera);
+	CameraManager::GetInstance()->AddCamera("main", camera.get());
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
 	// スプライト
-	sprite = new Sprite();
+	sprite = std::make_unique <Sprite>();
 	sprite->Initialize("Resource/uvChecker.png");
 
 	// 3Dオブジェクト
 	for (int i = 0; i < 2; i++) {
-		object[i] = new Object();
-		object[i]->Initialize(camera);
+		object[i] = std::make_unique <Object>();
+		object[i]->Initialize(camera.get());
 	}
 
-	// パーティクルマネージャ初期化
-	//ParticleManager::GetInstance()->CreateParticleGroup("group1", "Resource/particle.png");
-	//ParticleManager::GetInstance()->CreateParticleGroup("group2", "Resource/uvChecker.png");
-
 	// Emitパーティクル発生
-	particleEmitter = new ParticleEmitter();
+	particleEmitter = std::make_unique <ParticleEmitter>();
 	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
 	particleEmitter->Emit();
-
-	// .objファイルからモデル読み込み
-	//ModelManager::GetInstance()->LoadModel("plane.obj");
-	//ModelManager::GetInstance()->LoadModel("axis.obj");
 
 	// 初期化済みの3Dオブジェクトにモデルを紐づける
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
-
-	// 音声読み込み
-	//soundData1 = SoundManager::GetInstance()->SoundLoadFile("game.mp3");
-	// 音声再生
-	//SoundManager::GetInstance()->SoundPlayWave(soundData1);
 }
 
 void GamePlayScene::Update() {
@@ -112,12 +99,5 @@ void GamePlayScene::Draw() {
 }
 
 void GamePlayScene::Finalize() {
-	// スプライト解放
-	delete sprite;
-	// 3Dオブジェクト解放
-	for (int i = 0; i < 2; i++) {
-		delete object[i];
-	}
-	// カメラ解放
-	delete camera;
+	CameraManager::GetInstance()->RemoveCamera("main");
 }

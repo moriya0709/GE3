@@ -3,9 +3,13 @@
 #include "CameraManager.h"
 #include "Camera.h"
 
+std::unique_ptr <CameraManager> CameraManager::instance = nullptr;
+
 CameraManager* CameraManager::GetInstance() {
-    static CameraManager instance;
-    return &instance;
+    if (instance == nullptr) {
+        instance = std::make_unique <CameraManager>();
+    }
+    return instance.get();
 }
 
 void CameraManager::AddCamera(const std::string& name, Camera* camera) {

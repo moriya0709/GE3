@@ -6,7 +6,7 @@
 #include "SrvManager.h"
 #include "Camera.h"
 
-ParticleManager* ParticleManager::instance = nullptr;
+std::unique_ptr <ParticleManager> ParticleManager::instance = nullptr;
 constexpr uint32_t kMaxParticleInstance = 1024;
 // 乱数生成器の初期化
 std::random_device seedGenerator;
@@ -486,13 +486,7 @@ void ParticleManager::Emit(const std::string& name, const Vector3& position, uin
 // シングルトンインスタンスの取得
 ParticleManager* ParticleManager::GetInstance() {
 	if (instance == nullptr) {
-		instance = new ParticleManager;
+		instance = std::make_unique <ParticleManager>();
 	}
-	return instance;
-}
-
-// 終了
-void ParticleManager::Finalize() {
-	delete instance;
-	instance = nullptr;
+	return instance.get();
 }

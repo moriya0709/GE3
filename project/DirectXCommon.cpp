@@ -11,7 +11,7 @@
 using namespace Microsoft::WRL;
 
 const uint32_t DirectXCommon::kMaxSRVCount = 512;
-DirectXCommon* DirectXCommon::instance = nullptr;
+std::unique_ptr <DirectXCommon> DirectXCommon::instance = nullptr;
 
 void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	// NULL検出
@@ -417,9 +417,9 @@ void DirectXCommon::PostDraw() {
 // シングルトンインスタンスの取得
 DirectXCommon* DirectXCommon::GetInstance() {
 	if (instance == nullptr) {
-		instance = new DirectXCommon;
+		instance = std::make_unique <DirectXCommon>();
 	}
-	return instance;
+	return instance.get();
 }
 
 void DirectXCommon::Finalize() {

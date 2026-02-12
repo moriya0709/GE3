@@ -1,7 +1,7 @@
 #include "ObjectCommon.h"
 #include "DirectXCommon.h"
 
-ObjectCommon* ObjectCommon::instance = nullptr;
+std::unique_ptr <ObjectCommon> ObjectCommon::instance = nullptr;
 
 void ObjectCommon::Initialize(DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
@@ -11,11 +11,6 @@ void ObjectCommon::Initialize(DirectXCommon* dxCommon) {
 	CreateRootSignature();
 	// グラフィックスパイプラインの生成
 	CreateGraphicsPipeline();
-}
-
-void ObjectCommon::Finalize() {
-	delete instance;
-	instance = nullptr;
 }
 
 // 共通描画設定
@@ -31,9 +26,9 @@ void ObjectCommon::SetCommonPipelineState() {
 // シングルトンインスタンスの取得
 ObjectCommon* ObjectCommon::GetInstance() {
 	if (instance == nullptr) {
-		instance = new ObjectCommon;
+		instance = std::make_unique <ObjectCommon>();
 	}
-	return instance;
+	return instance.get();
 }
 
 // ルートしグネチャの作成

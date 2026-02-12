@@ -82,8 +82,11 @@ public:
 
 	// シングルトンインスタンスの取得
 	static ParticleManager* GetInstance();
-	// 終了
-	void Finalize();
+
+	ParticleManager() = default;
+	~ParticleManager() = default;
+	ParticleManager(ParticleManager&) = delete;
+	ParticleManager& operator=(ParticleManager&) = delete;
 
 private:
 	// ブレンドモード
@@ -99,7 +102,7 @@ private:
 	BlendMode blendMode = kBlendModeNormal;
 
 	// シングルトンインスタンス
-	static ParticleManager* instance;
+	static std::unique_ptr <ParticleManager> instance;
 
 	// ルートシグネイチャ
 	Microsoft::WRL::ComPtr <ID3D12RootSignature> rootSignature = nullptr;

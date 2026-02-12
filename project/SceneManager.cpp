@@ -1,20 +1,6 @@
 #include "SceneManager.h"
 
-SceneManager* SceneManager::instance = nullptr;
-
-void SceneManager::Initialize() {
-	if (nextScene_) {
-		// シーン切り換え
-		scene_ = nextScene_;
-		nextScene_ = nullptr;
-
-		// シーンマネージャーをセット
-		scene_->SetSceneManager(this);
-
-		// 次シーンを初期化
-		scene_->Initialize();
-	}
-}
+std::unique_ptr <SceneManager> SceneManager::instance = nullptr;
 
 void SceneManager::Update() {
 	// シーン切り替え処理
@@ -22,12 +8,10 @@ void SceneManager::Update() {
 		// 旧シーン終了
 		if (scene_) {
 			scene_->Finalize();
-			delete scene_;
 		}
 
 		// シーン切り換え
-		scene_ = nextScene_;
-		nextScene_ = nullptr;
+		scene_ = std::move(nextScene_);
 
 		// シーンマネージャーをセット
 		scene_->SetSceneManager(this);
@@ -46,16 +30,11 @@ void SceneManager::Draw() {
 	scene_->Draw();
 }
 
-void SceneManager::Finalize() {
-	delete instance;
-	instance = nullptr;
-}
-
 SceneManager* SceneManager::GetInstance() {
 	if (instance == nullptr) {
-		instance = new SceneManager;
+		instance = std::make_unique <SceneManager>();
 	}
-	return instance;
+	return instance.get();
 }
 
 void SceneManager::ChangeScene(const std::string& sceneName) {
@@ -71,6 +50,5 @@ SceneManager::~SceneManager() {
 	// 最後のシーンの終了と解放
 	if (scene_) {
 		scene_->Finalize();
-		delete scene_;
 	}
 }

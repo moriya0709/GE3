@@ -21,15 +21,15 @@ void Game::Initialize() {
 	ObjectCommon::GetInstance()->Initialize(dxCommon);
 
 	// SRVマネージャ
-	srvManager = new SrvManager();
+	srvManager = std::make_unique<SrvManager>();
 	srvManager->Initialize(dxCommon);
 
 	// テクスチャマネージャの初期化
-	TextureManager::GetInstance()->Initialize(dxCommon, srvManager);
+	TextureManager::GetInstance()->Initialize(dxCommon, srvManager.get());
 	// 3Dモデルマネージャの初期化
 	ModelManager::GetInstance()->Initialize(dxCommon);
 	// Particleマネージャ
-	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager, "Resource/", "plane.obj");
+	ParticleManager::GetInstance()->Initialize(dxCommon, srvManager.get(), "Resource/", "plane.obj");
 
 #pragma endregion
 
@@ -48,18 +48,16 @@ void Game::Initialize() {
 	SoundManager::GetInstance()->Load("bgm", "game.mp3");
 
 	// ImGui
-	imGuiManager = new ImGuiManager();
-	imGuiManager->Initialize(windowAPI, dxCommon, srvManager);
+	imGuiManager = std::make_unique <ImGuiManager>();
+	imGuiManager->Initialize(windowAPI.get(), dxCommon, srvManager.get());
 
 
 	// シーンマネージャーの生成
 	// 最初のシーン生成
-	sceneFactory_ = new SceneFactory();
-	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_);
+	sceneFactory_ = std::make_unique <SceneFactory>();
+	SceneManager::GetInstance()->SetSceneFactory(move(sceneFactory_));
 	// シーンマネージャーに最初のシーンをセット
 	SceneManager::GetInstance()->ChangeScene("TITLE");
-	// 初期化
-	SceneManager::GetInstance()->Initialize();
 
 #pragma endregion
 
@@ -71,7 +69,7 @@ void Game::Update() {
 
 	//　基底クラス
 	M_Framework::Update();
-	
+
 	// シーンマネージャー更新
 	SceneManager::GetInstance()->Update();
 
@@ -101,26 +99,8 @@ void Game::Finalize() {
 	// ImGuiの終了処理
 	imGuiManager->Finalize();
 
-	// テクスチャマネージャの終了
-	TextureManager::GetInstance()->Finalize();
-	// 3Dモデルマネージャの終了
-	ModelManager::GetInstance()->Finalize();
-	// Particleマネージャの終了
-	ParticleManager::GetInstance()->Finalize();
 	//　サウンドマネージャー終了
 	SoundManager::GetInstance()->Finalize();
-
-	// スプライト共通部解放
-	SpriteCommon::GetInstance()->Finalize();
-	// 3Dオブジェクト共通部解放
-	ObjectCommon::GetInstance()->Finalize();
-	// SRVマネージャ解放
-	delete srvManager;
-	// imGuiマネージャ解放
-	delete imGuiManager;
-
-	// シーンマネージャ解放
-	SceneManager::GetInstance()->Finalize();
 
 	// 基底クラスの終了処理
 	M_Framework::Finalize();

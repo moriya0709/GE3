@@ -1,7 +1,7 @@
 #include "SpriteCommon.h"
 #include "DirectXCommon.h"
 
-SpriteCommon* SpriteCommon::instance = nullptr;
+std::unique_ptr <SpriteCommon> SpriteCommon::instance = nullptr;
 
 void SpriteCommon::Initialize(DirectXCommon* dxCommon) {
 	// 引数で受け取ってメンバ変数に記録する
@@ -13,11 +13,6 @@ void SpriteCommon::Initialize(DirectXCommon* dxCommon) {
 	// グラフィックスパイプラインの生成
 	CreateGraphicsPipeline();
 	
-}
-
-void SpriteCommon::Finalize() {
-	delete instance;
-	instance = nullptr;
 }
 
 // 共通描画設定
@@ -32,9 +27,9 @@ void SpriteCommon::SetCommonPipelineState() {
 
 SpriteCommon* SpriteCommon::GetInstance() {
 	if (instance == nullptr) {
-		instance = new SpriteCommon;
+		instance = std::make_unique <SpriteCommon>();
 	}
-	return instance;
+	return instance.get();
 }
 
 // ルートシグネイチャの作成

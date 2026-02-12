@@ -5,27 +5,27 @@
 
 void TitleScene::Initialize() {
 	// カメラ初期化
-	camera = new Camera();
+	camera = std::make_unique <Camera>();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
 	// カメラマネージャ登録
-	CameraManager::GetInstance()->AddCamera("main", camera);
+	CameraManager::GetInstance()->AddCamera("main", camera.get());
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
 	// スプライト
-	sprite = new Sprite();
+	sprite = std::make_unique <Sprite>();
 	sprite->Initialize("Resource/monsterBall.png");
 
 	// 3Dオブジェクト
 	for (int i = 0; i < 2; i++) {
-		object[i] = new Object();
-		object[i]->Initialize(camera);
+		object[i] = std::make_unique <Object>();
+		object[i]->Initialize(camera.get());
 	}
 
 
 	// Emitパーティクル発生
-	particleEmitter = new ParticleEmitter();
+	particleEmitter = std::make_unique <ParticleEmitter>();
 	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
 	particleEmitter->Emit();
 
@@ -105,13 +105,5 @@ void TitleScene::Draw() {
 }
 
 void TitleScene::Finalize() {
-	// スプライト解放
-	delete sprite;
-	// 3Dオブジェクト解放
-	for (int i = 0; i < 2; i++) {
-		delete object[i];
-	}
-	// カメラ解放
-	delete camera;
 	CameraManager::GetInstance()->RemoveCamera("main");
 }

@@ -4,7 +4,7 @@
 #pragma comment(lib,"Mfreadwrite.lib")
 #pragma comment(lib,"mfuuid.lib")
 
-SoundManager* SoundManager::instance = nullptr;
+std::unique_ptr <SoundManager> SoundManager::instance = nullptr;
 
 void SoundManager::Initialize() {
 	//XAudio2‚Ì‰Šú‰»
@@ -135,9 +135,9 @@ void SoundManager::Stop(const std::string& name) {
 
 SoundManager* SoundManager::GetInstance() {
 	if (instance == nullptr) {
-		instance = new SoundManager;
+		instance = std::make_unique <SoundManager>();
 	}
-	return instance;
+	return instance.get();
 }
 
 
@@ -150,7 +150,4 @@ void SoundManager::Finalize() {
 
 	// ‰¹ºƒf[ƒ^‰ğ•ú
 	xAudio2.Reset();
-	
-	delete instance;
-	instance = nullptr;
 }

@@ -12,8 +12,6 @@ class ObjectCommon {
 public:
 	// 初期化
 	void Initialize(DirectXCommon* dxCommon);
-	// 終了
-	void Finalize();
 
 	// 共通描画設定
 	void SetCommonPipelineState();
@@ -27,6 +25,11 @@ public:
 	// getter
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 	Camera* GetDefaultCamera() const { return defaultCamera_; }
+
+	ObjectCommon() = default;
+	~ObjectCommon() = default;
+	ObjectCommon(ObjectCommon&) = delete;
+	ObjectCommon& operator=(ObjectCommon&) = delete;
 
 private:
 	// ルートシグネイチャ
@@ -42,7 +45,7 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12PipelineState> graphicsPipelineState = nullptr;
 
 	// シングルトンインスタンス
-	static ObjectCommon* instance;
+	static std::unique_ptr <ObjectCommon> instance;
 
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;

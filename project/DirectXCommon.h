@@ -138,7 +138,7 @@ private:
 	D3D12_RESOURCE_BARRIER barrier{};
 
 	// シングルトンインスタンス
-	static DirectXCommon* instance;
+	static std::unique_ptr <DirectXCommon> instance;
 
 
 	// WindowAPI

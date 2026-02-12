@@ -6,7 +6,7 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-Input* Input::instance = nullptr;
+std::unique_ptr <Input> Input::instance = nullptr;
 
 // ‰Šú‰»
 void Input::Initialize(WindowAPI* windowAPI) {
@@ -48,9 +48,9 @@ void Input::Update() {
 
 Input* Input::GetInstance() {
 	if (instance == nullptr) {
-		instance = new Input;
+		instance = std::make_unique <Input>();
 	}
-	return instance;
+	return instance.get();
 }
 
 // ƒvƒbƒVƒ…“ü—Í

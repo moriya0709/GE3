@@ -32,10 +32,10 @@ public:
 private:
 
 	// SRVマネージャ
-	SrvManager* srvManager = nullptr;
+	std::unique_ptr<SrvManager> srvManager = nullptr;
 	// ImGuiマネージャ
-	ImGuiManager* imGuiManager = nullptr;
+	std::unique_ptr <ImGuiManager> imGuiManager = nullptr;
 	// シーンファクトリー
-	SceneFactory* sceneFactory_ = nullptr;
+	std::unique_ptr <SceneFactory> sceneFactory_ = nullptr;
 
 };

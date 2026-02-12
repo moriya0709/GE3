@@ -54,7 +54,7 @@ private:
 	std::vector<DIJOYSTATE> padStates;
 
 	// シングルトンインスタンス
-	static Input* instance;
+	static std::unique_ptr <Input> instance;
 
 	// WindowAPI
 	WindowAPI* windowAPI_ = nullptr;

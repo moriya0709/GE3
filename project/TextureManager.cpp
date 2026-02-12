@@ -2,7 +2,7 @@
 #include "DirectXCommon.h"
 #include "SrvManager.h"
 
-TextureManager* TextureManager::instance = nullptr;
+std::unique_ptr <TextureManager> TextureManager::instance = nullptr;
 // ImGuiで0番を使用するため、1番から使用
 uint32_t TextureManager::kSRVIndexTop = 1;
 
@@ -17,15 +17,9 @@ void TextureManager::Initialize(DirectXCommon* dxCommon, SrvManager* srvManager)
 // シングルトンインスタンスの取得
 TextureManager* TextureManager::GetInstance() {
 	if (instance == nullptr) {
-		instance = new TextureManager;
+		instance = std::make_unique <TextureManager>();
 	}
-	return instance;
-}
-
-// 終了
-void TextureManager::Finalize() {
-	delete instance;
-	instance = nullptr;
+	return instance.get();
 }
 
 void TextureManager::LoadTexture(const std::string& filePath) {

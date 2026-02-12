@@ -32,7 +32,7 @@ public:
 	virtual ~M_Framework() = default;
 
 	// WindowAPI
-	WindowAPI* windowAPI = nullptr;
+	std::unique_ptr <WindowAPI> windowAPI = nullptr;
 	// DirectX共通部
 	DirectXCommon* dxCommon = nullptr;
 	// 入力
@@ -40,8 +40,5 @@ public:
 
 private:
 	bool endRequest_ = false;
-
-	// シーンファクトリー
-	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 };

@@ -15,8 +15,6 @@ public:
 	// I—¹
 	virtual void Finalize() = 0;
 
-	// getter
-	virtual Camera* GetCamera() = 0;
 	// setter
 	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 

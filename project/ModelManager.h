@@ -14,15 +14,19 @@ public:
 
 	// シングルトンインスタンスの取得
 	static ModelManager* GetInstance();
-	// 終了
-	void Finalize();
+
 	// モデルファイルの読み込み
 	void LoadModel(const std::string& filePath);
 	// モデルの検索
 	Model* FindModel(const std::string& filePath);
 	
+	ModelManager() = default;
+	~ModelManager() = default;
+	ModelManager(ModelManager&) = delete;
+	ModelManager& operator=(ModelManager&) = delete;
+
 private:
-	static ModelManager* instance;
+	static std::unique_ptr <ModelManager> instance;
 	// モデルデータ
 	std::map<std::string, std::unique_ptr<Model>> models;
 
@@ -31,11 +35,6 @@ private:
 	ModelCommon* modelCommon = nullptr;
 	// DirectXCommonのポインタ
 	DirectXCommon* dxCommon_ = nullptr;
-
-	ModelManager() = default;
-	~ModelManager() = default;
-	ModelManager(ModelManager&) = delete;
-	ModelManager& operator=(ModelManager&) = delete;
 
 };
 

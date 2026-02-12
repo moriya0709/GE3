@@ -3,7 +3,7 @@
 #include "Model.h"
 #include "DirectXCommon.h"
 
-ModelManager* ModelManager::instance = nullptr;
+std::unique_ptr <ModelManager> ModelManager::instance = nullptr;
 
 void ModelManager::Initialize(DirectXCommon* dxCommon) {
 	dxCommon_ = dxCommon;
@@ -15,15 +15,9 @@ void ModelManager::Initialize(DirectXCommon* dxCommon) {
 // シングルトンインスタンスの取得
 ModelManager* ModelManager::GetInstance() {
 	if (instance == nullptr) {
-		instance = new ModelManager;
+		instance = std::make_unique <ModelManager>();
 	}
-	return instance;
-}
-
-// 終了
-void ModelManager::Finalize() {
-	delete instance;
-	instance = nullptr;
+	return instance.get();
 }
 
 // モデルファイルの読み込み

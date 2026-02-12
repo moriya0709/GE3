@@ -58,12 +58,17 @@ public:
 	// 終了
 	void Finalize();
 
+	SoundManager() = default;
+	~SoundManager() = default;
+	SoundManager(SoundManager&) = delete;
+	SoundManager& operator=(SoundManager&) = delete;
+
 private:
 	// サウンドデータ
 	std::unordered_map<std::string, SoundData> sounds_;
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 
 	// シングルトンインスタンス
-	static SoundManager* instance;
+	static std::unique_ptr <SoundManager> instance;
 };
 
