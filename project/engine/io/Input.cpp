@@ -1,17 +1,23 @@
 #define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
 
 #include "Input.h"
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+std::unique_ptr <Input> Input::instance = nullptr;
+
 // 初期化
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void Input::Initialize(WindowAPI* windowAPI) {
+	// 借りてきたWindowAPIのインスタンスを記録
+	this->windowAPI_ = windowAPI;
+
 	HRESULT result;
 
 	// DirectInputの初期化
 	result = DirectInput8Create(
-		hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8,
+		windowAPI_->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8,
 		(void**)&directInput, nullptr);
 	assert(SUCCEEDED(result));
 
@@ -25,7 +31,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 	// 排他制御レベルのセット
 	result = keyboard->SetCooperativeLevel(
-		hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		windowAPI_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 }
 
@@ -38,6 +44,13 @@ void Input::Update() {
 	keyboard->Acquire();
 	// 全キーの入力情報を取得する
 	keyboard->GetDeviceState(sizeof(key), key);
+}
+
+Input* Input::GetInstance() {
+	if (instance == nullptr) {
+		instance = std::make_unique <Input>();
+	}
+	return instance.get();
 }
 
 // プッシュ入力

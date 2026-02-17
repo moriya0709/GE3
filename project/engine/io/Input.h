@@ -1,9 +1,13 @@
 #pragma once
+
 #include <Windows.h>
 #include <cassert>
 #include <vector>
 #include <dinput.h>
 #include <wrl.h>
+
+#include "WindowAPI.h"
+
 
 class Input {
 public:
@@ -11,9 +15,12 @@ public:
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	//初期化
-	void Initialize(HINSTANCE hInstance,HWND hwnd);
+	void Initialize(WindowAPI* windowAPI);
 	// 更新
 	void  Update();
+
+	// シングルトンインスタンスの取得
+	static Input* GetInstance();
 
 	// キーが押されたかどうかを調べる
 	bool PushKey(BYTE keyNumBer); // プッシュ
@@ -46,6 +53,11 @@ private:
 	std::vector<IDirectInputDevice8> gamepads;
 	std::vector<DIJOYSTATE> padStates;
 
+	// シングルトンインスタンス
+	static std::unique_ptr <Input> instance;
+
+	// WindowAPI
+	WindowAPI* windowAPI_ = nullptr;
 
 };
 
