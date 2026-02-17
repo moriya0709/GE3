@@ -35,6 +35,14 @@ struct AABB
     Vector3 max;
 };
 
+// Transform
+struct Transform {
+    Vector3 scale;
+    Vector3 rotate;
+    Vector3 translate;
+};
+
+
 // 02_14 29枚目 単項演算子オーバーロード
 Vector3 operator+(const Vector3& v);
 Vector3 operator-(const Vector3& v);
@@ -54,7 +62,14 @@ Vector3& operator-=(Vector3& lhs, const Vector3& rhv);
 Vector3& operator*=(Vector3& v, float s);
 Vector3& operator/=(Vector3& v, float s);
 
+Vector2& operator+=(Vector2& lhs, const Vector2& rhv);
+
 Vector3 operator/(const Vector3& v, float scalar);
+
+// 代入演算子オーバーロード
+Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm);
+// 2項演算子オーバーロード
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);
 
 // 行列の乗算
 Matrix4x4 Multiply(Matrix4x4 matrix1, Matrix4x4 matrix2);
@@ -83,11 +98,7 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 // 逆行列
 Matrix4x4 Inverse(const Matrix4x4& m);
 
-// 代入演算子オーバーロード
-Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm);
-
-// 2項演算子オーバーロード
-Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);
+Matrix4x4 MakeIdentity4x4();
 
 float Lerp(float x1, float x2, float t);
 
@@ -98,3 +109,4 @@ float EaseOut(float x1, float x2, float t);
 float EaseInOut(float x1, float x2, float t);
 
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+bool IsCollision(const AABB& aabb, const Vector3& point);

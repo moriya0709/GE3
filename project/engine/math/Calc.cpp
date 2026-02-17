@@ -55,6 +55,12 @@ Vector3& operator/=(Vector3& v, float s)
 	return v;
 }
 
+Vector2& operator+=(Vector2& lhs, const Vector2& rhv) {
+	lhs.x += rhv.x;
+	lhs.y += rhv.y;
+	return lhs;
+}
+
 Vector3 operator/(const Vector3& v, float scalar)
 {
 	return Vector3{ v.x / scalar, v.y / scalar, v.z / scalar };
@@ -253,6 +259,15 @@ Matrix4x4 Inverse(const Matrix4x4& m)
 	return result;
 }
 
+// 単位行列の作成
+Matrix4x4 MakeIdentity4x4() {
+	Matrix4x4 result = {}; // ゼロ初期化
+	for (int i = 0; i < 4; ++i)
+		result.m[i][i] = 1.0f;
+	return result;
+}
+
+
 Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm)
 {
 	Matrix4x4 result{};
@@ -306,4 +321,20 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 	return (aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && // x軸
 		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && // y軸
 		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z);   // z軸
+}
+
+bool IsCollision(const AABB& aabb, const Vector3& point) {
+	// 各軸について、点がAABBの範囲内にあるかを確認
+	if (point.x < aabb.min.x || point.x > aabb.max.x) {
+		return false;
+	}
+	if (point.y < aabb.min.y || point.y > aabb.max.y) {
+		return false;
+	}
+	if (point.z < aabb.min.z || point.z > aabb.max.z) {
+		return false;
+	}
+
+	// すべての軸で範囲内なら、衝突（中にある）
+	return true;
 }
