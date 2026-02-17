@@ -36,7 +36,7 @@ void Object::Initialize(Camera* camera) {
 	outlineResource = dxCommon_->CreateBufferResource(sizeof(Outline));
 	outlineResource->Map(0, nullptr, reinterpret_cast<void**>(&outlineData));
 	outlineData->thickness = 0.01f;
-	outlineData->color = {1,0,0,1};
+	outlineData->color = {1,0,0,0};
 
 	// *Transform* //
 	transform = {
