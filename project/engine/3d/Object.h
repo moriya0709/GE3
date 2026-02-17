@@ -26,6 +26,12 @@ struct DirectionalLight {
 	Vector3 direction; // ライトの向き
 	float intensity; // 輝度
 };
+// アウトラインデータ
+struct Outline {
+	float thickness; // 太さ
+	Vector4 color; // 色
+	float padding[3];   // 16バイト合わせ（重要）
+};
 
 class Object {
 public:
@@ -43,6 +49,8 @@ public:
 	void SetRotate(const Vector3& rotate) { transform.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transform.translate = translate; }
 	void SetCamera(Camera* camera) { camera_ = camera; }
+	void SetOutlineThickness(float thickness) { outlineData->thickness = thickness; }
+	void SetOutlineColor(Vector4 color) { outlineData->color = color; }
 
 	// getter
 	const Vector3& GetScale() const { return transform.scale; }
@@ -54,10 +62,12 @@ private:
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> outlineResource;
 
 	// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* transformationMatrixData = nullptr;
 	DirectionalLight* directionalLightData = nullptr;
+	Outline* outlineData = nullptr;
 
 	// Transform
 	Transform transform;

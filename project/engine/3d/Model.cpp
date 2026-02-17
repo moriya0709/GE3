@@ -10,6 +10,8 @@ void Model::Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon, const 
 	// モデル読み込み
 	modelData = LoadObjFile(directoryPath, filename);
 
+	GenerateOutlineNormal(modelData.vertices);
+
 	// *頂点データ* //
 
 	// リソース
@@ -43,6 +45,7 @@ void Model::Initialize(ModelCommon* modelCommon, DirectXCommon* dxCommon, const 
 }
 
 void Model::Draw() {
+
 	// RootSignatureを設定。PSOに設定しているけど別途設定が必要
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView); // VBVを設定
 
@@ -149,4 +152,25 @@ ModelData Model::LoadObjFile(const std::string& directoryPath, const std::string
 	}
 
 	return modelData;
+}
+
+void Model::GenerateOutlineNormal(std::vector<VertexData>& vertices) {
+	const float epsilon = 0.0001f;
+
+	for (size_t i = 0; i < vertices.size(); ++i) {
+
+		Vector3 sumNormal = { 0,0,0 };
+
+		for (size_t j = 0; j < vertices.size(); ++j) {
+
+			// 座標がほぼ同じなら同一頂点とみなす
+			if (fabs(vertices[i].position.x - vertices[j].position.x) < epsilon &&
+				fabs(vertices[i].position.y - vertices[j].position.y) < epsilon &&
+				fabs(vertices[i].position.z - vertices[j].position.z) < epsilon) {
+				sumNormal += vertices[j].normal;
+			}
+		}
+
+		vertices[i].outlineNormal = Normalize(sumNormal);
+	}
 }
