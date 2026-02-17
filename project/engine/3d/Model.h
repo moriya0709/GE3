@@ -27,6 +27,9 @@ public:
 	// .objファイルの読み込み
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
+	// 第二法線生成
+	void GenerateOutlineNormal(std::vector<VertexData>& vertices);
+
 private:
 	// Objファイルのデータ
 	ModelData modelData;

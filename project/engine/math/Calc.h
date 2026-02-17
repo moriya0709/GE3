@@ -100,6 +100,8 @@ Matrix4x4 Inverse(const Matrix4x4& m);
 
 Matrix4x4 MakeIdentity4x4();
 
+Vector3 Normalize(const Vector3& v);
+
 float Lerp(float x1, float x2, float t);
 
 float EaseIn(float x1, float x2, float t);

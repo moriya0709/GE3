@@ -32,6 +32,12 @@ void Object::Initialize(Camera* camera) {
 	directionalLightData->intensity = 1.0f;
 	directionalLightResource->Unmap(0, nullptr);
 
+	// アウトライン
+	outlineResource = dxCommon_->CreateBufferResource(sizeof(Outline));
+	outlineResource->Map(0, nullptr, reinterpret_cast<void**>(&outlineData));
+	outlineData->thickness = 0.01f;
+	outlineData->color = {1,0,0,1};
+
 	// *Transform* //
 	transform = {
 		{1.0f,1.0f,1.0f},
@@ -65,6 +71,8 @@ void Object::Draw() {
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
 	// 平行光源
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
+	// アウトライン
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, outlineResource->GetGPUVirtualAddress());
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {

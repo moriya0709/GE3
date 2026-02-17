@@ -267,6 +267,21 @@ Matrix4x4 MakeIdentity4x4() {
 	return result;
 }
 
+Vector3 Normalize(const Vector3& v) {
+	float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+
+	// 0œZ–h~
+	if (length == 0.0f) {
+		return { 0.0f, 0.0f, 0.0f };
+	}
+
+	return {
+		v.x / length,
+		v.y / length,
+		v.z / length
+	};
+}
+
 
 Matrix4x4& operator*=(Matrix4x4& lhm, const Matrix4x4& rhm)
 {

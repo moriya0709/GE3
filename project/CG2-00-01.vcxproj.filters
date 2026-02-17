@@ -207,6 +207,8 @@
     <FxCompile Include="Resource\shaders\Particle.VS.hlsl" />
     <FxCompile Include="Resource\shaders\Object3d.VS.hlsl" />
     <FxCompile Include="Resource\shaders\Object3d.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\Outline.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\Outline.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -338,5 +340,6 @@
     </None>
     <None Include="Resource\shaders\Particle.hlsli" />
     <None Include="Resource\shaders\Object3d.hlsli" />
+    <None Include="Resource\shaders\Outline.hlsli" />
   </ItemGroup>
 </Project>

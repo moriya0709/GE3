@@ -18,10 +18,8 @@ void GamePlayScene::Initialize() {
 	sprite->Initialize("Resource/uvChecker.png");
 
 	// 3Dオブジェクト
-	for (int i = 0; i < 2; i++) {
-		object[i] = std::make_unique <Object>();
-		object[i]->Initialize(camera.get());
-	}
+	object = std::make_unique <Object>();
+	object->Initialize(camera.get());
 
 	// Emitパーティクル発生
 	particleEmitter = std::make_unique <ParticleEmitter>();
@@ -29,8 +27,7 @@ void GamePlayScene::Initialize() {
 	particleEmitter->Emit();
 
 	// 初期化済みの3Dオブジェクトにモデルを紐づける
-	object[0]->SetModel("plane.obj");
-	object[1]->SetModel("axis.obj");
+	object->SetModel("ball.obj");
 }
 
 void GamePlayScene::Update() {
@@ -51,13 +48,10 @@ void GamePlayScene::Update() {
 		// テクスチャ変更
 		sprite->ChangeTexture("Resource/uvChecker.png");
 		particleEmitter->SetActive("group2");
-
 	}
 
 	// * 3Dオブジェクト* //
-	for (int i = 0; i < 2; i++) {
-		object[i]->Update();
-	}
+	object->Update();
 
 	// パーティクルエミッタ更新
 	particleEmitter->Update();
@@ -84,9 +78,13 @@ void GamePlayScene::Draw() {
 	ObjectCommon::GetInstance()->SetCommonPipelineState();
 
 	// 3Dオブジェクト描画
-	//for (int i = 0; i < 2; i++) {
-	//	object[i]->Draw();
-	//}
+	object->Draw();
+
+	// 3Dオブジェクトの描画準備
+	ObjectCommon::GetInstance()->SetOutlinePipelineState();
+	
+	// 3Dオブジェクト描画
+	object->Draw();
 	
 	// パーティクル描画
 	ParticleManager::GetInstance()->Draw();

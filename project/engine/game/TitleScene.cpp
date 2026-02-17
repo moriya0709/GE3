@@ -90,9 +90,17 @@ void TitleScene::Draw() {
 	ObjectCommon::GetInstance()->SetCommonPipelineState();
 
 	// 3Dオブジェクト描画
-	//for (int i = 0; i < 2; i++) {
-	//	object[i]->Draw();
-	//}
+	for (int i = 0; i < 2; i++) {
+		object[i]->Draw();
+	}
+
+	// 3Dオブジェクトの描画準備
+	ObjectCommon::GetInstance()->SetOutlinePipelineState();
+
+	// 3Dオブジェクト描画
+	for (int i = 0; i < 2; i++) {
+		object[i]->Draw();
+	}
 
 	// パーティクル描画
 	ParticleManager::GetInstance()->Draw();
@@ -101,7 +109,7 @@ void TitleScene::Draw() {
 	SpriteCommon::GetInstance()->SetCommonPipelineState();
 
 	// スプライト描画
-	sprite->Draw();
+	//sprite->Draw();
 }
 
 void TitleScene::Finalize() {
