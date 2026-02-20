@@ -33,6 +33,10 @@ void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	InitializeViewport(); // ビューポート矩形の初期化
 	InitializeScissorRect(); // シザリング矩形の初期化
 
+	// 初期化時
+	for (UINT i = 0; i < swapChainDesc.BufferCount; i++) {
+		backBufferStates[i] = D3D12_RESOURCE_STATE_PRESENT;
+	}
 }
 
 // コマンドリスト関連
@@ -112,7 +116,7 @@ void DirectXCommon::CreateDescriptor() {
 	const uint32_t descriptorSizeDSV = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	// RTV用のヒープディスクリプタの数は２。RTVはShader内で触るものではないので、ShaderVisibleはfalse
-	rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+	rtvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 8, false);
 	// SRV用のヒープでディスクリプタの数は128。SRVはShader内で触るものなので、ShaderVisibleはtrue
 	srvDescriptorHeap = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	// DSV用のヒープでディスクリプタの数は１。DSVはShader内で触るものではないので、ShaderVicibleはfalse
@@ -338,50 +342,51 @@ void DirectXCommon::PreDraw() {
 	// バックバッファの番号取得
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
-	// TransitionBarrierの設定
-	// 今回のバリアはTransition
+	// TransitionBarrierの設定	
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	// Noneにしておく
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	// バリアを張る対象のリソース。現在のバッファに対して行う
 	barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();
-	// 遷移前（現在）のResourceState
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-	// 遷移後のResourceStare
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	// TransitionBarrierを張る
 	commandList->ResourceBarrier(1, &barrier);
+
+	// GPUの状態を変えたので、CPU側のメモも最新に更新する！
+	backBufferStates[backBufferIndex] = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	// 描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
 
 	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f,0.25f,0.5f,1.0f }; // 青っぽい色。RGBAの順
+	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
 	// 指定した深度で画面全体をクリアする
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	commandList->RSSetViewports(1, &viewport); // Viewportを設定
-	commandList->RSSetScissorRects(1, &scissorRect); // Scirssorを設定
+	commandList->RSSetViewports(1, &viewport);
+	commandList->RSSetScissorRects(1, &scissorRect);
 }
 
 // 描画後処理
 void DirectXCommon::PostDraw() {
-	// バックバッファの番号取得
+	// バックバッファの番号取得 ★重要★
 	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
 	// 画面に書く処理は全て終わり、画面に映すので、状態を遷移
-	// 今回はRenderTragetからPresentにする
+	// RenderTarget → Present
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;  // ★追加★
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;        // ★追加★
+	barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();  // ★追加★
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;  // ★追加★
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	// TranstionBarrierを張る
 	commandList->ResourceBarrier(1, &barrier);
 
 	// FPS固定
 	UpdateFixFPS();
 
-	// コマンドリストの内容を確定させる。すべてのコマンドを詰んでからCloseすること
+	// コマンドリストの内容を確定させる
 	HRESULT hr = commandList->Close();
 	assert(SUCCEEDED(hr));
 
@@ -394,15 +399,11 @@ void DirectXCommon::PostDraw() {
 
 	// Fenceの値を更新
 	fenceValue++;
-	// GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入うするようにSignalを送る
 	commandQueue->Signal(fence.Get(), fenceValue);
 
-	// Fenceの値が指定したSIgnal値にたどり着いているかかくにんする
-	// GetCompletedValueの初期値はFence作成時に渡した初期値
+	// GPU完了待機
 	if (fence->GetCompletedValue() < fenceValue) {
-		//	// 指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
 		fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		//	// イベント待つ
 		WaitForSingleObject(fenceEvent, INFINITE);
 	}
 
@@ -430,6 +431,14 @@ void DirectXCommon::Finalize() {
 		debug->Release();
 	}
 #endif
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXCommon::GetBackBufferRTVHandle() {
+	// スワップチェーンから「今、描き込み可能なバックバッファの番号」を取得する
+	UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
+	// その番号に対応するハンドルを配列から返す
+	return rtvHandles[backBufferIndex];
 }
 
 // デスクリプタヒープ生成

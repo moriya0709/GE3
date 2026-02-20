@@ -58,6 +58,9 @@ void TitleScene::Update() {
 		// テクスチャ変更
 		sprite->ChangeTexture("Resource/uvChecker.png");
 		particleEmitter->SetActive("group2");
+
+		// エフェクト有効化(色反転)
+		PostEffect::GetInstance()->SetInversion(true);
 	}
 
 	// * 3Dオブジェクト* //

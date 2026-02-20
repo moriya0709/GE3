@@ -27,7 +27,15 @@ public:
 	HANDLE fenceEvent;
 	// デスクリプタステンシル
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	// デスクリプタヒープ
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> srvDescriptorHeap; // SRV
+	
+	// スワップチェイン
+	Microsoft::WRL::ComPtr <IDXGISwapChain4> swapChain = nullptr;
+	// スワップチェーンリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
+	// SwapChain バッファ数に応じて
+	D3D12_RESOURCE_STATES backBufferStates[2];
 
 	// 最大SRV数（最大テクスチャ枚数）
 	static const uint32_t kMaxSRVCount;
@@ -62,6 +70,11 @@ public:
 	ID3D12Device* GetDevice() const { return device.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 	size_t GetSwapChainResourceNum() const { return swapChainDesc.BufferCount; }
+	ID3D12DescriptorHeap* GetSrvHeap() const { return srvDescriptorHeap.Get(); }
+	ID3D12DescriptorHeap* GetRtvHeap() const { return rtvDescriptorHeap.Get(); }
+	ID3D12DescriptorHeap* GetDsvHeap() const { return dsvDescriptorHeap.Get(); }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() const { return dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferRTVHandle();
 
 	// デスクリプタヒープ生成
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
@@ -85,8 +98,6 @@ public:
 	// テクスチャファイルの読み込み
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
-
-
 private:
 	// DirectX12デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device;
@@ -102,11 +113,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource;
 
 	// ディスクリプタハンドル
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[8];
 	// ディスクリプタサイズ
 	uint32_t descriptorSizeSRV;
 	// デスクリプタヒープ
-
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtvDescriptorHeap; // RTV
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> dsvDescriptorHeap; // DSV
 
@@ -114,12 +124,7 @@ private:
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{}; // RTV設定
 
 
-	// スワップチェイン
-	Microsoft::WRL::ComPtr <IDXGISwapChain4> swapChain = nullptr;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{}; // スワップチェイン設定
-	// スワップチェーンリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
-
 	// フェンス
 	Microsoft::WRL::ComPtr <ID3D12Fence> fence = nullptr;
 	uint64_t fenceValue = 0;
