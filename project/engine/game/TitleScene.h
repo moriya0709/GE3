@@ -10,6 +10,7 @@
 #include "Input.h"
 #include "ImGuiManager.h"
 #include "BaseScene.h"
+#include "PostEffect.h"
 
 class SpriteCommon;
 class ObjectCommon;

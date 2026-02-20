@@ -48,10 +48,12 @@ void Game::Initialize() {
 	SoundManager::GetInstance()->Initialize();
 	SoundManager::GetInstance()->Load("bgm", "game.mp3");
 
+	// ポストエフェクト
+	PostEffect::GetInstance()->Initialize(dxCommon, windowAPI.get());
+
 	// ImGui
 	imGuiManager = std::make_unique <ImGuiManager>();
 	imGuiManager->Initialize(windowAPI.get(), dxCommon, srvManager.get());
-
 
 	// シーンマネージャーの生成
 	// 最初のシーン生成
@@ -84,9 +86,14 @@ void Game::Draw() {
 	// 描画前処理
 	M_Framework::BeginFrame();
 	srvManager->PreDraw();
+	PostEffect::GetInstance()->PreDraw();
 
 	// シーンマネージャー描画
 	SceneManager::GetInstance()->Draw();
+
+	// ポストエフェクト描画
+	PostEffect::GetInstance()->PostDraw();
+	PostEffect::GetInstance()->Draw();
 
 	// ImGui描画
 	imGuiManager->Draw();

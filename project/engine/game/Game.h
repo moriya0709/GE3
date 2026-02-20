@@ -14,6 +14,7 @@
 #include "GamePlayScene.h"
 #include "SoundManager.h"
 #include "ModelManager.h"
+#include "PostEffect.h"
 
 #include "SceneManager.h"
 #include "SceneFactory.h"
@@ -37,5 +38,4 @@ private:
 	std::unique_ptr <ImGuiManager> imGuiManager = nullptr;
 	// シーンファクトリー
 	std::unique_ptr <SceneFactory> sceneFactory_ = nullptr;
-
 };

@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\engine\camera">
       <UniqueIdentifier>{872b4968-147c-4972-8d56-17eb5cf4680a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\postEffect">
+      <UniqueIdentifier>{5aa28727-b8a2-4a4c-bbf4-97bc5a699e85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\posteffect">
+      <UniqueIdentifier>{0fd02937-5e8a-4d97-8bd3-e33d1ea6e49b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -195,6 +201,9 @@
     <ClCompile Include="engine\scene\SceneManager.cpp">
       <Filter>ソース ファイル\engine\scene</Filter>
     </ClCompile>
+    <ClCompile Include="application\postEffect\PostEffect.cpp">
+      <Filter>ソース ファイル\application\postEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">
@@ -209,6 +218,8 @@
     <FxCompile Include="Resource\shaders\Object3d.PS.hlsl" />
     <FxCompile Include="Resource\shaders\Outline.PS.hlsl" />
     <FxCompile Include="Resource\shaders\Outline.VS.hlsl" />
+    <FxCompile Include="Resource\shaders\PostEffect.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\PostEffect.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -328,6 +339,9 @@
     <ClInclude Include="engine\base\BaseScene.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
+    <ClInclude Include="application\postEffect\PostEffect.h">
+      <Filter>ヘッダー ファイル\application\posteffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -341,5 +355,6 @@
     <None Include="Resource\shaders\Particle.hlsli" />
     <None Include="Resource\shaders\Object3d.hlsli" />
     <None Include="Resource\shaders\Outline.hlsli" />
+    <None Include="Resource\shaders\PostEffect.hlsli" />
   </ItemGroup>
 </Project>
