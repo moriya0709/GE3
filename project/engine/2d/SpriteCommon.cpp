@@ -123,10 +123,10 @@ void SpriteCommon::CreateRootSignature() {
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
 	// Shader‚ðƒRƒ“ƒpƒCƒ‹‚·‚é
-	vertexShaderBlob = dxCommon_->CompileShader(L"Resource/shaders/Object3D.VS.hlsl", L"vs_6_0");
+	vertexShaderBlob = dxCommon_->CompileShader(L"Resource/shaders/Sprite.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	pixelShaderBlob = dxCommon_->CompileShader(L"Resource/shaders/Object3D.PS.hlsl", L"ps_6_0");
+	pixelShaderBlob = dxCommon_->CompileShader(L"Resource/shaders/Sprite.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 }
 
