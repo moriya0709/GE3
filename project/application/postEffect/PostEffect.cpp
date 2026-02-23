@@ -40,39 +40,32 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectResource->Map(0, nullptr, reinterpret_cast<void**>(&effectData));
 	effectData->isInversion = false;
 	effectData->isGrayscale = false;
+	effectData->isRadialBlur = true;
 	effectData->intensity = 1.0f;
+	effectData->blurCenter = { 0.5f,0.5f };
+	effectData->blurWidth = 0.01f;
+	effectData->blurSamples = 10;
 
 }
 
 void PostEffect::Draw() {
-	// 1. バックバッファを「レンダーターゲット」状態に遷移させる
-	// (以前削除したバリアをここで復活させます)
+	// バックバッファをレンダーターゲット
 	TransitionBackBuffer(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	// 2. 出力先を「バックバッファ」に切り替える (重要！)
-	// dxCommonから現在のバックバッファのRTVハンドルを取得してください
 	D3D12_CPU_DESCRIPTOR_HANDLE backBufferRtv = dxCommon_->GetBackBufferRTVHandle();
-
-	// ポストエフェクトは奥行き判定がいらないので、DSV(深度)はnullptrでOK
 	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &backBufferRtv, FALSE, nullptr);
-
-	// --- ここから描画処理 ---
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
-
 	ID3D12DescriptorHeap* heaps[] = { dxCommon_->srvDescriptorHeap.Get() };
 	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, heaps);
-
-	// ポストエフェクト用テクスチャ(10番)をセット
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(0, dxCommon_->GetSRVGPUDescriptorHandle(10));
 
-	// エフェクト
+	// エフェクト切り替え
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, effectResource->GetGPUVirtualAddress());
 
 	// 全画面トライアングルを描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
 }
-
 
 // 描画前処理
 void PostEffect::PreDraw() {
@@ -118,9 +111,7 @@ RenderTarget PostEffect::CreateRenderTarget(
 ) {
 	RenderTarget rt;
 
-	// =========================
-	// 1. リソース作成
-	// =========================
+	// *リソース作成* //
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
 
@@ -149,9 +140,7 @@ RenderTarget PostEffect::CreateRenderTarget(
 	);
 	assert(SUCCEEDED(hr));
 
-	// =========================
-	// 2. RTV作成
-	// =========================
+	// *RTV作成* //
 	UINT rtvDescriptorSize =
 		device->GetDescriptorHandleIncrementSize(
 			D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -166,9 +155,7 @@ RenderTarget PostEffect::CreateRenderTarget(
 		rt.rtvHandle
 	);
 
-	// =========================
-	// 3. SRV作成
-	// =========================
+	// *SRV作成* //
 	UINT srvDescriptorSize =
 		device->GetDescriptorHandleIncrementSize(
 			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -235,7 +222,7 @@ void PostEffect::CreateRootSignature() {
 	// DescriptorRange作成
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = 0; // 0から始まる
-	descriptorRange[0].NumDescriptors = 128; // 数は1つ
+	descriptorRange[0].NumDescriptors = 1; // テクスチャを2枚使う
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // offsetを自動計算
 
