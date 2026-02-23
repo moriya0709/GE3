@@ -6,6 +6,8 @@
 #include <dxcapi.h>
 #include <memory>
 
+#include "Calc.h"
+
 class DirectXCommon;
 class WindowAPI;
 
@@ -20,7 +22,11 @@ struct RenderTarget {
 struct EffectData {
 	int isInversion; // 色反転
 	int isGrayscale; // モノクロ
+	int isRadialBlur; // 放射状ブラー
 	float intensity; // 全体の強さ
+	Vector2 blurCenter; // ブラーの中心 (通常は 0.5, 0.5)
+	float blurWidth; // ブラーの強さ (0.01～0.1程度)
+	int blurSamples; // サンプリング数 (10～20程度)
 };
 
 class PostEffect {
@@ -63,10 +69,12 @@ private:
 	float clearColor[4] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	D3D12_RESOURCE_STATES currentState_;
 
+	// *エフェクト切り換え用* //
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> effectResource;
 	// エフェクトデータ
 	EffectData* effectData = nullptr;
+
 
 	// シングルトンインスタンス
 	static std::unique_ptr <PostEffect> instance;
