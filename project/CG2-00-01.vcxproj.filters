@@ -220,6 +220,8 @@
     <FxCompile Include="Resource\shaders\Outline.VS.hlsl" />
     <FxCompile Include="Resource\shaders\PostEffect.PS.hlsl" />
     <FxCompile Include="Resource\shaders\PostEffect.VS.hlsl" />
+    <FxCompile Include="Resource\shaders\Sprite.PS.hlsl" />
+    <FxCompile Include="Resource\shaders\Sprite.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -356,5 +358,6 @@
     <None Include="Resource\shaders\Object3d.hlsli" />
     <None Include="Resource\shaders\Outline.hlsli" />
     <None Include="Resource\shaders\PostEffect.hlsli" />
+    <None Include="Resource\shaders\Sprite.hlsli" />
   </ItemGroup>
 </Project>
