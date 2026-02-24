@@ -43,6 +43,7 @@ void Game::Initialize() {
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 	ModelManager::GetInstance()->LoadModel("ball.obj");
+	ModelManager::GetInstance()->LoadModel("terrain.obj");
 
 	// サウンド
 	SoundManager::GetInstance()->Initialize();

@@ -33,7 +33,14 @@ struct AmbientLight {
 	float intensity; // 輝度
 	int isDisplay; // 表示するかどうか
 };
-
+// ポイントライトデータ
+struct PointLight {
+	Vector4 color;
+	Vector3 position;
+	float intensity; // 輝度
+	float radius; // 有効範囲
+	int isDisplay;
+};
 
 // アウトラインデータ
 struct Outline {
@@ -60,6 +67,10 @@ public:
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetOutlineThickness(float thickness) { outlineData->thickness = thickness; }
 	void SetOutlineColor(Vector4 color) { outlineData->color = color; }
+	// ライト
+	void SetDirectionalLightDirection(Vector3 direction) { directionalLightData->direction = direction; }
+	void SetPointLightPosition(Vector3 position) { pointLightData->position = position; }
+
 
 	// getter
 	const Vector3& GetScale() const { return transform.scale; }
@@ -72,12 +83,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> ambientLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> outlineResource;
 
 	// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* transformationMatrixData = nullptr;
 	DirectionalLight* directionalLightData = nullptr;
 	AmbientLight* ambientLightData = nullptr;
+	PointLight* pointLightData = nullptr;
 	Outline* outlineData = nullptr;
 
 	// Transform

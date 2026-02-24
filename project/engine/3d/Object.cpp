@@ -39,8 +39,19 @@ void Object::Initialize(Camera* camera) {
 	// 初期値
 	ambientLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	ambientLightData->intensity = 1.0f;
-	ambientLightData->isDisplay = true;
+	ambientLightData->isDisplay = false;
 	ambientLightResource->Unmap(0, nullptr);
+
+	// *ポイントライト* //
+	pointLightResource = dxCommon_->CreateBufferResource(sizeof(PointLight));
+	pointLightResource->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData));
+	// 初期値
+	pointLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pointLightData->position = { 1.0f, 1.0f, 1.0f};
+	pointLightData->intensity = 1.0f;
+	pointLightData->radius = 5.0f;
+	pointLightData->isDisplay = true;
+	pointLightResource->Unmap(0, nullptr);
 
 	// アウトライン
 	outlineResource = dxCommon_->CreateBufferResource(sizeof(Outline));
@@ -85,6 +96,8 @@ void Object::Draw() {
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, directionalLightResource->GetGPUVirtualAddress());
 	// 環境光
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, ambientLightResource->GetGPUVirtualAddress());
+	// ポイントライト
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(6, pointLightResource->GetGPUVirtualAddress());
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
