@@ -13,7 +13,6 @@ struct DirectionalLight
     float32_t3 direction; // ライトの向き 
     float intensity; // 輝度 
     int isDisplay; // 表示するかどうか 
-    float padding[3]; // バイト合わせ 
 };
 
 struct AmbientLight
@@ -21,7 +20,6 @@ struct AmbientLight
     float32_t4 color; // ライトの色 
     float intensity; // 輝度 
     int isDisplay; // 表示するかどうか 
-    float padding[2]; // バイト合わせ 
 };
 
 struct PointLight
@@ -31,13 +29,25 @@ struct PointLight
     float intensity;
     float radius;
     int isDisplay;
-    float padding[2]; // バイト合わせ 
+};
+
+struct SpotLight
+{
+    float32_t4 color;
+    float32_t3 position;
+    float intensity;
+    float32_t3 direction;
+    float range; // 距離減衰用
+    float innerCone; // 内側角度
+    float outerCone; // 外側角度
+    int isDisplay;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b2);
 ConstantBuffer<AmbientLight> gAmbientLight : register(b3);
 ConstantBuffer<PointLight> gPointLight : register(b4);
+ConstantBuffer<SpotLight> gSpotLight : register(b5);
 
 Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
@@ -54,6 +64,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         float4 directional = float4(0, 0, 0, 0);
         float4 ambient = float4(0, 0, 0, 0);
         float4 pointLight = float4(0, 0, 0, 0);
+        float4 spot = float4(0, 0, 0, 0);
        
         // 平行光
         if (gDirectionalLight.isDisplay)
@@ -81,8 +92,26 @@ PixelShaderOutput main(VertexShaderOutput input)
 
             pointLight = gPointLight.color * diffuse * attenuation * gPointLight.intensity;
         }
+        // スポットライト
+        if (gSpotLight.isDisplay)
+        {
+            float3 lightVec = gSpotLight.position - input.worldPosition;
+            float distance = length(lightVec);
+            float3 L = normalize(lightVec);
+            
+            // 距離減衰
+            float attenuation = saturate(1.0f - distance / gSpotLight.range);
+            // 角度減衰
+            float theta = dot(normalize(-L), normalize(gSpotLight.direction));
+            float epsilon = gSpotLight.innerCone - gSpotLight.outerCone;
+            float angleFactor = saturate((theta - gSpotLight.outerCone) / epsilon);
+            // 拡散反射
+            float NdotL = saturate(dot(normal, L));
+
+            spot = gSpotLight.color * NdotL * attenuation * angleFactor * gSpotLight.intensity;
+        }
         
-        float4 lighting = directional + ambient + pointLight;
+        float4 lighting = directional + ambient + pointLight + spot;
         output.color = gMaterial.color * textureColor * lighting;
     }
     else

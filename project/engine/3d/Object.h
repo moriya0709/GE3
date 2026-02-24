@@ -41,6 +41,17 @@ struct PointLight {
 	float radius; // 有効範囲
 	int isDisplay;
 };
+// スポットライトデータ
+struct SpotLight {
+	Vector4 color; // 色
+	Vector3 position; // 位置
+	float intensity; // 輝度
+	Vector3 direction; // 向き
+	float range;        // 距離減衰用
+	float innerCone;    // 内側角度
+	float outerCone;    // 外側角度
+	int isDisplay;
+};
 
 // アウトラインデータ
 struct Outline {
@@ -69,9 +80,13 @@ public:
 	void SetOutlineColor(Vector4 color) { outlineData->color = color; }
 	// ライト
 	void SetDirectionalLightDirection(Vector3 direction) { directionalLightData->direction = direction; }
+	
 	void SetPointLightPosition(Vector3 position) { pointLightData->position = position; }
 
-
+	void SetSpotLightPosition(Vector3 position) { spotLightData->position = position; }
+	void SetSpotLightDirection(Vector3 direction) { spotLightData->direction = direction; }
+	void SetSpotLightRange(float range) { spotLightData->range = range; }
+	
 	// getter
 	const Vector3& GetScale() const { return transform.scale; }
 	const Vector3& GetRotate() const { return transform.rotate; }
@@ -84,6 +99,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> ambientLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> outlineResource;
 
 	// バッファリソース内のデータを指すポインタ
@@ -91,6 +107,7 @@ private:
 	DirectionalLight* directionalLightData = nullptr;
 	AmbientLight* ambientLightData = nullptr;
 	PointLight* pointLightData = nullptr;
+	SpotLight* spotLightData = nullptr;
 	Outline* outlineData = nullptr;
 
 	// Transform
