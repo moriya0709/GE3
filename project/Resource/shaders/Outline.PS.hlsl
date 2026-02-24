@@ -1,4 +1,4 @@
-cbuffer OutlineParam : register(b2)
+cbuffer OutlineParam : register(b1)
 {
     float thickness;
     float32_t4 color;

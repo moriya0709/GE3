@@ -25,7 +25,16 @@ struct DirectionalLight {
 	Vector4 color; // ライトの色
 	Vector3 direction; // ライトの向き
 	float intensity; // 輝度
+	int isDisplay; // 表示するかどうか
 };
+// 環境光データ
+struct AmbientLight {
+	Vector4 color; // ライトの色
+	float intensity; // 輝度
+	int isDisplay; // 表示するかどうか
+};
+
+
 // アウトラインデータ
 struct Outline {
 	float thickness; // 太さ
@@ -62,11 +71,13 @@ private:
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> ambientLightResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource> outlineResource;
 
 	// バッファリソース内のデータを指すポインタ
 	TransformationMatrix* transformationMatrixData = nullptr;
 	DirectionalLight* directionalLightData = nullptr;
+	AmbientLight* ambientLightData = nullptr;
 	Outline* outlineData = nullptr;
 
 	// Transform

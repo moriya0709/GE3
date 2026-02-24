@@ -40,7 +40,7 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectResource->Map(0, nullptr, reinterpret_cast<void**>(&effectData));
 	effectData->isInversion = false;
 	effectData->isGrayscale = false;
-	effectData->isRadialBlur = true;
+	effectData->isRadialBlur = false;
 	effectData->intensity = 1.0f;
 	effectData->blurCenter = { 0.5f,0.5f };
 	effectData->blurWidth = 0.01f;
