@@ -17,8 +17,14 @@ struct VertexShaderInput
 VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
+    // ワールド座標を計算
+    float4 worldPos = mul(input.position, gTransformationMatrix.World);
+    // 画面座標
     output.position = mul(input.position, gTransformationMatrix.WVP);
+    output.worldPosition = worldPos.xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float32_t3x3)gTransformationMatrix.World));
+    // 法線もワールド空間へ
+    output.normal = normalize(mul(input.normal, (float32_t3x3) gTransformationMatrix.World));
+
     return output;
 }

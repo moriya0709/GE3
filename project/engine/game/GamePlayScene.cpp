@@ -27,7 +27,7 @@ void GamePlayScene::Initialize() {
 	particleEmitter->Emit();
 
 	// 初期化済みの3Dオブジェクトにモデルを紐づける
-	object->SetModel("ball.obj");
+	object->SetModel("terrain.obj");
 }
 
 void GamePlayScene::Update() {
@@ -69,6 +69,11 @@ void GamePlayScene::Update() {
 	ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
+
+	// ライト
+	ImGui::DragFloat3("pointLightPosition", &PointLight.x, 0.01f, -100.0f, 100.0f);
+	object->SetPointLightPosition(PointLight);
+
 #endif
 
 }

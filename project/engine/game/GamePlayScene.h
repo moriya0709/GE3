@@ -40,6 +40,9 @@ private:
 		{0.0f,0.0f,0.0f}
 	};
 
+	// ポイントライト
+	Vector3 PointLight = { 1.0f, 1.0f, 0.0f };
+
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;
 	// スプライト
