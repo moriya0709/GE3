@@ -43,6 +43,11 @@ private:
 	// ポイントライト
 	Vector3 PointLight = { 1.0f, 1.0f, 0.0f };
 
+	// スポットライト
+	Vector3 SpotLightPosition = { 0.0f, 0.0f, 0.0f };
+	Vector3 SpotLightDirection = { 0.0f, 0.0f, 0.0f };
+	float SpotLightRange = 10.0f;
+
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;
 	// スプライト

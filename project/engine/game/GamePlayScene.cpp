@@ -70,9 +70,18 @@ void GamePlayScene::Update() {
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
 
-	// ライト
+	// ポイントライト
 	ImGui::DragFloat3("pointLightPosition", &PointLight.x, 0.01f, -100.0f, 100.0f);
 	object->SetPointLightPosition(PointLight);
+
+	// スポットライト
+	ImGui::DragFloat3("spotLightPosition", &SpotLightPosition.x, 0.01f, -100.0f, 100.0f);
+	ImGui::DragFloat3("spotLightDirection", &SpotLightDirection.x, 0.01f, -100.0f, 100.0f);
+	ImGui::DragFloat("spotRange", &SpotLightRange, 0.01f, 0.0f, 100.0f);
+	
+	object->SetSpotLightPosition(SpotLightPosition);
+	object->SetSpotLightDirection(SpotLightDirection);
+	object->SetSpotLightRange(SpotLightRange);
 
 #endif
 

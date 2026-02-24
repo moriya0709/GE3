@@ -50,8 +50,22 @@ void Object::Initialize(Camera* camera) {
 	pointLightData->position = { 1.0f, 1.0f, 1.0f};
 	pointLightData->intensity = 1.0f;
 	pointLightData->radius = 5.0f;
-	pointLightData->isDisplay = true;
+	pointLightData->isDisplay = false;
 	pointLightResource->Unmap(0, nullptr);
+
+	// *スポットライト* //
+	spotLightResource = dxCommon_->CreateBufferResource(sizeof(SpotLight));
+	spotLightResource->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData));
+	// 初期値
+	spotLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	spotLightData->position = { 0.0f, 3.0f, 0.0f };
+	spotLightData->intensity = 1.0f;
+	spotLightData->direction = { 0.0f, 0.0f, 0.0f };
+	spotLightData->range = 10.0f;
+	spotLightData->innerCone = 1.0f;
+	spotLightData->outerCone = 0.0f;
+	spotLightData->isDisplay = true;
+	spotLightResource->Unmap(0, nullptr);
 
 	// アウトライン
 	outlineResource = dxCommon_->CreateBufferResource(sizeof(Outline));
@@ -98,6 +112,8 @@ void Object::Draw() {
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, ambientLightResource->GetGPUVirtualAddress());
 	// ポイントライト
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(6, pointLightResource->GetGPUVirtualAddress());
+	// スポットライト
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(7, spotLightResource->GetGPUVirtualAddress());
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
