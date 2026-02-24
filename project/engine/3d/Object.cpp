@@ -30,7 +30,17 @@ void Object::Initialize(Camera* camera) {
 	directionalLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	directionalLightData->direction = { 0.0f, -1.0f, 0.0f };
 	directionalLightData->intensity = 1.0f;
+	directionalLightData->isDisplay = false;
 	directionalLightResource->Unmap(0, nullptr);
+
+	// *環境光* //
+	ambientLightResource = dxCommon_->CreateBufferResource(sizeof(AmbientLight));
+	ambientLightResource->Map(0, nullptr, reinterpret_cast<void**>(&ambientLightData));
+	// 初期値
+	ambientLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	ambientLightData->intensity = 1.0f;
+	ambientLightData->isDisplay = true;
+	ambientLightResource->Unmap(0, nullptr);
 
 	// アウトライン
 	outlineResource = dxCommon_->CreateBufferResource(sizeof(Outline));
@@ -69,10 +79,12 @@ void Object::Update() {
 void Object::Draw() {
 	// wvp用とWorld用のCBufferの場所を設定
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource->GetGPUVirtualAddress());
-	// 平行光源
-	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource->GetGPUVirtualAddress());
 	// アウトライン
-	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, outlineResource->GetGPUVirtualAddress());
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, outlineResource->GetGPUVirtualAddress());
+	// 平行光
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(4, directionalLightResource->GetGPUVirtualAddress());
+	// 環境光
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, ambientLightResource->GetGPUVirtualAddress());
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
