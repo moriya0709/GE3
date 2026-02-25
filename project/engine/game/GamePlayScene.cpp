@@ -83,6 +83,12 @@ void GamePlayScene::Update() {
 	object->SetSpotLightDirection(SpotLightDirection);
 	object->SetSpotLightRange(SpotLightRange);
 
+	// ƒtƒHƒO
+	ImGui::DragFloat("fogStart", &start, 0.1f, 0.0f, 100.0f);
+	ImGui::DragFloat("fogEnd", &end, 0.1f, 0.0f, 100.0f);
+	PostEffect::GetInstance()->SetDistanceFogStart(start);
+	PostEffect::GetInstance()->SetDistanceFogEnd(end);
+
 #endif
 
 }

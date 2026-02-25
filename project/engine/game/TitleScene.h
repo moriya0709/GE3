@@ -41,6 +41,10 @@ private:
 		{0.0f,0.0f,0.0f}
 	};
 
+	// フォグ
+	float start = 5.0f;
+	float end = 20.0f;
+
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;
 	// スプライト

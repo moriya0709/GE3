@@ -41,15 +41,27 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectData->isInversion = false;
 	effectData->isGrayscale = false;
 	effectData->isRadialBlur = false;
+	effectData->isDistanceFog = false;
 	effectData->intensity = 1.0f;
 	effectData->blurCenter = { 0.5f,0.5f };
 	effectData->blurWidth = 0.01f;
 	effectData->blurSamples = 10;
+	// ディスタンスフォグ用のパラメータ
+	effectData->distanceFogColor = { 0.5f,0.5f,0.5f };// フォグの色
+	effectData->distanceFogStart = 0.0f;  // フォグが始まる距離
+	effectData->distanceFogEnd = 10.0f; // 完全にフォグに覆われる距離
+
+	effectData->zNear = 0.1f; // カメラのニアクリップ面
+	effectData->zFar = 1000.0f; // カメラのファークリップ面
 
 }
 
 void PostEffect::Draw() {
-	// バックバッファをレンダーターゲット
+	// --- 準備 ---
+	// 1. 深度バッファを「読み取り用(SRV)」に変える
+	TransitionDepthBuffer(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+	// 2. バックバッファを「書き込み用(RTV)」に変える
 	TransitionBackBuffer(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE backBufferRtv = dxCommon_->GetBackBufferRTVHandle();
@@ -65,6 +77,11 @@ void PostEffect::Draw() {
 
 	// 全画面トライアングルを描画
 	dxCommon_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+
+	// --- 後始末 (次のフレームのために) ---
+	// 3. 深度バッファを「書き込み用(DEPTH_WRITE)」に戻す
+	TransitionDepthBuffer(D3D12_RESOURCE_STATE_DEPTH_WRITE);
+
 }
 
 // 描画前処理
@@ -218,11 +235,36 @@ void PostEffect::TransitionBackBuffer(D3D12_RESOURCE_STATES newState) {
 	dxCommon_->backBufferStates[idx] = newState;
 }
 
+void PostEffect::TransitionDepthBuffer(D3D12_RESOURCE_STATES newState) {
+	// 現在の深度バッファの状態を保持する変数（本来はクラスメンバーにするのが理想）
+	static D3D12_RESOURCE_STATES currentDepthState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+
+	// 現在の状態と同じなら何もしない
+	if (currentDepthState == newState) return;
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// 対象は「深度バッファのリソース」
+	barrier.Transition.pResource = dxCommon_->GetDepthStencilResource();
+
+	barrier.Transition.StateBefore = currentDepthState; // 前の状態
+	barrier.Transition.StateAfter = newState;           // 次の状態（引数）
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	// GPUに命令を発行
+	dxCommon_->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	// 状態を更新
+	currentDepthState = newState;
+}
+
 void PostEffect::CreateRootSignature() {
 	// DescriptorRange作成
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
 	descriptorRange[0].BaseShaderRegister = 0; // 0から始まる
-	descriptorRange[0].NumDescriptors = 1; // テクスチャを2枚使う
+	descriptorRange[0].NumDescriptors = 3;
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRVを使う
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // offsetを自動計算
 
