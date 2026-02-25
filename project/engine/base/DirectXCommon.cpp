@@ -29,6 +29,7 @@ void DirectXCommon::Initialize(WindowAPI* windowAPI) {
 	InitializeFixFPS(); // FPS固定初期化
 	InitializeRTV(); // レンダーターゲットビューの初期化
 	InitializeDSV(); // 深度ステンシルビューの初期化
+	InitializePostEffectDepthSRV(12); // ポストエフェクト用の深度SRV初期化
 	InitializeFence(); // フェンスの初期化
 	InitializeViewport(); // ビューポート矩形の初期化
 	InitializeScissorRect(); // シザリング矩形の初期化
@@ -145,7 +146,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreatDepthStenCilTextureRe
 	resourceDesc.Height = height; // Textureの高さ
 	resourceDesc.MipLevels = 1; // mipmapの数
 	resourceDesc.DepthOrArraySize = 1; // 奥行 or 配列Textureの配列数
-	resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // DepthStencilとして利用可能なフォーマット
+	resourceDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; // DepthStencilとして利用可能なフォーマット
 	resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。１固定
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2次元
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // DepthStencilとして使う通知
@@ -306,7 +307,20 @@ void DirectXCommon::InitializeDSV() {
 	// DSSVHeapの先頭にDSVをつくる
 	device->CreateDepthStencilView(depthStencilResource.Get(), &dsvDesc, dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
+}
 
+void DirectXCommon::InitializePostEffectDepthSRV(uint32_t index) {
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	// 指定されたインデックス（今回は12）のハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = GetSRVCPUDescriptorHandle(index);
+
+	// 指定した場所に深度SRVを作成
+	device->CreateShaderResourceView(depthStencilResource.Get(), &srvDesc, srvHandle);
 }
 
 void DirectXCommon::InitializeFence() {

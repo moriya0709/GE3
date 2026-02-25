@@ -84,6 +84,14 @@ void TitleScene::Update() {
 	ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
+
+	// ƒtƒHƒO
+	ImGui::DragFloat("fogStart", &start, 0.1f, 0.0f, 100.0f);
+	ImGui::DragFloat("fogEnd", &end, 0.1f, 0.0f, 100.0f);
+	PostEffect::GetInstance()->SetDistanceFogStart(start);
+	PostEffect::GetInstance()->SetDistanceFogEnd(end);
+
+
 #endif
 
 }

@@ -10,6 +10,7 @@
 #include "Input.h"
 #include "ImGuiManager.h"
 #include "BaseScene.h"
+#include "PostEffect.h"
 
 class SpriteCommon;
 class ObjectCommon;
@@ -47,6 +48,10 @@ private:
 	Vector3 SpotLightPosition = { 0.0f, 0.0f, 0.0f };
 	Vector3 SpotLightDirection = { 0.0f, 0.0f, 0.0f };
 	float SpotLightRange = 10.0f;
+
+	// フォグ
+	float start = 5.0f;
+	float end = 20.0f;
 
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;

@@ -51,6 +51,7 @@ public:
 
 	void InitializeRTV(); // レンダーターゲットビューの初期化
 	void InitializeDSV(); // 深度ステンシルビューの初期化
+	void InitializePostEffectDepthSRV(uint32_t index); // ポストエフェクト用の深度SRV初期化
 	void InitializeFence(); // フェンスの初期化
 	void InitializeViewport(); // ビューポート矩形の初期化
 	void InitializeScissorRect(); // シザリング矩形の初期化
@@ -75,6 +76,7 @@ public:
 	ID3D12DescriptorHeap* GetDsvHeap() const { return dsvDescriptorHeap.Get(); }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle() const { return dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferRTVHandle();
+	ID3D12Resource* GetDepthStencilResource() const { return depthStencilResource.Get(); }
 
 	// デスクリプタヒープ生成
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
@@ -114,6 +116,7 @@ private:
 
 	// ディスクリプタハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[8];
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandle;
 	// ディスクリプタサイズ
 	uint32_t descriptorSizeSRV;
 	// デスクリプタヒープ

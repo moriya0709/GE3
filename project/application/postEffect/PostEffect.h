@@ -23,10 +23,22 @@ struct EffectData {
 	int isInversion; // 色反転
 	int isGrayscale; // モノクロ
 	int isRadialBlur; // 放射状ブラー
+	int isDistanceFog; // フォグ
 	float intensity; // 全体の強さ
 	Vector2 blurCenter; // ブラーの中心 (通常は 0.5, 0.5)
 	float blurWidth; // ブラーの強さ (0.01～0.1程度)
 	int blurSamples; // サンプリング数 (10～20程度)
+
+
+	// フォグ用のパラメータ
+	Vector3 distanceFogColor; // フォグの色
+	float distanceFogStart; // フォグが始まる距離
+	float distanceFogEnd; // 完全にフォグに覆われる距離
+	float pad1; // アライメント用
+
+	float zNear; // カメラのニアクリップ面
+
+	float zFar; // カメラのファークリップ面
 };
 
 class PostEffect {
@@ -45,6 +57,13 @@ public:
 	void SetInversion(bool isInversion) { effectData->isInversion = isInversion; }
 	void SetGrayscale(bool isGrayscale) { effectData->isGrayscale = isGrayscale; }
 	void SetIntensity(float intensity) { effectData->intensity = intensity; }
+
+	// フォグ
+	void SetDistanceFog(bool isFog) { effectData->isDistanceFog = isFog; }
+	void SetDistanceFogColor(const Vector3& color) { effectData->distanceFogColor = color; }
+	void SetDistanceFogStart(float start) { effectData->distanceFogStart = start; }
+	void SetDistanceFogEnd(float end) { effectData->distanceFogEnd = end; }
+
 
 	// シングルトンインスタンスの取得
 	static PostEffect* GetInstance();
@@ -100,6 +119,8 @@ private:
 	void Transition(D3D12_RESOURCE_STATES newState);
 	// バックバッファを指定の状態に遷移
 	void TransitionBackBuffer(D3D12_RESOURCE_STATES newState);
+	// 深度バッファを指定の状態に遷移
+	void TransitionDepthBuffer(D3D12_RESOURCE_STATES newState);
 
 	// ルートシグネイチャ生成
 	void CreateRootSignature();
