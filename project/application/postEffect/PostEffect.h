@@ -10,6 +10,7 @@
 
 class DirectXCommon;
 class WindowAPI;
+class Camera;
 
 struct RenderTarget {
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource;
@@ -20,25 +21,46 @@ struct RenderTarget {
 };
 
 struct EffectData {
-	int isInversion; // 色反転
-	int isGrayscale; // モノクロ
-	int isRadialBlur; // 放射状ブラー
-	int isDistanceFog; // フォグ
-	float intensity; // 全体の強さ
-	Vector2 blurCenter; // ブラーの中心 (通常は 0.5, 0.5)
-	float blurWidth; // ブラーの強さ (0.01～0.1程度)
-	int blurSamples; // サンプリング数 (10～20程度)
+	// [Block 0] 16 bytes
+	int isInversion;
+	int isGrayscale;
+	int isRadialBlur;
+	int isDistanceFog;
 
+	// [Block 1] 16 bytes
+	int isHeightFog;
+	float intensity;
+	float pad0[2]; // 16バイトに合わせるための詰め物
 
-	// フォグ用のパラメータ
-	Vector3 distanceFogColor; // フォグの色
-	float distanceFogStart; // フォグが始まる距離
-	float distanceFogEnd; // 完全にフォグに覆われる距離
-	float pad1; // アライメント用
+	// [Block 2] 16 bytes
+	Vector2 blurCenter;
+	float blurWidth;
+	int blurSamples;
 
-	float zNear; // カメラのニアクリップ面
+	// [Block 3] 16 bytes
+	Vector3 distanceFogColor;
+	float distanceFogStart;
 
-	float zFar; // カメラのファークリップ面
+	// [Block 4] 16 bytes
+	float distanceFogEnd;
+	float zNear;
+	float zFar;
+	float pad1; // 16バイトに合わせる
+
+	// [Block 5] 16 bytes
+	Vector3 heightFogColor;
+	float heightFogTop;
+
+	// [Block 6] 16 bytes
+	float heightFogBottom;
+	float heightFogDensity;
+	float pad2[2]; // ここで行列の開始位置を16バイトの倍数に強制する
+
+	// [Block 7-10] 64 bytes
+	Matrix4x4 matInverseViewProjection;
+
+	// [Padding to 256 bytes]
+	float finalPad[28];
 };
 
 class PostEffect {
@@ -58,12 +80,25 @@ public:
 	void SetGrayscale(bool isGrayscale) { effectData->isGrayscale = isGrayscale; }
 	void SetIntensity(float intensity) { effectData->intensity = intensity; }
 
-	// フォグ
+	// ディスタンスフォグ
 	void SetDistanceFog(bool isFog) { effectData->isDistanceFog = isFog; }
 	void SetDistanceFogColor(const Vector3& color) { effectData->distanceFogColor = color; }
 	void SetDistanceFogStart(float start) { effectData->distanceFogStart = start; }
 	void SetDistanceFogEnd(float end) { effectData->distanceFogEnd = end; }
+	
+	// ハイトフォグ
+	void SetHeightFog(bool isFog) { effectData->isHeightFog = isFog; }
+	void SetHeightFogColor(const Vector3& color) { effectData->heightFogColor = color; }
+	void SetHeightFogTop(float top) { effectData->heightFogTop = top; }
+	void SetHeightFogBottom(float bottom) { effectData->heightFogBottom = bottom; }
+	void SetHeightFogDensity(float density) { effectData->heightFogDensity = density; }
+	void SetInverseViewProjectionMatrix(const Matrix4x4& mat) { effectData->matInverseViewProjection = mat; }
+	void HightFogUpdate(Camera* camera); // カメラの位置からハイトフォグ用の逆行列を計算してセットする関数
 
+	// getter
+	Matrix4x4 GetInverseViewProjectionMatrix() {
+		return effectData->matInverseViewProjection;
+	}
 
 	// シングルトンインスタンスの取得
 	static PostEffect* GetInstance();

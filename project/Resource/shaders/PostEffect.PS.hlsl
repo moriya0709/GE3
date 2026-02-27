@@ -12,28 +12,37 @@ struct PSInput
 
 struct EffectData
 {
-    int isInversion; // 色反転
-    int isGrayscale; // モノクロ
-    int isRadialBlur; // 放射状ブラー
-    int isDistanceFog; // ディスタンスフォグ
-    float intensity; // 全体の強さ
-    
-    // 放射状ブラー用のパラメータ
-    float2 blurCenter; // ブラーの中心 (通常は 0.5, 0.5)
-    float blurWidth; // ブラーの強さ (0.01～0.1程度)
-    int blurSamples; // サンプリング数 (10～20程度)
-    
-    // フォグ用のパラメータ
-    float3 distanceFogColor; // フォグの色
-    float distanceFogStart; // フォグが始まる距離
-    float distanceFogEnd; // 完全にフォグに覆われる距離
-    float pad1; // アライメント用
-    
-    float zNear; // カメラのニアクリップ面
-    
-    float zFar; // カメラのファークリップ面
-    float3 pad2; // アライメント用
-    
+    int isInversion;
+    int isGrayscale;
+    int isRadialBlur;
+    int isDistanceFog;
+
+    int isHeightFog;
+    float intensity;
+    float2 pad0; // float2 = 8byte
+
+    float2 blurCenter;
+    float blurWidth;
+    int blurSamples;
+
+    float3 distanceFogColor;
+    float distanceFogStart;
+
+    float distanceFogEnd;
+    float zNear;
+    float zFar;
+    float pad1;
+
+    float3 heightFogColor;
+    float heightFogTop;
+
+    float heightFogBottom;
+    float heightFogDensity;
+    float2 pad2; // ★ここが行列の直前
+
+    float4x4 matInverseViewProjection;
+
+    float4 finalPad[7]; // 全体を256の倍数にする
 };
 ConstantBuffer<EffectData> gEffectData : register(b0);
 
@@ -69,8 +78,7 @@ float4 main(PSInput input) : SV_TARGET
         
         // 合計をサンプル数で割って平均化
         color = blurColor / float(gEffectData.blurSamples);
-    }
-    
+    } 
     // ディスタンスフォグ
     if (gEffectData.isDistanceFog)
     {
@@ -85,6 +93,32 @@ float4 main(PSInput input) : SV_TARGET
 
         // 4. 元の色とフォグ色を合成
         color.rgb = lerp(color.rgb, gEffectData.distanceFogColor, fogFactor);
+    }
+    // ハイトフォグ
+    if (gEffectData.isHeightFog)
+    {
+        // 1. 深度値を取得
+        float depth = gDepthTexture.Sample(gSampler, input.uv);
+
+        // 2. 画面空間(UV + Depth)からワールド座標を復元
+        // NDC座標を作成 (x: -1~1, y: -1~1, z: 0~1)
+        float2 ndcXY = input.uv * 2.0f - 1.0f;
+        ndcXY.y *= -1.0f; // UVのYは下がプラスなので反転
+        float4 ndcPos = float4(ndcXY, depth, 1.0f);
+
+        // 逆行列を掛けてワールド座標へ
+        float4 worldPosWithW = mul(gEffectData.matInverseViewProjection, ndcPos);
+        float3 worldPos = worldPosWithW.xyz / worldPosWithW.w;
+
+        // 3. 高さに基づいたフォグ係数の計算
+        // 指定したTop～Bottomの間で線形補間
+        float heightFactor = saturate((gEffectData.heightFogTop - worldPos.y) / (gEffectData.heightFogTop - gEffectData.heightFogBottom));
+        
+        // 密度(Density)を適用して濃さを調整
+        heightFactor = pow(heightFactor, gEffectData.heightFogDensity);
+
+        // 4. 合成 
+        color.rgb = lerp(color.rgb, gEffectData.heightFogColor, heightFactor);
     }
     
     color.rgb *= gEffectData.intensity;

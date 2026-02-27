@@ -1,4 +1,6 @@
 #pragma once
+#include <DirectXMath.h>
+
 #include "Camera.h"
 #include "Sprite.h"
 #include "Object.h"
@@ -11,6 +13,8 @@
 #include "ImGuiManager.h"
 #include "BaseScene.h"
 #include "PostEffect.h"
+
+using namespace DirectX;
 
 class SpriteCommon;
 class ObjectCommon;
@@ -44,6 +48,11 @@ private:
 	// フォグ
 	float start = 5.0f;
 	float end = 20.0f;
+
+	// ハイトフォグ
+	float heightFogTop = 0.0f;
+	float heightFogBottom = -5.0f;
+	float heightFogDensity = 1.0f;
 
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;
