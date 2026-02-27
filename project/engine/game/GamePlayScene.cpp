@@ -61,6 +61,10 @@ void GamePlayScene::Update() {
 	// sprite更新
 	sprite->Update();
 
+	// ハイトフォグ
+	// 行列更新
+	PostEffect::GetInstance()->HightFogUpdate(camera.get());
+
 #ifdef USE_IMGUI
 	// ImGui
 
@@ -83,11 +87,13 @@ void GamePlayScene::Update() {
 	object->SetSpotLightDirection(SpotLightDirection);
 	object->SetSpotLightRange(SpotLightRange);
 
-	// フォグ
+	// ディスタンスフォグ
 	ImGui::DragFloat("fogStart", &start, 0.1f, 0.0f, 100.0f);
 	ImGui::DragFloat("fogEnd", &end, 0.1f, 0.0f, 100.0f);
 	PostEffect::GetInstance()->SetDistanceFogStart(start);
 	PostEffect::GetInstance()->SetDistanceFogEnd(end);
+
+	
 
 #endif
 

@@ -76,7 +76,9 @@ void TitleScene::Update() {
 	// sprite更新
 	sprite->Update();
 
-
+	// ハイトフォグ
+	// 行列更新
+	PostEffect::GetInstance()->HightFogUpdate(camera.get());
 	
 #ifdef USE_IMGUI
 	// ImGui
@@ -103,8 +105,6 @@ void TitleScene::Update() {
 
 
 #endif
-
-	PostEffect::GetInstance()->HightFogUpdate(camera.get());
 
 }
 
