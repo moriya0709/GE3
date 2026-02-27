@@ -39,7 +39,7 @@ void Object::Initialize(Camera* camera) {
 	// 初期値
 	ambientLightData->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	ambientLightData->intensity = 1.0f;
-	ambientLightData->isDisplay = false;
+	ambientLightData->isDisplay = true;
 	ambientLightResource->Unmap(0, nullptr);
 
 	// *ポイントライト* //
@@ -64,7 +64,7 @@ void Object::Initialize(Camera* camera) {
 	spotLightData->range = 10.0f;
 	spotLightData->innerCone = 1.0f;
 	spotLightData->outerCone = 0.0f;
-	spotLightData->isDisplay = true;
+	spotLightData->isDisplay = false;
 	spotLightResource->Unmap(0, nullptr);
 
 	// アウトライン

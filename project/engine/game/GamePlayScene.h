@@ -22,7 +22,8 @@ public:
 	// 更新
 	void Update() override;
 	// 描画
-	void Draw() override;
+	void Draw2D() override;
+	void Draw3D() override;
 	// 終了
 	void Finalize() override;
 
@@ -49,9 +50,38 @@ private:
 	Vector3 SpotLightDirection = { 0.0f, 0.0f, 0.0f };
 	float SpotLightRange = 10.0f;
 
-	// フォグ
-	float start = 5.0f;
-	float end = 20.0f;
+	// *ポストエフェクト* //
+
+	// 反転
+	bool isInversion = false;
+	// グレースケール
+	bool isGrayscale = false;
+
+
+	// 放射線ブラー
+	bool isRadialBlur = false;
+	Vector2 blurCenter = { 0.5f,0.5f };
+	float blurWidth = 0.01f;
+	int blurSamples = 10;
+
+	// ディスタンスフォグ
+	bool isDistanceFog = false;
+	Vector3 distanceFogColor = { 0.5f,0.5f,0.5f };
+	float distanceStart = 5.0f;
+	float distanceEnd = 20.0f;
+
+	// ハイトフォグ
+	bool isHeightFog = false;
+	Vector3 heightFogColor = { 0.5f,0.5f,0.5f };
+	float heightFogTop = 0.0f;
+	float heightFogBottom = -5.0f;
+	float heightFogDensity = 1.0f;
+
+	// DOF
+	bool isDOF = false;
+	float focusDistance = 5.0f;
+	float focusRange = 5.0f;
+	float bokehRadius = 5.0f;
 
 	// カメラ
 	std::unique_ptr <Camera> camera = nullptr;

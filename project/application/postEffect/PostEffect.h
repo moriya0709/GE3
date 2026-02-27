@@ -22,46 +22,57 @@ struct RenderTarget {
 
 struct EffectData {
 	// [Block 0] 16 bytes
-	int isInversion;
-	int isGrayscale;
-	int isRadialBlur;
-	int isDistanceFog;
+	int isInversion;   // 4
+	int isGrayscale;   // 4
+	int isRadialBlur;  // 4
+	int isDistanceFog; // 4
 
 	// [Block 1] 16 bytes
-	int isHeightFog;
-	float intensity;
-	float pad0[2]; // 16バイトに合わせるための詰め物
+	int isDOF;         // 4
+	int isHeightFog;   // 4
+	float intensity;   // 4
+	float pad0;        // 4 (16バイトに合わせる)
 
 	// [Block 2] 16 bytes
-	Vector2 blurCenter;
-	float blurWidth;
-	int blurSamples;
+	Vector2 blurCenter; // 8
+	float blurWidth;              // 4
+	int blurSamples;              // 4
 
 	// [Block 3] 16 bytes
-	Vector3 distanceFogColor;
-	float distanceFogStart;
+	Vector3 distanceFogColor; // 12
+	float distanceFogStart;             // 4
 
 	// [Block 4] 16 bytes
-	float distanceFogEnd;
-	float zNear;
-	float zFar;
-	float pad1; // 16バイトに合わせる
+	float distanceFogEnd; // 4
+	float zNear;          // 4
+	float zFar;           // 4
+	float pad1;           // 4 (16バイトに合わせる)
 
 	// [Block 5] 16 bytes
-	Vector3 heightFogColor;
-	float heightFogTop;
+	Vector3 heightFogColor; // 12
+	float heightFogTop;               // 4
 
 	// [Block 6] 16 bytes
-	float heightFogBottom;
-	float heightFogDensity;
-	float pad2[2]; // ここで行列の開始位置を16バイトの倍数に強制する
+	float heightFogBottom;  // 4
+	float heightFogDensity; // 4
+	float pad2_0;           // 4 (行列前の調整)
+	float pad2_1;           // 4 (行列を16バイト境界から開始させる)
 
 	// [Block 7-10] 64 bytes
-	Matrix4x4 matInverseViewProjection;
+	Matrix4x4 matInverseViewProjection; // 64
+
+	// [Block 11] 16 bytes (行列の直後)
+	float focusDistance; // 4
+	float focusRange;    // 4
+	float bokehRadius;   // 4
+	float pad3;          // 4 (16バイトに合わせる)
 
 	// [Padding to 256 bytes]
-	float finalPad[28];
+	// ここまでで 16*7 + 64 + 16 = 192 bytes
+	// 256 - 192 = 64 bytes => float4 が 4個分
+	float finalPad[16];
 };
+static_assert(sizeof(EffectData) == 256, "Size must be 256 bytes");
 
 class PostEffect {
 public:
@@ -75,10 +86,15 @@ public:
 	// 描画後処理
 	void PostDraw();
 
-	// エフェクトの有効化
+	// 反転
 	void SetInversion(bool isInversion) { effectData->isInversion = isInversion; }
+	// グレースケール
 	void SetGrayscale(bool isGrayscale) { effectData->isGrayscale = isGrayscale; }
-	void SetIntensity(float intensity) { effectData->intensity = intensity; }
+	// 放射線ブラー
+	void SetRadialBlur(bool isRadialBlur) { effectData->isRadialBlur = isRadialBlur; }
+	void SetBlurCenter(const Vector2& center) { effectData->blurCenter = center; }
+	void SetBlurWidth(float width) { effectData->blurWidth = width; }
+	void SetBlurSamples(int samples) { effectData->blurSamples = samples; }
 
 	// ディスタンスフォグ
 	void SetDistanceFog(bool isFog) { effectData->isDistanceFog = isFog; }
@@ -95,10 +111,11 @@ public:
 	void SetInverseViewProjectionMatrix(const Matrix4x4& mat) { effectData->matInverseViewProjection = mat; }
 	void HightFogUpdate(Camera* camera); // カメラの位置からハイトフォグ用の逆行列を計算してセットする関数
 
-	// getter
-	Matrix4x4 GetInverseViewProjectionMatrix() {
-		return effectData->matInverseViewProjection;
-	}
+	// DOF
+	void SetDOF(bool isDOF) { effectData->isDOF = isDOF; }
+	void SetFocusDistance(float distance) { effectData->focusDistance = distance; }
+	void SetFocusRange(float range) { effectData->focusRange = range; }
+	void SetBokehRadius(float radius) { effectData->bokehRadius = radius; }
 
 	// シングルトンインスタンスの取得
 	static PostEffect* GetInstance();
