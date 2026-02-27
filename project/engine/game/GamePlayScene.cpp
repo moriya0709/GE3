@@ -61,6 +61,11 @@ void GamePlayScene::Update() {
 	// sprite更新
 	sprite->Update();
 
+	// ハイトフォグ
+	// 行列更新
+	PostEffect::GetInstance()->HightFogUpdate(camera.get());
+
+
 #ifdef USE_IMGUI
 	// ImGui
 
