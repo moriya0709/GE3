@@ -89,12 +89,15 @@ void Game::Draw() {
 	srvManager->PreDraw();
 	PostEffect::GetInstance()->PreDraw();
 
-	// シーンマネージャー描画
-	SceneManager::GetInstance()->Draw();
+	// シーンマネージャー描画(3D)
+	SceneManager::GetInstance()->Draw3D();
 
 	// ポストエフェクト描画
 	PostEffect::GetInstance()->PostDraw();
 	PostEffect::GetInstance()->Draw();
+
+	// シーンマネージャー描画(2D)
+	SceneManager::GetInstance()->Draw2D();
 
 	// ImGui描画
 	imGuiManager->Draw();

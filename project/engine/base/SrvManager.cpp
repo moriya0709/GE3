@@ -8,9 +8,11 @@ void SrvManager::Initialize(DirectXCommon* dxCommon) {
 	dxCommon_ = dxCommon;
 
 	// デスクリプタヒープの生成
-	descriptorHeap = dxCommon_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVConst, true);
-	// デスクリプタサイズの取得
-	descriptorSize = dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descriptorHeap = dxCommon_->GetSrvHeap();
+
+	descriptorSize =
+		dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 
 }

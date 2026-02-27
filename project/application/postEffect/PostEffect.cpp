@@ -43,7 +43,8 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectData->isGrayscale = false;
 	effectData->isRadialBlur = false;
 	effectData->isDistanceFog = false;
-	effectData->isHeightFog = true;
+	effectData->isHeightFog = false;
+	effectData->isDOF = true;
 	// 放射線ブラー用のパラメータ
 	effectData->blurCenter = { 0.5f,0.5f };
 	effectData->blurWidth = 0.01f;
@@ -59,6 +60,10 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectData->heightFogTop = 10.0f; // フォグが始まる高さ
 	effectData->heightFogBottom = 0.0f; // 完全にフォグに覆われる高さ
 	effectData->heightFogDensity = 1.0f;
+	// DOF用のパラメータ
+	effectData->focusDistance = 5.0f; // ピントが合う距離
+	effectData->focusRange = 2.0f; // ピントが合う範囲（遊び）
+	effectData->bokehRadius = 5.0f; // ボケの最大半径
 
 	effectData->intensity = 1.0f; // エフェクトの強さ
 }
@@ -71,8 +76,9 @@ void PostEffect::Draw() {
 	// 2. バックバッファを「書き込み用(RTV)」に変える
 	TransitionBackBuffer(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dxCommon_->GetDSVHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE backBufferRtv = dxCommon_->GetBackBufferRTVHandle();
-	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &backBufferRtv, FALSE, nullptr);
+	dxCommon_->GetCommandList()->OMSetRenderTargets(1, &backBufferRtv, FALSE, &dsvHandle);
 	dxCommon_->GetCommandList()->SetPipelineState(graphicsPipelineState.Get());
 	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 	ID3D12DescriptorHeap* heaps[] = { dxCommon_->srvDescriptorHeap.Get() };

@@ -78,11 +78,26 @@ public:
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetOutlineThickness(float thickness) { outlineData->thickness = thickness; }
 	void SetOutlineColor(Vector4 color) { outlineData->color = color; }
-	// ライト
-	void SetDirectionalLightDirection(Vector3 direction) { directionalLightData->direction = direction; }
 	
-	void SetPointLightPosition(Vector3 position) { pointLightData->position = position; }
+	// *ライト* //
 
+	// 平行光
+	void SetDirectionalLight(bool isDisplay) { directionalLightData->isDisplay = isDisplay; }
+	void SetDirectionalLightColor(Vector4 color) { directionalLightData->color = color; }
+	void SetDirectionalLightDirection(Vector3 direction) { directionalLightData->direction = direction; }
+	void SetDirectionalLightIntensity(float intensity) { directionalLightData->intensity = intensity; }
+	// 環境光
+	void SetAmbientLight(bool isDisplay) { ambientLightData->isDisplay = isDisplay; }
+	void SetAmbientLightColor(Vector4 color) { ambientLightData->color = color; }
+	void SetAmbientLightIntensity(float intensity) { ambientLightData->intensity = intensity; }
+	// ポイントライト
+	void SetPointLight(bool isDisplay) { pointLightData->isDisplay = isDisplay; }
+	void SetPointLightColor(Vector4 color) { pointLightData->color = color; }
+	void SetPointLightPosition(Vector3 position) { pointLightData->position = position; }
+	void SetPointLightIntensity(float intensity) { pointLightData->intensity = intensity; }
+	// スポットライト
+	void SetSpotLight(bool isDisplay) { spotLightData->isDisplay = isDisplay; }
+	void SetSpotLightColor(Vector4 color) { spotLightData->color = color; }
 	void SetSpotLightPosition(Vector3 position) { spotLightData->position = position; }
 	void SetSpotLightDirection(Vector3 direction) { spotLightData->direction = direction; }
 	void SetSpotLightRange(float range) { spotLightData->range = range; }

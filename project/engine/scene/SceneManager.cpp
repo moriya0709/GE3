@@ -26,8 +26,11 @@ void SceneManager::Update() {
 
 }
 
-void SceneManager::Draw() {
-	scene_->Draw();
+void SceneManager::Draw2D() {
+	scene_->Draw2D();
+}
+void SceneManager::Draw3D() {
+	scene_->Draw3D();
 }
 
 SceneManager* SceneManager::GetInstance() {

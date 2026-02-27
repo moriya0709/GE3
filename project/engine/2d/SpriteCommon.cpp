@@ -23,6 +23,8 @@ void SpriteCommon::SetCommonPipelineState() {
 	// 形状を設定。PSOに設定しているものとはまた別。同じものを設定すると考えておけ良い
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	ID3D12DescriptorHeap* heaps[] = { dxCommon_->srvDescriptorHeap.Get() };
+	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, heaps);
 }
 
 SpriteCommon* SpriteCommon::GetInstance() {
@@ -143,7 +145,7 @@ void SpriteCommon::CreateGraphicsPipeline() {
 	graphicsPipelineStateDesc.BlendState = blendDesc; // BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc; // RasterizerState
 
-	// DepthStencilの設定
+	// DepthStencilの設定z
 	graphicsPipelineStateDesc.DepthStencilState = dxCommon_->depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 

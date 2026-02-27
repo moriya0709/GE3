@@ -10,7 +10,8 @@ public:
 	// 更新
 	void Update();
 	// 描画
-	void Draw();
+	void Draw2D();
+	void Draw3D();
 
 	// 次シーン予約
 	void SetNextScene(std::unique_ptr <BaseScene> nextScene) {nextScene_ = move(nextScene);}

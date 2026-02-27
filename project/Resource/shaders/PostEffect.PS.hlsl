@@ -12,37 +12,43 @@ struct PSInput
 
 struct EffectData
 {
-    int isInversion;
+    int isInversion; // B0
     int isGrayscale;
     int isRadialBlur;
     int isDistanceFog;
 
+    int isDOF; // B1
     int isHeightFog;
     float intensity;
-    float2 pad0; // float2 = 8byte
+    float pad0;
 
-    float2 blurCenter;
+    float2 blurCenter; // B2
     float blurWidth;
     int blurSamples;
 
-    float3 distanceFogColor;
+    float3 distanceFogColor; // B3
     float distanceFogStart;
 
-    float distanceFogEnd;
+    float distanceFogEnd; // B4
     float zNear;
     float zFar;
     float pad1;
 
-    float3 heightFogColor;
+    float3 heightFogColor; // B5
     float heightFogTop;
 
-    float heightFogBottom;
+    float heightFogBottom; // B6
     float heightFogDensity;
-    float2 pad2; // ★ここが行列の直前
+    float2 pad2; // float2にまとめて行列を16バイト境界へ
 
-    float4x4 matInverseViewProjection;
+    float4x4 matInverseViewProjection; // B7-10
 
-    float4 finalPad[7]; // 全体を256の倍数にする
+    float focusDistance; // B11 (行列の直後)
+    float focusRange;
+    float bokehRadius;
+    float pad3;
+
+    float4 finalPad[4]; // 16byte * 4 = 64byte
 };
 ConstantBuffer<EffectData> gEffectData : register(b0);
 
@@ -97,7 +103,7 @@ float4 main(PSInput input) : SV_TARGET
     // ハイトフォグ
     if (gEffectData.isHeightFog)
     {
-        // 1. 深度値を取得
+        // 深度値を取得
         float depth = gDepthTexture.Sample(gSampler, input.uv);
 
         // 2. 画面空間(UV + Depth)からワールド座標を復元
@@ -119,6 +125,54 @@ float4 main(PSInput input) : SV_TARGET
 
         // 4. 合成 
         color.rgb = lerp(color.rgb, gEffectData.heightFogColor, heightFactor);
+    }
+    // DOF
+    if (gEffectData.isDOF)
+    {
+        float depth = gDepthTexture.Sample(gSampler, input.uv);
+        float linearDepth = (gEffectData.zNear * gEffectData.zFar) / (gEffectData.zFar - depth * (gEffectData.zFar - gEffectData.zNear));
+
+    // 錯乱円(CoC)の計算
+        float coc = saturate((abs(linearDepth - gEffectData.focusDistance) - gEffectData.focusRange) / gEffectData.bokehRadius);
+        // CoCを計算した後に追加
+        float edgeFade = saturate(input.uv.x * 10.0) * saturate((1.0 - input.uv.x) * 10.0) *
+                 saturate(input.uv.y * 10.0) * saturate((1.0 - input.uv.y) * 10.0);
+
+        coc *= edgeFade; // 画面端では強制的にピントを合わせる（ボケを消す）
+        
+        if (coc > 0.0)
+        {
+            float4 accumColor = 0;
+            float totalWeight = 0;
+        
+        // サンプル数を増やすと綺麗になります（例: 32〜64）
+            const int sampleCount = 32;
+            const float GOLDEN_ANGLE = 2.39996323; // 黄金角（ラジアン）
+
+            for (int i = 0; i < sampleCount; i++)
+            {
+                float r = sqrt(float(i) / float(sampleCount));
+                float theta = i * GOLDEN_ANGLE;
+    
+                float2 offset = float2(cos(theta), sin(theta)) * r * coc * 0.02;
+
+    // --- ここでガードを入れる ---
+                float2 sampleUV = input.uv + offset;
+    
+    // 画面外をサンプリングしないように 0.0～1.0 に収める
+                sampleUV = saturate(sampleUV);
+
+                float4 sampleColor = gCurrentTexture.Sample(gSampler, sampleUV);
+    // ----------------------------
+
+                float weight = dot(sampleColor.rgb, float3(0.299, 0.587, 0.114));
+                weight = pow(weight, 2.0) + 0.1;
+
+                accumColor += sampleColor * weight;
+                totalWeight += weight;
+            }
+            color = accumColor / totalWeight;
+        }
     }
     
     color.rgb *= gEffectData.intensity;

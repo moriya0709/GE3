@@ -11,7 +11,8 @@ public:
 	// XV
 	virtual void Update() = 0;
 	// •`‰æ
-	virtual void Draw() = 0;
+	virtual void Draw2D() = 0;
+	virtual void Draw3D() = 0;
 	// I—¹
 	virtual void Finalize() = 0;
 
