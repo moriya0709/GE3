@@ -76,6 +76,8 @@ void TitleScene::Update() {
 	// sprite更新
 	sprite->Update();
 
+
+	
 #ifdef USE_IMGUI
 	// ImGui
 
@@ -85,14 +87,24 @@ void TitleScene::Update() {
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
 
-	// フォグ
+	// ディスタンスフォグ
 	ImGui::DragFloat("fogStart", &start, 0.1f, 0.0f, 100.0f);
 	ImGui::DragFloat("fogEnd", &end, 0.1f, 0.0f, 100.0f);
 	PostEffect::GetInstance()->SetDistanceFogStart(start);
 	PostEffect::GetInstance()->SetDistanceFogEnd(end);
 
+	// ハイトフォグ
+	ImGui::DragFloat("heightFogTop", &heightFogTop, 0.1f, -100.0f, 100.0f);
+	ImGui::DragFloat("heightFogBottom", &heightFogBottom, 0.1f, -100.0f, 100.0f);
+	ImGui::DragFloat("heightFogDensity", &heightFogDensity, 0.01f, 0.0f, 10.0f);
+	PostEffect::GetInstance()->SetHeightFogTop(heightFogTop);
+	PostEffect::GetInstance()->SetHeightFogBottom(heightFogBottom);
+	PostEffect::GetInstance()->SetHeightFogDensity(heightFogDensity);
+
 
 #endif
+
+	PostEffect::GetInstance()->HightFogUpdate(camera.get());
 
 }
 

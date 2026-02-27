@@ -1,6 +1,7 @@
 #include "PostEffect.h"
 #include "DirectXCommon.h"
 #include "WindowAPI.h"
+#include "Camera.h"
 
 std::unique_ptr <PostEffect> PostEffect::instance = nullptr;
 
@@ -42,7 +43,8 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectData->isGrayscale = false;
 	effectData->isRadialBlur = false;
 	effectData->isDistanceFog = false;
-	effectData->intensity = 1.0f;
+	effectData->isHeightFog = true;
+	// 放射線ブラー用のパラメータ
 	effectData->blurCenter = { 0.5f,0.5f };
 	effectData->blurWidth = 0.01f;
 	effectData->blurSamples = 10;
@@ -50,10 +52,15 @@ void PostEffect::Initialize(DirectXCommon* dxCommon, WindowAPI* windowAPI) {
 	effectData->distanceFogColor = { 0.5f,0.5f,0.5f };// フォグの色
 	effectData->distanceFogStart = 0.0f;  // フォグが始まる距離
 	effectData->distanceFogEnd = 10.0f; // 完全にフォグに覆われる距離
-
 	effectData->zNear = 0.1f; // カメラのニアクリップ面
 	effectData->zFar = 1000.0f; // カメラのファークリップ面
+	// ハイトフォグ用のパラメータ
+	effectData->heightFogColor = { 0.5f,0.5f,0.5f }; // フォグの色
+	effectData->heightFogTop = 10.0f; // フォグが始まる高さ
+	effectData->heightFogBottom = 0.0f; // 完全にフォグに覆われる高さ
+	effectData->heightFogDensity = 1.0f;
 
+	effectData->intensity = 1.0f; // エフェクトの強さ
 }
 
 void PostEffect::Draw() {
@@ -104,6 +111,28 @@ void PostEffect::PreDraw() {
 // 描画後処理
 void PostEffect::PostDraw() {
 	Transition(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+}
+
+void PostEffect::HightFogUpdate(Camera* camera) {
+	Matrix4x4 camWorldMat = camera->GetWorldMatrix();
+
+	// プロジェクションの逆行列を作る
+	Matrix4x4 projMat = camera->GetProjectionMatrix();
+	DirectX::XMMATRIX mProj = DirectX::XMLoadFloat4x4(reinterpret_cast<const DirectX::XMFLOAT4X4*>(&projMat));
+	DirectX::XMVECTOR det;
+	DirectX::XMMATRIX invProj = DirectX::XMMatrixInverse(&det, mProj);
+
+	// プロジェクション逆行列 × カメラのワールド行列の合成
+	DirectX::XMMATRIX mCamWorld = DirectX::XMLoadFloat4x4(reinterpret_cast<const DirectX::XMFLOAT4X4*>(&camWorldMat));
+	DirectX::XMMATRIX resultInvVP = invProj * mCamWorld;
+
+	// 転置してセット
+	resultInvVP = DirectX::XMMatrixTranspose(resultInvVP);
+	Matrix4x4 finalMat;
+	DirectX::XMStoreFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(&finalMat), resultInvVP);
+
+	PostEffect::GetInstance()->SetInverseViewProjectionMatrix(finalMat);
+
 }
 
 PostEffect* PostEffect::GetInstance() {
