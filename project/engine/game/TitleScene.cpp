@@ -4,99 +4,98 @@
 #include "SceneManager.h"
 
 void TitleScene::Initialize() {
-	// ƒJƒƒ‰‰Šú‰»
+	// ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
 	camera = std::make_unique <Camera>();
 	camera->SetRotate({ cameraTransform.rotate });
 	camera->SetTranslate({ cameraTransform.translate });
 
-	// ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ“o˜^
+	// ã‚«ãƒ¡ãƒ©ãƒãƒãƒ¼ã‚¸ãƒ£ç™»éŒ²
 	CameraManager::GetInstance()->AddCamera("main", camera.get());
 	CameraManager::GetInstance()->SetActiveCamera("main");
 
-	// ƒXƒvƒ‰ƒCƒg
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 	sprite = std::make_unique <Sprite>();
 	sprite->Initialize("Resource/monsterBall.png");
 
-	// 3DƒIƒuƒWƒFƒNƒg
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	for (int i = 0; i < 2; i++) {
 		object[i] = std::make_unique <Object>();
 		object[i]->Initialize(camera.get());
 	}
 
 
-	// Emitƒp[ƒeƒBƒNƒ‹”­¶
+	// Emitãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç™ºç”Ÿ
 	particleEmitter = std::make_unique <ParticleEmitter>();
 	particleEmitter->Initialize("group1", transformParticle, 5, 1.0f);
 	particleEmitter->Emit();
 
-	// ‰Šú‰»Ï‚İ‚Ì3DƒIƒuƒWƒFƒNƒg‚Éƒ‚ƒfƒ‹‚ğ•R‚Ã‚¯‚é
+	// åˆæœŸåŒ–æ¸ˆã¿ã®3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ãƒ¢ãƒ‡ãƒ«ã‚’ç´ã¥ã‘ã‚‹
 	object[0]->SetModel("plane.obj");
 	object[1]->SetModel("axis.obj");
 
-	// ‰¹ºÄ¶
+	// éŸ³å£°å†ç”Ÿ
 	SoundManager::GetInstance()->Play("bgm");
 
 }
 
 void TitleScene::Update() {
-	// “ü—Íæ“¾
+	// å…¥åŠ›å–å¾—
 	auto input = Input::GetInstance();
-	// ƒJƒƒ‰XV
+	// ã‚«ãƒ¡ãƒ©æ›´æ–°
 	CameraManager::GetInstance()->Update();
 
-	// ENTERƒL[‚ğ‰Ÿ‚µ‚½‚ç
+	// ENTERã‚­ãƒ¼ã‚’æŠ¼ã—ãŸã‚‰
 	if (input->TriggerKey(DIK_RETURN)) {
-		// ƒQ[ƒ€ƒvƒŒƒCƒV[ƒ“(ŸƒV[ƒ“)‚ğ¶¬
+		// ã‚²ãƒ¼ãƒ ãƒ—ãƒ¬ã‚¤ã‚·ãƒ¼ãƒ³(æ¬¡ã‚·ãƒ¼ãƒ³)ã‚’ç”Ÿæˆ
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-		// ‰¹ºÄ¶
+		// éŸ³å£°å†ç”Ÿ
 		SoundManager::GetInstance()->Stop("bgm");
 	}
 
-	// ”š‚Ì‚OƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç
+	// æ•°å­—ã®ï¼ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ãŸã‚‰
 	if (input->TriggerKey(DIK_0)) {
-		OutputDebugStringA("Hit 0\n"); // o—ÍƒEƒBƒ“ƒhƒE‚ÉuHit ‚Ov‚Æ•\¦
-		// ƒeƒNƒXƒ`ƒƒ•ÏX
+		OutputDebugStringA("Hit 0\n"); // å‡ºåŠ›ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ã€ŒHit ï¼ã€ã¨è¡¨ç¤º
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ›´
 		sprite->ChangeTexture("Resource/uvChecker.png");
 		particleEmitter->SetActive("group2");
 
-		// ƒGƒtƒFƒNƒg—LŒø‰»(F”½“])
+		// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæœ‰åŠ¹åŒ–(è‰²åè»¢)
 		PostEffect::GetInstance()->SetInversion(true);
 	}
 
-	// * 3DƒIƒuƒWƒFƒNƒg* //
+	// * 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ* //
 	for (int i = 0; i < 2; i++) {
 		object[i]->Update();
 	}
 
-	// ƒp[ƒeƒBƒNƒ‹ƒGƒ~ƒbƒ^XV
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¨ãƒŸãƒƒã‚¿æ›´æ–°
 	particleEmitter->Update();
 
 
-	// *ƒXƒvƒ‰ƒCƒg* //
-	// spriteXV
+	// *ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ* //
+	// spriteæ›´æ–°
 	sprite->Update();
 
-	// ƒnƒCƒgƒtƒHƒO
-	// s—ñXV
+	// ãƒã‚¤ãƒˆãƒ•ã‚©ã‚°
+	// è¡Œåˆ—æ›´æ–°
 	PostEffect::GetInstance()->HightFogUpdate(camera.get());
 
-	
 #ifdef USE_IMGUI
 	// ImGui
 
-	// ƒJƒƒ‰
+	// ã‚«ãƒ¡ãƒ©
 	ImGui::DragFloat3("cameraTranslate", &cameraTransform.translate.x, 0.01f, -100.0f, 100.0f);
 	ImGui::DragFloat3("cameraRotate", &cameraTransform.rotate.x, 0.01f, -180.0f, 180.0f);
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
 
-	// ƒfƒBƒXƒ^ƒ“ƒXƒtƒHƒO
+	// ãƒ‡ã‚£ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ã‚°
 	ImGui::DragFloat("fogStart", &start, 0.1f, 0.0f, 100.0f);
 	ImGui::DragFloat("fogEnd", &end, 0.1f, 0.0f, 100.0f);
 	PostEffect::GetInstance()->SetDistanceFogStart(start);
 	PostEffect::GetInstance()->SetDistanceFogEnd(end);
 
-	// ƒnƒCƒgƒtƒHƒO
+	// ãƒã‚¤ãƒˆãƒ•ã‚©ã‚°
 	ImGui::DragFloat("heightFogTop", &heightFogTop, 0.1f, -100.0f, 100.0f);
 	ImGui::DragFloat("heightFogBottom", &heightFogBottom, 0.1f, -100.0f, 100.0f);
 	ImGui::DragFloat("heightFogDensity", &heightFogDensity, 0.01f, 0.0f, 10.0f);
@@ -110,29 +109,29 @@ void TitleScene::Update() {
 }
 
 void TitleScene::Draw() {
-	// 3DƒIƒuƒWƒFƒNƒg‚Ì•`‰æ€”õ
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»æº–å‚™
 	ObjectCommon::GetInstance()->SetCommonPipelineState();
 
-	// 3DƒIƒuƒWƒFƒNƒg•`‰æ
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 	for (int i = 0; i < 2; i++) {
 		object[i]->Draw();
 	}
 
-	// 3DƒIƒuƒWƒFƒNƒg‚Ì•`‰æ€”õ
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»æº–å‚™
 	ObjectCommon::GetInstance()->SetOutlinePipelineState();
 
-	// 3DƒIƒuƒWƒFƒNƒg•`‰æ
+	// 3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 	for (int i = 0; i < 2; i++) {
 		object[i]->Draw();
 	}
 
-	// ƒp[ƒeƒBƒNƒ‹•`‰æ
+	// ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«æç”»
 	ParticleManager::GetInstance()->Draw();
 
-	// 2DƒIƒuƒWƒFƒNƒg‚Ì•`‰æ€”õ
+	// 2Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æç”»æº–å‚™
 	SpriteCommon::GetInstance()->SetCommonPipelineState();
 
-	// ƒXƒvƒ‰ƒCƒg•`‰æ
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæç”»
 	//sprite->Draw();
 }
 
