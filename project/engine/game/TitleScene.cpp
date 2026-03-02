@@ -76,6 +76,34 @@ void TitleScene::Update() {
 	// sprite更新
 	sprite->Update();
 
+#pragma region ライティング
+	// *ライティング* //
+	for (int i = 0; i < 2; i++) {
+		// 平行光
+		object[i]->SetDirectionalLight(isDirectionalLight);
+		object[i]->SetDirectionalLightDirection(DirectionalLightDirection);
+		object[i]->SetDirectionalLightColor(DirectionalLightColor);
+		object[i]->SetDirectionalLightIntensity(DirectionalLightIntensity);
+		// 環境光
+		object[i]->SetAmbientLight(isAmbientLight);
+		object[i]->SetAmbientLightColor(AmbientLightColor);
+		object[i]->SetAmbientLightIntensity(AmbientLightIntensity);
+		// ポイントライト
+		object[i]->SetPointLight(isPointLight);
+		object[i]->SetPointLightColor(PointLightColor);
+		object[i]->SetPointLightPosition(PointLightPosition);
+		object[i]->SetPointLightIntensity(PointLightIntensity);
+		// スポットライト
+		object[i]->SetSpotLight(isSpotLight);
+		object[i]->SetSpotLightColor(SpotLightColor);
+		object[i]->SetSpotLightPosition(SpotLightPosition);
+		object[i]->SetSpotLightDirection(SpotLightDirection);
+		object[i]->SetSpotLightRange(SpotLightRange);
+		object[i]->SetSpotLightIntensity(SpotLightIntensity);
+	}
+#pragma endregion
+
+#pragma region ポストエフェクト
 	// *ポストエフェクト* //
 
 	// 反転
@@ -105,6 +133,8 @@ void TitleScene::Update() {
 	PostEffect::GetInstance()->SetBokehRadius(bokehRadius);
 	PostEffect::GetInstance()->SetFocusRange(focusRange);
 
+#pragma endregion
+
 #ifdef USE_IMGUI
 	// ImGui
 
@@ -114,12 +144,60 @@ void TitleScene::Update() {
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
 
+#pragma region ライティング
 	// *ライティング* //
+	ImGui::Text("Lighting"); // ライティングのテキスト
+	
 	// 平行光
+	if (ImGui::TreeNode("DirectionalLight")) {
+		ImGui::Checkbox("OnOff", &isDirectionalLight);
+		if (isDirectionalLight) {
+			ImGui::ColorEdit4("Color", &DirectionalLightColor.x);
+			ImGui::DragFloat3("Direction", &DirectionalLightDirection.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &DirectionalLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
+		ImGui::TreePop();
+	}
+	// 環境光
+	if (ImGui::TreeNode("AmbientLight")) {
+		ImGui::Checkbox("OnOff", &isAmbientLight);
+		if (isAmbientLight) {
+			ImGui::ColorEdit4("Color", &AmbientLightColor.x);
+			ImGui::DragFloat("Intensity", &AmbientLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
 
+		ImGui::TreePop();
+	}
+	// ポイントライト
+	if (ImGui::TreeNode("PointLight")) {
+		ImGui::Checkbox("OnOff", &isPointLight);
+		if (isPointLight) {
+			ImGui::ColorEdit4("Color", &PointLightColor.x);
+			ImGui::DragFloat3("Position", &PointLightPosition.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &PointLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
 
+		ImGui::TreePop();
+	}
+	// スポットライト
+	if (ImGui::TreeNode("SpotLight")) {
+		ImGui::Checkbox("OnOff", &isSpotLight);
+		if (isSpotLight) {
+			ImGui::ColorEdit4("Color", &SpotLightColor.x);
+			ImGui::DragFloat3("Position", &SpotLightPosition.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat3("Direction", &SpotLightDirection.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Range", &SpotLightRange, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &SpotLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
 
+		ImGui::TreePop();
+	}
+
+#pragma endregion
+
+#pragma region ポストエフェクト
 	// *ポストエフェクト* //
+	ImGui::Text("PostEffect"); // ポストエフェクトのテキスト
 
 	// 反転
 	if (ImGui::TreeNode("inversion")) {
@@ -182,6 +260,8 @@ void TitleScene::Update() {
 
 		ImGui::TreePop();
 	}
+
+#pragma endregion
 
 #endif
 
