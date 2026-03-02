@@ -101,6 +101,7 @@ public:
 	void SetSpotLightPosition(Vector3 position) { spotLightData->position = position; }
 	void SetSpotLightDirection(Vector3 direction) { spotLightData->direction = direction; }
 	void SetSpotLightRange(float range) { spotLightData->range = range; }
+	void SetSpotLightIntensity(float intensity) { spotLightData->intensity = intensity; }
 	
 	// getter
 	const Vector3& GetScale() const { return transform.scale; }

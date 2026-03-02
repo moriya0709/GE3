@@ -61,6 +61,33 @@ void GamePlayScene::Update() {
 	// sprite更新
 	sprite->Update();
 
+#pragma region ライティング
+	// *ライティング* //
+	
+	// 平行光
+	object->SetDirectionalLight(isDirectionalLight);
+	object->SetDirectionalLightDirection(DirectionalLightDirection);
+	object->SetDirectionalLightColor(DirectionalLightColor);
+	object->SetDirectionalLightIntensity(DirectionalLightIntensity);
+	// 環境光
+	object->SetAmbientLight(isAmbientLight);
+	object->SetAmbientLightColor(AmbientLightColor);
+	object->SetAmbientLightIntensity(AmbientLightIntensity);
+	// ポイントライト
+	object->SetPointLight(isPointLight);
+	object->SetPointLightColor(PointLightColor);
+	object->SetPointLightPosition(PointLightPosition);
+	object->SetPointLightIntensity(PointLightIntensity);
+	// スポットライト
+	object->SetSpotLight(isSpotLight);
+	object->SetSpotLightColor(SpotLightColor);
+	object->SetSpotLightPosition(SpotLightPosition);
+	object->SetSpotLightDirection(SpotLightDirection);
+	object->SetSpotLightRange(SpotLightRange);
+	object->SetSpotLightIntensity(SpotLightIntensity);
+#pragma endregion
+
+#pragma region ポストエフェクト
 	// *ポストエフェクト* //
 
 	// 反転
@@ -90,6 +117,8 @@ void GamePlayScene::Update() {
 	PostEffect::GetInstance()->SetBokehRadius(bokehRadius);
 	PostEffect::GetInstance()->SetFocusRange(focusRange);
 
+#pragma endregion
+
 
 #ifdef USE_IMGUI
 	// ImGui
@@ -100,20 +129,60 @@ void GamePlayScene::Update() {
 	camera->SetTranslate({ cameraTransform.translate });
 	camera->SetRotate({ cameraTransform.rotate });
 
+#pragma region ライティング
+	// *ライティング* //
+	ImGui::Text("Lighting"); // ライティングのテキスト
+
+	// 平行光
+	if (ImGui::TreeNode("DirectionalLight")) {
+		ImGui::Checkbox("OnOff", &isDirectionalLight);
+		if (isDirectionalLight) {
+			ImGui::ColorEdit4("Color", &DirectionalLightColor.x);
+			ImGui::DragFloat3("Direction", &DirectionalLightDirection.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &DirectionalLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
+		ImGui::TreePop();
+	}
+	// 環境光
+	if (ImGui::TreeNode("AmbientLight")) {
+		ImGui::Checkbox("OnOff", &isAmbientLight);
+		if (isAmbientLight) {
+			ImGui::ColorEdit4("Color", &AmbientLightColor.x);
+			ImGui::DragFloat("Intensity", &AmbientLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
+
+		ImGui::TreePop();
+	}
 	// ポイントライト
-	ImGui::DragFloat3("pointLightPosition", &PointLight.x, 0.01f, -100.0f, 100.0f);
-	object->SetPointLightPosition(PointLight);
+	if (ImGui::TreeNode("PointLight")) {
+		ImGui::Checkbox("OnOff", &isPointLight);
+		if (isPointLight) {
+			ImGui::ColorEdit4("Color", &PointLightColor.x);
+			ImGui::DragFloat3("Position", &PointLightPosition.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &PointLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
 
+		ImGui::TreePop();
+	}
 	// スポットライト
-	ImGui::DragFloat3("spotLightPosition", &SpotLightPosition.x, 0.01f, -100.0f, 100.0f);
-	ImGui::DragFloat3("spotLightDirection", &SpotLightDirection.x, 0.01f, -100.0f, 100.0f);
-	ImGui::DragFloat("spotRange", &SpotLightRange, 0.01f, 0.0f, 100.0f);
-	
-	object->SetSpotLightPosition(SpotLightPosition);
-	object->SetSpotLightDirection(SpotLightDirection);
-	object->SetSpotLightRange(SpotLightRange);
+	if (ImGui::TreeNode("SpotLight")) {
+		ImGui::Checkbox("OnOff", &isSpotLight);
+		if (isSpotLight) {
+			ImGui::ColorEdit4("Color", &SpotLightColor.x);
+			ImGui::DragFloat3("Position", &SpotLightPosition.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat3("Direction", &SpotLightDirection.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat("Range", &SpotLightRange, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Intensity", &SpotLightIntensity, 0.01f, 0.0f, 10.0f);
+		}
 
+		ImGui::TreePop();
+	}
+
+#pragma endregion
+
+#pragma region ポストエフェクト
 	// *ポストエフェクト* //
+	ImGui::Text("PostEffect"); // ポストエフェクトのテキスト
 
 	// 反転
 	if (ImGui::TreeNode("inversion")) {
@@ -176,6 +245,8 @@ void GamePlayScene::Update() {
 
 		ImGui::TreePop();
 	}
+
+#pragma endregion
 
 #endif
 
