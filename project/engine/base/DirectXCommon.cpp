@@ -479,8 +479,6 @@ D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetSRVGPUDescriptorHandle(uint32_t in
 
 // シェーダーのコンパイル
 Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring& filePath, const wchar_t* profile) {
-	// これからシェーダーをコンパイルする旨をログに出す
-	//Log(os, ConvertString(std::format(L"Begin CompileShader, path:{},profile:{}\n", filePath, profile)));
 	// hlslファイルを読む
 	Microsoft::WRL::ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
 	HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
@@ -526,11 +524,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(const std::wstring
 	IDxcBlob* shaderBlob = nullptr;
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 	assert(SUCCEEDED(hr));
-	//成功したログを出す
-	//Log(ConvertString(std::format(L"Compile Succeeded,path:{},profile;{}\n", filePath, profile)));
-	// もう使わないリソースを解放
-	//shaderSource->Release();
-	//shaderResult->Release();
+
 	// 実行用のバイナリを返却
 	return shaderBlob;
 }
@@ -579,7 +573,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateTextureResource(cons
 	resourceDesc.SampleDesc.Count = 1; // サンプリングカウント。1固定
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension); // Textureの次元数
 
-	// 利用するHeapの設定。非常に特殊な運用。02_04exで一般的なケース版がある
+	// 利用するHeapの設定。非常に特殊な運用
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // 細かい設定を行う
 	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN; // WriteBackポリシーでCPUアクセス可能
